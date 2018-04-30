@@ -1,4 +1,14 @@
 import SHOGI from './const/const'
+import _ from 'lodash'
+
+export interface jkfObject {
+  moves?: Array<Object>
+  initial?: initObject
+}
+
+export interface initObject {
+  preset: string
+}
 
 export default class ShogiManager {
   // 指し手番号
@@ -25,11 +35,79 @@ export default class ShogiManager {
   // 棋譜か定跡(分岐をもつ)か
   private type: number
 
+  // すべての指し手情報
+  private moves: Array<Object>
+
   /**
    * jkfを渡して初期化
    * @param jkf
+   * @param readonly
    */
-  constructor(jkf: Object = {}) {}
+  constructor(jkf: jkfObject = {}, readonly: boolean = false) {
+    this.readonly = readonly
+
+    // 指し手情報のコピー
+    if (_.has(jkf, 'moves')) {
+      this.moves = jkf['moves'] as Object[]
+    } else {
+      this.moves = [{}]
+    }
+
+    // 平手状態を代入
+    this.ban = _.cloneDeep(SHOGI.Info.hirateBoard)
+
+    // 特殊な初期状態が登録されているか判定
+    if (_.has(jkf, 'initial')) {
+      // プリセットが未定義ならエラー
+      if (!_.has(jkf['initial'] as Object, 'preset')) {
+        throw Error('初期状態のプリセットが未定義です。')
+      } else {
+        switch ((jkf['initial'] as initObject)['preset']) {
+          case 'HIRATE':
+            // 平手は代入済
+            break
+          case 'KY': // 香落ち
+            this.ban = _.cloneDeep(
+              SHOGI.Info.komaochiBoards[SHOGI.KOMAOCHI.KYO]
+            )
+            break
+          case 'KA': // 角落ち
+            this.ban = _.cloneDeep(
+              SHOGI.Info.komaochiBoards[SHOGI.KOMAOCHI.KAKU]
+            )
+            break
+          case 'HI': // 飛車落ち
+            this.ban = _.cloneDeep(
+              SHOGI.Info.komaochiBoards[SHOGI.KOMAOCHI.HISHA]
+            )
+            break
+          case 'HIKY': // 飛香落ち
+            this.ban = _.cloneDeep(
+              SHOGI.Info.komaochiBoards[SHOGI.KOMAOCHI.HIKYO]
+            )
+            break
+          case '2': // 2枚落ち
+            this.ban = _.cloneDeep(SHOGI.Info.komaochiBoards[SHOGI.KOMAOCHI.NI])
+            break
+          case '4': // 4枚落ち
+            this.ban = _.cloneDeep(
+              SHOGI.Info.komaochiBoards[SHOGI.KOMAOCHI.YON]
+            )
+            break
+          case '6': // 6枚落ち
+            this.ban = _.cloneDeep(
+              SHOGI.Info.komaochiBoards[SHOGI.KOMAOCHI.ROKU]
+            )
+            break
+          case '8': // 8枚落ち
+            this.ban = _.cloneDeep(
+              SHOGI.Info.komaochiBoards[SHOGI.KOMAOCHI.HACHI]
+            )
+            break
+        }
+      }
+    }
+  }
 
   /**
    * jkfをエクスポートする
