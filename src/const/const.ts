@@ -3,20 +3,6 @@ export const PLAYER = {
   GOTE: 1
 }
 
-// プレイヤーのモード
-export const MODE = {
-  VIEW: 0, // 閲覧モード
-  EDIT: 1, // 編集モード
-  CREATE: 2, // 新規作成モード
-  PLAY: 3 // プレイモード
-}
-
-// 棋譜のタイプ
-export const LIST = {
-  KIFU: 0,
-  JOSEKI: 1
-}
-
 // 駒の種類
 export const KOMA = {
   NONE: 0, // 駒なし
@@ -56,610 +42,618 @@ export const KOMAOCHI = {
   HACHI: 7
 }
 
+// 駒の移動タイプの種類
+export const MOVETYPE = {
+  POS: 0, // 1マスの移動
+  DIR: 0 // 特定方向への移動
+}
+
 export interface banObject {
   color?: number
   kind?: string
 }
 
+export interface komaDataObject {
+  // 指し手の駒指定で使う駒名の略称
+  name: string
+
+  // フルネームの駒名
+  fullName: string
+
+  // json棋譜フォーマットで使われる アルファベット大文字2文字からなる駒名
+  banName: string
+
+  // 駒の移動可能情報
+  moves: Array<moveDefineObject>
+
+  // 成れるかどうか
+  canPromote: boolean
+
+  // 成り駒かどうか
+  isPromote: boolean
+
+  // 成り先の駒番号 存在しない場合はnull
+  toPromote: number
+
+  // 成り元の駒番号 存在しない場合はnull
+  fromPromote: number
+}
+
+export interface moveDefineObject {
+  type: number
+  x: number
+  y: number
+}
+
 export class Info {
-  private static komaData: Array<Object> = [
-    {},
+  private static komaData: Array<komaDataObject> = [
+    {
+      // 駒なし
+      name: '無', // 略駒名
+      fullName: '駒無', // 駒名
+      banName: 'NO', // 盤面情報での駒名
+      moves: [],
+      canPromote: true, // 成れるかどうか
+      isPromote: false, // 成り駒かどうか
+      toPromote: KOMA.NONE, // 成り先
+      fromPromote: KOMA.NONE // 成り元
+    },
     {
       // 歩
       name: '歩', // 略駒名
       fullName: '歩兵', // 駒名
-      className: 'fu', // cssクラス中で使用する名前
       banName: 'FU', // 盤面情報での駒名
       moves: [
         // 進行方向定義 (posなら進行位置、dirなら進行方向)
         {
-          type: 'pos',
+          type: MOVETYPE.POS,
           x: 0,
           y: 1
         }
       ],
       canPromote: true, // 成れるかどうか
       isPromote: false, // 成り駒かどうか
-      promoNum: KOMA.TO, // 成り先
-      devolveNum: null, // 成り元
-      isSpecial: false, // 特別駒かどうか
-      extra: null // 追加情報
+      toPromote: KOMA.TO, // 成り先
+      fromPromote: KOMA.NONE // 成り元
     },
     {
       // 香
       name: '香', // 略駒名
       fullName: '香車', // 駒名
-      className: 'kyo', // cssクラス中で使用する名前
       banName: 'KY', // 盤面情報での駒名
       moves: [
         // 進行方向定義 (posなら進行位置、dirなら進行方向)
         {
-          type: 'dir',
+          type: MOVETYPE.DIR,
           x: 0,
           y: 1
         }
       ],
       canPromote: true, // 成れるかどうか
       isPromote: false, // 成り駒かどうか
-      promoNum: KOMA.NY, // 成り先
-      devolveNum: null, // 成り元
-      isSpecial: false, // 特別駒かどうか
-      extra: null // 追加情報
+      toPromote: KOMA.NY, // 成り先
+      fromPromote: KOMA.NONE // 成り元
     },
     {
       // 桂馬
       name: '桂', // 略駒名
       fullName: '桂馬', // 駒名
-      className: 'kei', // cssクラス中で使用する名前
       banName: 'KE', // 盤面情報での駒名
       moves: [
         // 進行方向定義 (posなら進行位置、dirなら進行方向)
         {
-          type: 'pos',
+          type: MOVETYPE.POS,
           x: -1,
           y: 2
         },
         {
-          type: 'pos',
+          type: MOVETYPE.POS,
           x: 1,
           y: 2
         }
       ],
       canPromote: true, // 成れるかどうか
       isPromote: false, // 成り駒かどうか
-      promoNum: KOMA.NK, // 成り先
-      devolveNum: null, // 成り元
-      isSpecial: false, // 特別駒かどうか
-      extra: null // 追加情報
+      toPromote: KOMA.NK, // 成り先
+      fromPromote: KOMA.NONE // 成り元
     },
     {
       // 銀
       name: '銀', // 略駒名
       fullName: '銀将', // 駒名
-      className: 'gin', // cssクラス中で使用する名前
       banName: 'GI', // 盤面情報での駒名
       moves: [
         // 進行方向定義 (posなら進行位置、dirなら進行方向)
         {
-          type: 'pos',
+          type: MOVETYPE.POS,
           x: 0,
           y: 1
         },
         {
-          type: 'pos',
+          type: MOVETYPE.POS,
           x: -1,
           y: 1
         },
         {
-          type: 'pos',
+          type: MOVETYPE.POS,
           x: 1,
           y: 1
         },
         {
-          type: 'pos',
+          type: MOVETYPE.POS,
           x: -1,
           y: -1
         },
         {
-          type: 'pos',
+          type: MOVETYPE.POS,
           x: 1,
           y: -1
         }
       ],
       canPromote: true, // 成れるかどうか
       isPromote: false, // 成り駒かどうか
-      promoNum: KOMA.NG, // 成り先
-      devolveNum: null, // 成り元
-      isSpecial: false, // 特別駒かどうか
-      extra: null // 追加情報
+      toPromote: KOMA.NG, // 成り先
+      fromPromote: KOMA.NONE // 成り元
     },
     {
       // 金
       name: '金', // 略駒名
       fullName: '金将', // 駒名
-      className: 'kin', // cssクラス中で使用する名前
       banName: 'KI', // 盤面情報での駒名
       moves: [
         // 進行方向定義 (posなら進行位置、dirなら進行方向)
         {
-          type: 'pos',
+          type: MOVETYPE.POS,
           x: -1,
           y: 1
         },
         {
-          type: 'pos',
+          type: MOVETYPE.POS,
           x: -1,
           y: 0
         },
         {
-          type: 'pos',
+          type: MOVETYPE.POS,
           x: 0,
           y: 1
         },
         {
-          type: 'pos',
+          type: MOVETYPE.POS,
           x: 0,
           y: -1
         },
         {
-          type: 'pos',
+          type: MOVETYPE.POS,
           x: 1,
           y: 1
         },
         {
-          type: 'pos',
+          type: MOVETYPE.POS,
           x: 1,
           y: 0
         }
       ],
       canPromote: false, // 成れるかどうか
       isPromote: false, // 成り駒かどうか
-      promoNum: null, // 成り先
-      isSpecial: false, // 特別駒かどうか
-      extra: null // 追加情報
+      toPromote: KOMA.NONE, // 成り先
+      fromPromote: KOMA.NONE // 成り元
     },
     {
       // 角
       name: '角', // 略駒名
       fullName: '角行', // 駒名
-      className: 'kaku', // cssクラス中で使用する名前
       banName: 'KA', // 盤面情報での駒名
       moves: [
         // 進行方向定義 (posなら進行位置、dirなら進行方向)
         {
-          type: 'dir',
+          type: MOVETYPE.DIR,
           x: -1,
           y: 1
         },
         {
-          type: 'dir',
+          type: MOVETYPE.DIR,
           x: 1,
           y: 1
         },
         {
-          type: 'dir',
+          type: MOVETYPE.DIR,
           x: -1,
           y: -1
         },
         {
-          type: 'dir',
+          type: MOVETYPE.DIR,
           x: 1,
           y: -1
         }
       ],
       canPromote: true, // 成れるかどうか
       isPromote: false, // 成り駒かどうか
-      promoNum: KOMA.UM, // 成り先
-      devolveNum: null, // 成り元
-      isSpecial: false, // 特別駒かどうか
-      extra: null // 追加情報
+      toPromote: KOMA.UM, // 成り先
+      fromPromote: KOMA.NONE // 成り元
     },
     {
       // 飛車
       name: '飛', // 略駒名
       fullName: '飛車', // 駒名
-      className: 'hisha', // cssクラス中で使用する名前
       banName: 'HI', // 盤面情報での駒名
       moves: [
         // 進行方向定義 (posなら進行位置、dirなら進行方向)
         {
-          type: 'dir',
+          type: MOVETYPE.DIR,
           x: 1,
           y: 0
         },
         {
-          type: 'dir',
+          type: MOVETYPE.DIR,
           x: 0,
           y: 1
         },
         {
-          type: 'dir',
+          type: MOVETYPE.DIR,
           x: -1,
           y: 0
         },
         {
-          type: 'dir',
+          type: MOVETYPE.DIR,
           x: 0,
           y: -1
         }
       ],
       canPromote: true, // 成れるかどうか
       isPromote: false, // 成り駒かどうか
-      promoNum: KOMA.RY, // 成り先
-      devolveNum: null, // 成り元
-      isSpecial: false, // 特別駒かどうか
-      extra: null // 追加情報
+      toPromote: KOMA.RY, // 成り先
+      fromPromote: KOMA.NONE // 成り元
     },
     {
       // 王
       name: '玉', // 略駒名
       fullName: '王将', // 駒名
-      className: 'ou', // cssクラス中で使用する名前
       banName: 'OU', // 盤面情報での駒名
       moves: [
         // 進行方向定義 (posなら進行位置、dirなら進行方向)
         {
-          type: 'pos',
+          type: MOVETYPE.POS,
           x: -1,
           y: 1
         },
         {
-          type: 'pos',
+          type: MOVETYPE.POS,
           x: -1,
           y: 0
         },
         {
-          type: 'pos',
+          type: MOVETYPE.POS,
           x: 0,
           y: 1
         },
         {
-          type: 'pos',
+          type: MOVETYPE.POS,
           x: 0,
           y: -1
         },
         {
-          type: 'pos',
+          type: MOVETYPE.POS,
           x: 1,
           y: 1
         },
         {
-          type: 'pos',
+          type: MOVETYPE.POS,
           x: 1,
           y: 0
         },
         {
-          type: 'pos',
+          type: MOVETYPE.POS,
           x: -1,
           y: -1
         },
         {
-          type: 'pos',
+          type: MOVETYPE.POS,
           x: 1,
           y: -1
         }
       ],
       canPromote: false, // 成れるかどうか
       isPromote: false, // 成り駒かどうか
-      promoNum: null, // 成り先
-      isSpecial: false, // 特別駒かどうか
-      extra: null // 追加情報
+      toPromote: KOMA.NONE, // 成り先
+      fromPromote: KOMA.NONE // 成り元
     },
     {
       // と金
       name: 'と', // 略駒名
       fullName: 'と金', // 駒名
-      className: 'to', // cssクラス中で使用する名前
       banName: 'TO', // 盤面情報での駒名
       moves: [
         // 進行方向定義 (posなら進行位置、dirなら進行方向)
         {
-          type: 'pos',
+          type: MOVETYPE.POS,
           x: -1,
           y: 1
         },
         {
-          type: 'pos',
+          type: MOVETYPE.POS,
           x: -1,
           y: 0
         },
         {
-          type: 'pos',
+          type: MOVETYPE.POS,
           x: 0,
           y: 1
         },
         {
-          type: 'pos',
+          type: MOVETYPE.POS,
           x: 0,
           y: -1
         },
         {
-          type: 'pos',
+          type: MOVETYPE.POS,
           x: 1,
           y: 1
         },
         {
-          type: 'pos',
+          type: MOVETYPE.POS,
           x: 1,
           y: 0
         }
       ],
       canPromote: false, // 成れるかどうか
       isPromote: true, // 成り駒かどうか
-      promoNum: null, // 成り先
-      devolveNum: KOMA.FU, // 成り元
-      isSpecial: false, // 特別駒かどうか
-      extra: null // 追加情報
+      toPromote: KOMA.NONE, // 成り先
+      fromPromote: KOMA.FU // 成り元
     },
     {
       // 成香
       name: '成香', // 略駒名
       fullName: '成香', // 駒名
-      className: 'nkyo', // cssクラス中で使用する名前
       banName: 'NY', // 盤面情報での駒名
       moves: [
         // 進行方向定義 (posなら進行位置、dirなら進行方向)
         {
-          type: 'pos',
+          type: MOVETYPE.POS,
           x: -1,
           y: 1
         },
         {
-          type: 'pos',
+          type: MOVETYPE.POS,
           x: -1,
           y: 0
         },
         {
-          type: 'pos',
+          type: MOVETYPE.POS,
           x: 0,
           y: 1
         },
         {
-          type: 'pos',
+          type: MOVETYPE.POS,
           x: 0,
           y: -1
         },
         {
-          type: 'pos',
+          type: MOVETYPE.POS,
           x: 1,
           y: 1
         },
         {
-          type: 'pos',
+          type: MOVETYPE.POS,
           x: 1,
           y: 0
         }
       ],
       canPromote: false, // 成れるかどうか
       isPromote: true, // 成り駒かどうか
-      promoNum: null, // 成り先
-      devolveNum: KOMA.KY, // 成り元
-      isSpecial: false, // 特別駒かどうか
-      extra: null // 追加情報
+      toPromote: KOMA.NONE, // 成り先
+      fromPromote: KOMA.KY // 成り元
     },
     {
       // 成桂
       name: '成桂', // 略駒名
       fullName: '成桂', // 駒名
-      className: 'nkei', // cssクラス中で使用する名前
       banName: 'NK', // 盤面情報での駒名
       moves: [
         // 進行方向定義 (posなら進行位置、dirなら進行方向)
         {
-          type: 'pos',
+          type: MOVETYPE.POS,
           x: -1,
           y: 1
         },
         {
-          type: 'pos',
+          type: MOVETYPE.POS,
           x: -1,
           y: 0
         },
         {
-          type: 'pos',
+          type: MOVETYPE.POS,
           x: 0,
           y: 1
         },
         {
-          type: 'pos',
+          type: MOVETYPE.POS,
           x: 0,
           y: -1
         },
         {
-          type: 'pos',
+          type: MOVETYPE.POS,
           x: 1,
           y: 1
         },
         {
-          type: 'pos',
+          type: MOVETYPE.POS,
           x: 1,
           y: 0
         }
       ],
       canPromote: false, // 成れるかどうか
       isPromote: true, // 成り駒かどうか
-      promoNum: null, // 成り先
-      devolveNum: KOMA.KE, // 成り元
-      isSpecial: false, // 特別駒かどうか
-      extra: null // 追加情報
+      toPromote: KOMA.NONE, // 成り先
+      fromPromote: KOMA.KE // 成り元
     },
     {
       // 成銀
       name: '成銀', // 略駒名
       fullName: '成銀', // 駒名
-      className: 'ngin', // cssクラス中で使用する名前
       banName: 'NG', // 盤面情報での駒名
       moves: [
         // 進行方向定義 (posなら進行位置、dirなら進行方向)
         {
-          type: 'pos',
+          type: MOVETYPE.POS,
           x: -1,
           y: 1
         },
         {
-          type: 'pos',
+          type: MOVETYPE.POS,
           x: -1,
           y: 0
         },
         {
-          type: 'pos',
+          type: MOVETYPE.POS,
           x: 0,
           y: 1
         },
         {
-          type: 'pos',
+          type: MOVETYPE.POS,
           x: 0,
           y: -1
         },
         {
-          type: 'pos',
+          type: MOVETYPE.POS,
           x: 1,
           y: 1
         },
         {
-          type: 'pos',
+          type: MOVETYPE.POS,
           x: 1,
           y: 0
         }
       ],
       canPromote: false, // 成れるかどうか
       isPromote: true, // 成り駒かどうか
-      promoNum: null, // 成り先
-      devolveNum: KOMA.GI, // 成り元
-      isSpecial: false, // 特別駒かどうか
-      extra: null // 追加情報
+      toPromote: KOMA.NONE, // 成り先
+      fromPromote: KOMA.GI // 成り元
     },
     {
       // 馬
       name: '馬', // 略駒名
       fullName: '竜馬', // 駒名
-      className: 'uma', // cssクラス中で使用する名前
       banName: 'UM', // 盤面情報での駒名
       moves: [
         // 進行方向定義 (posなら進行位置、dirなら進行方向)
         {
-          type: 'dir',
+          type: MOVETYPE.DIR,
           x: -1,
           y: 1
         },
         {
-          type: 'pos',
+          type: MOVETYPE.POS,
           x: -1,
           y: 0
         },
         {
-          type: 'pos',
+          type: MOVETYPE.POS,
           x: 0,
           y: 1
         },
         {
-          type: 'pos',
+          type: MOVETYPE.POS,
           x: 0,
           y: -1
         },
         {
-          type: 'dir',
+          type: MOVETYPE.DIR,
           x: 1,
           y: 1
         },
         {
-          type: 'pos',
+          type: MOVETYPE.POS,
           x: 1,
           y: 0
         },
         {
-          type: 'dir',
+          type: MOVETYPE.DIR,
           x: 1,
           y: -1
         },
         {
-          type: 'dir',
+          type: MOVETYPE.DIR,
           x: -1,
           y: -1
         }
       ],
       canPromote: false, // 成れるかどうか
       isPromote: true, // 成り駒かどうか
-      promoNum: null, // 成り先
-      devolveNum: KOMA.KA, // 成り元
-      isSpecial: false, // 特別駒かどうか
-      extra: null // 追加情報
+      toPromote: KOMA.NONE, // 成り先
+      fromPromote: KOMA.KA // 成り元
     },
     {
       // 龍
       name: '龍', // 略駒名
       fullName: '龍王', // 駒名
-      className: 'ryu', // cssクラス中で使用する名前
       banName: 'RY', // 盤面情報での駒名
       moves: [
         // 進行方向定義 (posなら進行位置、dirなら進行方向)
         {
-          type: 'pos',
+          type: MOVETYPE.POS,
           x: -1,
           y: 1
         },
         {
-          type: 'pos',
+          type: MOVETYPE.POS,
           x: -1,
           y: 0
         },
         {
-          type: 'pos',
+          type: MOVETYPE.POS,
           x: 0,
           y: 1
         },
         {
-          type: 'pos',
+          type: MOVETYPE.POS,
           x: 0,
           y: -1
         },
         {
-          type: 'pos',
+          type: MOVETYPE.POS,
           x: 1,
           y: 1
         },
         {
-          type: 'pos',
+          type: MOVETYPE.POS,
           x: 1,
           y: 0
         },
         {
-          type: 'pos',
+          type: MOVETYPE.POS,
           x: 1,
           y: -1
         },
         {
-          type: 'pos',
+          type: MOVETYPE.POS,
           x: -1,
           y: -1
         },
         {
-          type: 'dir',
+          type: MOVETYPE.DIR,
           x: 1,
           y: 0
         },
         {
-          type: 'dir',
+          type: MOVETYPE.DIR,
           x: 0,
           y: 1
         },
         {
-          type: 'dir',
+          type: MOVETYPE.DIR,
           x: -1,
           y: 0
         },
         {
-          type: 'dir',
+          type: MOVETYPE.DIR,
           x: 0,
           y: -1
         }
       ],
       canPromote: false, // 成れるかどうか
       isPromote: true, // 成り駒かどうか
-      promoNum: null, // 成り先
-      devolveNum: KOMA.HI, // 成り元
-      isSpecial: false, // 特別駒かどうか
-      extra: null // 追加情報
+      toPromote: KOMA.NONE, // 成り先
+      fromPromote: KOMA.HI // 成り元
     }
   ]
 
@@ -1323,5 +1317,14 @@ export class Info {
         break
     }
     return komaType
+  }
+
+  /**
+   * 駒番号からその駒の略称を返す
+   *
+   * @param komaType
+   */
+  public static getKanji(komaNum: number): string {
+    return this.komaData[komaNum].name
   }
 }
