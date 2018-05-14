@@ -15,7 +15,7 @@ export interface komaDataObject {
   banName: string
 
   // 駒の移動可能情報
-  moves: Array<moveDefineObject>
+  moves: Array<komaMoveObject>
 
   // 成れるかどうか
   canPromote: boolean
@@ -31,7 +31,7 @@ export interface komaDataObject {
 }
 
 // 駒の移動タイプの表現オブジェクト
-export interface moveDefineObject {
+export interface komaMoveObject {
   type: number
   x: number
   y: number
