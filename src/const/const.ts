@@ -1,3 +1,5 @@
+import * as DEFINE from './interface'
+
 export const PLAYER = {
   SENTE: 0,
   GOTE: 1
@@ -48,45 +50,8 @@ export const MOVETYPE = {
   DIR: 0 // 特定方向への移動
 }
 
-export interface banObject {
-  color?: number
-  kind?: string
-}
-
-export interface komaDataObject {
-  // 指し手の駒指定で使う駒名の略称
-  name: string
-
-  // フルネームの駒名
-  fullName: string
-
-  // json棋譜フォーマットで使われる アルファベット大文字2文字からなる駒名
-  banName: string
-
-  // 駒の移動可能情報
-  moves: Array<moveDefineObject>
-
-  // 成れるかどうか
-  canPromote: boolean
-
-  // 成り駒かどうか
-  isPromote: boolean
-
-  // 成り先の駒番号 存在しない場合はnull
-  toPromote: number
-
-  // 成り元の駒番号 存在しない場合はnull
-  fromPromote: number
-}
-
-export interface moveDefineObject {
-  type: number
-  x: number
-  y: number
-}
-
 export class Info {
-  private static komaData: Array<komaDataObject> = [
+  private static komaData: Array<DEFINE.komaDataObject> = [
     {
       // 駒なし
       name: '無', // 略駒名

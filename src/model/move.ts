@@ -1,35 +1,12 @@
 import _ from 'lodash'
 
 import * as SHOGI from '../const/const'
+import * as DEFINE from '../const/interface'
 
 import Pos from './pos'
 import { relative } from 'path'
 
 // 将棋用の指し手情報クラス
-
-// 元となる指し手オブジェクトの定義
-export interface moveObject {
-  move?: moveInfoObject
-  comments?: Array<string>
-}
-
-// 元となる指し手オブジェクトの定義
-export interface moveInfoObject {
-  to: PosObject
-  from?: PosObject
-  color: number
-  piece: string
-  same?: boolean
-  relative?: string
-  promote?: boolean
-  capture?: number
-}
-
-// 元となる指し手オブジェクトの定義
-export interface PosObject {
-  x: number
-  y: number
-}
 
 export default class Move {
   // 移動の名前（7六歩など）
@@ -62,7 +39,7 @@ export default class Move {
   // 持ち駒から置く手かどうか
   private _isPut: boolean
 
-  constructor(moveObj: moveObject, isFork: boolean) {
+  constructor(moveObj: DEFINE.moveObject, isFork: boolean) {
     this._name = this.getMoveName(moveObj)
     this._fork = isFork
 
@@ -79,7 +56,7 @@ export default class Move {
     // 指し手情報をもつか判定
     if (_.has(moveObj, 'move')) {
       // 持ち駒から置く手かどうか判定
-      const move = moveObj.move as moveInfoObject
+      const move = moveObj.move as DEFINE.moveInfoObject
       if (_.has(move, 'from')) {
         this.from = move.from as Pos
       } else {
@@ -129,9 +106,9 @@ export default class Move {
    * 指し手オブジェクトから指し手の名前を返す
    * @param moveObj
    */
-  private getMoveName(moveObj: moveObject): string {
+  private getMoveName(moveObj: DEFINE.moveObject): string {
     if (_.has(moveObj, 'move')) {
-      const moveInfo = moveObj.move as moveInfoObject
+      const moveInfo = moveObj.move as DEFINE.moveInfoObject
       if (
         _.has(moveInfo, 'to') &&
         _.has(moveInfo, 'color') &&
