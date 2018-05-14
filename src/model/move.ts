@@ -4,44 +4,43 @@ import * as SHOGI from '../const/const'
 import * as DEFINE from '../const/interface'
 
 import Pos from './pos'
-import { relative } from 'path'
 
 // 将棋用の指し手情報クラス
 
 export default class Move {
   // 移動の名前（7六歩など）
-  private _name: string
+  private _name: string = '初期配置'
 
   // 移動対象の駒番号
-  private _koma: number
+  private _koma: number = SHOGI.KOMA.NONE
 
   // 駒の移動元座標情報
-  private from: Pos | null
+  private from: Pos | null = null
 
   // 駒の移動先座標情報
-  private to: Pos | null
+  private to: Pos | null = null
 
   // 手番のプレイヤー番号
-  private _color: number
+  private _color: number = SHOGI.PLAYER.SENTE
 
   // 移動によって手持ちにする駒
-  private _capture: number | null
+  private _capture: number | null = null
 
   // 駒を成るかどうか
-  private _isPromote: boolean
+  private _isPromote: boolean = false
 
   // 指し手のコメント配列
-  private _comments: Array<string>
+  private _comments: Array<string> | null = null
 
   // この指し手が分岐するかどうか
-  private _fork: boolean
+  private _isBranch: boolean = false
 
   // 持ち駒から置く手かどうか
-  private _isPut: boolean
+  private _isPut: boolean = false
 
-  constructor(moveObj: DEFINE.moveObject, isFork: boolean) {
+  constructor(moveObj: DEFINE.moveObject, isBranch: boolean) {
     this._name = this.getMoveName(moveObj)
-    this._fork = isFork
+    this._isBranch = isBranch
 
     if (_.has(moveObj, 'comments')) {
       this._comments = moveObj.comments as Array<string>
@@ -86,15 +85,11 @@ export default class Move {
       // 成るかどうか判定
       if (_.has(move, 'promote')) {
         this._isPromote = move.promote as boolean
-      } else {
-        this._isPromote = false
       }
 
       // 駒を取ったか判定
       if (_.has(move, 'capture')) {
         this._capture = move.capture as number
-      } else {
-        this._capture = null
       }
     } else {
       this.from = null

@@ -26,7 +26,7 @@ export const KOMA = {
 }
 
 // 盤面の種類
-export const BAN = {
+export const board = {
   HIRATE: 0,
   KOMAOCHI: 1,
   CUSTOM: 2
@@ -56,7 +56,7 @@ export class Info {
       // 駒なし
       name: '無', // 略駒名
       fullName: '駒無', // 駒名
-      banName: 'NO', // 盤面情報での駒名
+      boardName: 'NO', // 盤面情報での駒名
       moves: [],
       canPromote: true, // 成れるかどうか
       isPromote: false, // 成り駒かどうか
@@ -67,7 +67,7 @@ export class Info {
       // 歩
       name: '歩', // 略駒名
       fullName: '歩兵', // 駒名
-      banName: 'FU', // 盤面情報での駒名
+      boardName: 'FU', // 盤面情報での駒名
       moves: [
         // 進行方向定義 (posなら進行位置、dirなら進行方向)
         {
@@ -85,7 +85,7 @@ export class Info {
       // 香
       name: '香', // 略駒名
       fullName: '香車', // 駒名
-      banName: 'KY', // 盤面情報での駒名
+      boardName: 'KY', // 盤面情報での駒名
       moves: [
         // 進行方向定義 (posなら進行位置、dirなら進行方向)
         {
@@ -103,7 +103,7 @@ export class Info {
       // 桂馬
       name: '桂', // 略駒名
       fullName: '桂馬', // 駒名
-      banName: 'KE', // 盤面情報での駒名
+      boardName: 'KE', // 盤面情報での駒名
       moves: [
         // 進行方向定義 (posなら進行位置、dirなら進行方向)
         {
@@ -126,7 +126,7 @@ export class Info {
       // 銀
       name: '銀', // 略駒名
       fullName: '銀将', // 駒名
-      banName: 'GI', // 盤面情報での駒名
+      boardName: 'GI', // 盤面情報での駒名
       moves: [
         // 進行方向定義 (posなら進行位置、dirなら進行方向)
         {
@@ -164,7 +164,7 @@ export class Info {
       // 金
       name: '金', // 略駒名
       fullName: '金将', // 駒名
-      banName: 'KI', // 盤面情報での駒名
+      boardName: 'KI', // 盤面情報での駒名
       moves: [
         // 進行方向定義 (posなら進行位置、dirなら進行方向)
         {
@@ -207,7 +207,7 @@ export class Info {
       // 角
       name: '角', // 略駒名
       fullName: '角行', // 駒名
-      banName: 'KA', // 盤面情報での駒名
+      boardName: 'KA', // 盤面情報での駒名
       moves: [
         // 進行方向定義 (posなら進行位置、dirなら進行方向)
         {
@@ -240,7 +240,7 @@ export class Info {
       // 飛車
       name: '飛', // 略駒名
       fullName: '飛車', // 駒名
-      banName: 'HI', // 盤面情報での駒名
+      boardName: 'HI', // 盤面情報での駒名
       moves: [
         // 進行方向定義 (posなら進行位置、dirなら進行方向)
         {
@@ -273,7 +273,7 @@ export class Info {
       // 王
       name: '玉', // 略駒名
       fullName: '王将', // 駒名
-      banName: 'OU', // 盤面情報での駒名
+      boardName: 'OU', // 盤面情報での駒名
       moves: [
         // 進行方向定義 (posなら進行位置、dirなら進行方向)
         {
@@ -326,7 +326,7 @@ export class Info {
       // と金
       name: 'と', // 略駒名
       fullName: 'と金', // 駒名
-      banName: 'TO', // 盤面情報での駒名
+      boardName: 'TO', // 盤面情報での駒名
       moves: [
         // 進行方向定義 (posなら進行位置、dirなら進行方向)
         {
@@ -369,7 +369,7 @@ export class Info {
       // 成香
       name: '成香', // 略駒名
       fullName: '成香', // 駒名
-      banName: 'NY', // 盤面情報での駒名
+      boardName: 'NY', // 盤面情報での駒名
       moves: [
         // 進行方向定義 (posなら進行位置、dirなら進行方向)
         {
@@ -412,7 +412,7 @@ export class Info {
       // 成桂
       name: '成桂', // 略駒名
       fullName: '成桂', // 駒名
-      banName: 'NK', // 盤面情報での駒名
+      boardName: 'NK', // 盤面情報での駒名
       moves: [
         // 進行方向定義 (posなら進行位置、dirなら進行方向)
         {
@@ -455,7 +455,7 @@ export class Info {
       // 成銀
       name: '成銀', // 略駒名
       fullName: '成銀', // 駒名
-      banName: 'NG', // 盤面情報での駒名
+      boardName: 'NG', // 盤面情報での駒名
       moves: [
         // 進行方向定義 (posなら進行位置、dirなら進行方向)
         {
@@ -498,7 +498,7 @@ export class Info {
       // 馬
       name: '馬', // 略駒名
       fullName: '竜馬', // 駒名
-      banName: 'UM', // 盤面情報での駒名
+      boardName: 'UM', // 盤面情報での駒名
       moves: [
         // 進行方向定義 (posなら進行位置、dirなら進行方向)
         {
@@ -551,7 +551,7 @@ export class Info {
       // 龍
       name: '龍', // 略駒名
       fullName: '龍王', // 駒名
-      banName: 'RY', // 盤面情報での駒名
+      boardName: 'RY', // 盤面情報での駒名
       moves: [
         // 進行方向定義 (posなら進行位置、dirなら進行方向)
         {

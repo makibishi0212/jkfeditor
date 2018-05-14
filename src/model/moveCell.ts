@@ -16,16 +16,16 @@ export default class MoveCell {
   private _index: number
 
   // 次の指し手候補のインデックスを格納する配列
-  private _next: Array<number>
+  private _next: Array<number> = []
 
   // 前の指し手のインデックス 前の指し手が存在しない場合はnull
-  private prev: number | null
+  private prev: number | null = null
 
   // this.nextの、現在指し手として選択しているものが格納されているインデックス
-  private selectNext: number
+  private _select: number = 0
 
   // 複数の指し手候補のひとつの指し手であるかどうか
-  private _isBranch: boolean
+  private _isBranch: boolean = false
 
   /**
    * MoveCellクラス
@@ -42,7 +42,10 @@ export default class MoveCell {
     prevIndex: number | null,
     isBranch: boolean
   ) {
-    //this._index = index
+    this._index = index
+
+    // 指し手情報を作成
+    this._info = new Move(moveObj, isBranch)
   }
 
   public get next(): Array<number> {
@@ -61,6 +64,10 @@ export default class MoveCell {
     return this._index
   }
 
+  public get select(): number {
+    return this._select
+  }
+
   /**
    * 次の指し手候補セルを追加する
    *
@@ -70,7 +77,7 @@ export default class MoveCell {
     this._next.push(nextNum)
 
     // 選択指し手をリセットする
-    this.selectNext = 0
+    this._select = 0
   }
 
   public branchize() {

@@ -3,45 +3,34 @@ import _ from 'lodash'
 import * as SHOGI from './const/const'
 
 import MoveList from './moveList'
-
-export interface jkfObject {
-  moves?: Array<Object>
-  initial?: initObject
-  header?: Object
-}
-
-export interface initObject {
-  preset: string
-  data?: Array<Array<Object>>
-}
+import Move from './model/move'
+import { jkfObject, initObject, initBoardObject } from './const/interface'
+import Field from './model/field'
 
 export default class ShogiManager {
   // 指し手番号
-  private move: number
+  private _currentNum: number = 0
 
-  // 分岐指し手の候補
-  private _forkList: Object
-
-  // 棋譜の指し手を管理する要素
-  private moveData: MoveList
+  /** 特定の指し手における盤面などの情報 */
 
   // 現在の盤面情報
-  private ban: Array<Array<Object>>
+  private field: Field
 
-  // 各プレイヤーの持ち駒情報
-  private hands: Array<Object>
+  // 次の指し手の候補
+  private _forkList: Object
 
-  // jkfで与えられた棋譜の情報
-  private info: Object
-
+  /** 現在操作中の棋譜に関する情報 */
   // readonlyかどうか
   private readonly: boolean
 
   // 棋譜か定跡(分岐をもつ)か
   private type: number
 
-  // すべての指し手情報
-  private moves: Array<Object>
+  // 棋譜の指し手を管理する要素
+  private moveData: MoveList
+
+  // 棋譜の指し手以外の情報
+  private info: Object
 
   /**
    * jkfを渡して初期化
@@ -58,12 +47,42 @@ export default class ShogiManager {
    */
   public export() {}
 
+  public get list(): Array<Move> {
+    return this.moveData.currentMoves
+  }
+
   /**
    * 選択した指し手番号へ移動する
    *
    * @param moveNum
    */
-  public go(moveNum: number) {}
+  public go(newNum: number) {
+    // 更新後の指し手が指し手配列の範囲内で、現在のものと異なる場合のみ指し手更新処理を行う
+    if (
+      this._currentNum !== newNum &&
+      newNum >= 0 &&
+      newNum < this.moveData.currentMoves.length
+    ) {
+      // 現在の盤面及び各プレイヤーの手持ち駒、次の指し手候補、指し手番号が更新対象
+
+      if (this._currentNum > newNum) {
+        // 更新後の指し手が現在の指し手より小さい場合(手を戻す)
+        let tmpMoveNum = this._currentNum
+
+        while (tmpMoveNum > this._currentNum) {
+          // 盤面と持ち駒の更新処理
+
+          // 次に適用する指し手
+          const nextMove = this.moveData.getMove(tmpMoveNum)
+
+          this.field.applyMove(nextMove)
+
+          tmpMoveNum--
+        }
+      } else {
+      }
+    }
+  }
 
   /**
    * 指し手を次の手として追加する
@@ -75,7 +94,7 @@ export default class ShogiManager {
   public add(from: Object, to: Object) {}
 
   /**
-   * 指し手を分岐として追加する
+   * 指し手を次の指し手候補として追加する
    *
    * @param from
    * @param to
@@ -87,6 +106,9 @@ export default class ShogiManager {
    * @param jkf
    */
   private load(jkf: jkfObject) {
+    let board: Array<Array<Object>>
+    let hands: Array<Object> = [{}, {}]
+
     // 指し手情報のコピー
     if (_.has(jkf, 'moves')) {
       this.moveData = new MoveList(jkf['moves'] as Object[])
@@ -95,7 +117,7 @@ export default class ShogiManager {
     }
 
     // 平手状態を代入
-    this.ban = _.cloneDeep(SHOGI.Info.hirateBoard)
+    board = _.cloneDeep(SHOGI.Info.hirateBoard)
 
     // 特殊な初期状態が登録されているか判定
     if (_.has(jkf, 'initial')) {
@@ -108,48 +130,39 @@ export default class ShogiManager {
             // 平手は代入済
             break
           case 'KY': // 香落ち
-            this.ban = _.cloneDeep(
-              SHOGI.Info.komaochiBoards[SHOGI.KOMAOCHI.KYO]
-            )
+            board = _.cloneDeep(SHOGI.Info.komaochiBoards[SHOGI.KOMAOCHI.KYO])
             break
           case 'KA': // 角落ち
-            this.ban = _.cloneDeep(
-              SHOGI.Info.komaochiBoards[SHOGI.KOMAOCHI.KAKU]
-            )
+            board = _.cloneDeep(SHOGI.Info.komaochiBoards[SHOGI.KOMAOCHI.KAKU])
             break
           case 'HI': // 飛車落ち
-            this.ban = _.cloneDeep(
-              SHOGI.Info.komaochiBoards[SHOGI.KOMAOCHI.HISHA]
-            )
+            board = _.cloneDeep(SHOGI.Info.komaochiBoards[SHOGI.KOMAOCHI.HISHA])
             break
           case 'HIKY': // 飛香落ち
-            this.ban = _.cloneDeep(
-              SHOGI.Info.komaochiBoards[SHOGI.KOMAOCHI.HIKYO]
-            )
+            board = _.cloneDeep(SHOGI.Info.komaochiBoards[SHOGI.KOMAOCHI.HIKYO])
             break
           case '2': // 2枚落ち
-            this.ban = _.cloneDeep(SHOGI.Info.komaochiBoards[SHOGI.KOMAOCHI.NI])
+            board = _.cloneDeep(SHOGI.Info.komaochiBoards[SHOGI.KOMAOCHI.NI])
             break
           case '4': // 4枚落ち
-            this.ban = _.cloneDeep(
-              SHOGI.Info.komaochiBoards[SHOGI.KOMAOCHI.YON]
-            )
+            board = _.cloneDeep(SHOGI.Info.komaochiBoards[SHOGI.KOMAOCHI.YON])
             break
           case '6': // 6枚落ち
-            this.ban = _.cloneDeep(
-              SHOGI.Info.komaochiBoards[SHOGI.KOMAOCHI.ROKU]
-            )
+            board = _.cloneDeep(SHOGI.Info.komaochiBoards[SHOGI.KOMAOCHI.ROKU])
             break
           case '8': // 8枚落ち
-            this.ban = _.cloneDeep(
-              SHOGI.Info.komaochiBoards[SHOGI.KOMAOCHI.HACHI]
-            )
+            board = _.cloneDeep(SHOGI.Info.komaochiBoards[SHOGI.KOMAOCHI.HACHI])
             break
           case 'OTHER': // 上記以外
-            this.ban = (jkf.initial as initObject).data as Array<Array<Object>>
+            board = ((jkf.initial as initObject).data as initBoardObject)
+              .board as Array<Array<Object>>
+            hands = ((jkf.initial as initObject).data as initBoardObject)
+              .hands as Array<Object>
             break
         }
       }
+
+      this.field = new Field(board, hands)
     }
 
     // 棋譜情報を代入
@@ -158,3 +171,6 @@ export default class ShogiManager {
     }
   }
 }
+
+// 次の実装
+// FieldのapplyMoveを実装

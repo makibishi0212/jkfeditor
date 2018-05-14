@@ -1,4 +1,4 @@
-export interface banObject {
+export interface boardObject {
   color?: number
   kind?: string
 }
@@ -12,7 +12,7 @@ export interface komaDataObject {
   fullName: string
 
   // json棋譜フォーマットで使われる アルファベット大文字2文字からなる駒名
-  banName: string
+  boardName: string
 
   // 駒の移動可能情報
   moves: Array<komaMoveObject>
@@ -59,4 +59,21 @@ export interface moveInfoObject {
 export interface PosObject {
   x: number
   y: number
+}
+
+export interface jkfObject {
+  moves?: Array<Object>
+  initial?: initObject
+  header?: Object
+}
+
+export interface initObject {
+  preset: string
+  data?: initBoardObject
+}
+
+export interface initBoardObject {
+  board?: Array<Array<Object>>
+  color?: number
+  hands?: Array<Object>
 }

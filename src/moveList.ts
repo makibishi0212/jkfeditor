@@ -3,28 +3,35 @@ import _ from 'lodash'
 import MoveCell from './model/movecell'
 import Move from './model/move'
 
-import * as DEFINE from './const/interface'
 import { moveObject } from './const/interface'
-import { isBoolean } from 'util'
 
 // 将棋用の指し手を管理するリストクラス
 
 export default class MoveList {
   // 全ての指し手セルの配列
-  private _moveCells: Array<MoveCell>
+  private _moveCells: Array<MoveCell> = []
 
   // 現在の分岐を反映した指し手セルの配列
-  private _currentMoveCells: Array<MoveCell>
+  private _currentMoveCells: Array<MoveCell> = []
 
-  // 現在の分岐を反映した指し手情報配列
-  private _currentMoves: Array<Move>
+  // 現在の分岐を反映した指し手の配列(もしかしたらいらない？)
+  private _currentMoves: Array<Move> = []
 
-  constructor(moves: Array<Object>) {}
+  constructor(moves: Array<Object>) {
+    this.makeMoveList(moves)
+    this.makeCurrentMoveArray()
+  }
+
+  public getMove(moveNum: number) {
+    return this._currentMoves[moveNum]
+  }
+
+  public get currentMoves() {
+    return this._currentMoves
+  }
 
   // json棋譜フォーマットの指し手情報配列から指し手セル配列を作成する
-  private makeMoveList(moves: Array<DEFINE.moveObject>) {
-    this._moveCells = []
-
+  private makeMoveList(moves: Array<moveObject>) {
     let prevIndex = -1
 
     _.each(moves, move => {
@@ -94,5 +101,28 @@ export default class MoveList {
     }
 
     return moveCell.index
+  }
+
+  // 各セルが選択している次の指し手を元に現在の指し手配列を作成する
+  private makeCurrentMoveArray() {
+    this._currentMoves = []
+    this._currentMoveCells = []
+
+    // 指し手セルリストの先頭のセルを取り出し、指し手配列作成の始点とする
+    let cell: MoveCell | null = !_.isUndefined(this._moveCells[0])
+      ? this._moveCells[0]
+      : null
+
+    // セルのnextをひとつずつ辿っていき、次の指し手が存在しないセルに到達したら終了
+    while (cell && _.has(cell, 'next') && _.size(cell.next)) {
+      this._currentMoveCells.push(cell)
+      this._currentMoves.push(cell.info)
+
+      if (cell.next[cell.select]) {
+        cell = this._moveCells[cell.next[cell.select]]
+      } else {
+        cell = null
+      }
+    }
   }
 }
