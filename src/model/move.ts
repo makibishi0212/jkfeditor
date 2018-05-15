@@ -4,6 +4,7 @@ import * as SHOGI from '../const/const'
 import * as DEFINE from '../const/interface'
 
 import Pos from './pos'
+import { boardObject } from '../const/interface'
 
 // 将棋用の指し手情報クラス
 
@@ -12,19 +13,19 @@ export default class Move {
   private _name: string = '初期配置'
 
   // 移動対象の駒番号
-  private _koma: number = SHOGI.KOMA.NONE
+  private _komaNum: number = SHOGI.KOMA.NONE
 
   // 駒の移動元座標情報
-  private from: Pos | null = null
+  private _from: Pos | null = null
 
   // 駒の移動先座標情報
-  private to: Pos | null = null
+  private _to: Pos | null = null
 
   // 手番のプレイヤー番号
   private _color: number = SHOGI.PLAYER.SENTE
 
   // 移動によって手持ちにする駒
-  private _capture: number | null = null
+  private _captureNum: number | null = null
 
   // 駒を成るかどうか
   private _isPromote: boolean = false
@@ -57,13 +58,13 @@ export default class Move {
       // 持ち駒から置く手かどうか判定
       const move = moveObj.move as DEFINE.moveInfoObject
       if (_.has(move, 'from')) {
-        this.from = move.from as Pos
+        this._from = move.from as Pos
       } else {
         this._isPut = true
       }
 
       if (_.has(move, 'to')) {
-        this.to = move.to as Pos
+        this._to = move.to as Pos
       } else {
         throw new Error('指し手オブジェクトに"to"プロパティがありません。')
       }
@@ -77,7 +78,7 @@ export default class Move {
 
       // 駒情報をセット
       if (_.has(move, 'piece')) {
-        this._koma = SHOGI.Info.komaAtoi(move.piece)
+        this._komaNum = SHOGI.Info.komaAtoi(move.piece)
       } else {
         throw new Error('指し手オブジェクトに"piece"プロパティがありません。')
       }
@@ -89,12 +90,57 @@ export default class Move {
 
       // 駒を取ったか判定
       if (_.has(move, 'capture')) {
-        this._capture = move.capture as number
+        this._captureNum = move.capture as number
       }
     } else {
-      this.from = null
-      this.to = null
+      this._from = null
+      this._to = null
     }
+  }
+
+  /**
+   * 盤面に配置する際の盤面オブジェクトを返す。成る動きの場合は成り駒を返す
+   */
+  public get boardObj(): boardObject {
+    const kind = this._isPromote
+      ? SHOGI.Info.getJKFString(SHOGI.Info.getPromote(this._komaNum) as number)
+      : SHOGI.Info.getJKFString(this._komaNum)
+    return { color: this.color, kind: kind }
+  }
+
+  public get isPut(): boolean {
+    return this._isPut
+  }
+
+  public get from(): Pos | null {
+    return this._from
+  }
+
+  public get to(): Pos | null {
+    return this._to
+  }
+
+  public get color(): number {
+    return this._color
+  }
+
+  public get komaNum(): number {
+    return this._komaNum
+  }
+
+  /**
+   * 取得した駒の番号を返す。その駒が成っている場合成り元の駒を返す。
+   */
+  public get captureNum(): number | null {
+    if (this._captureNum) {
+      return null
+    } else {
+      return SHOGI.Info.getOrigin(this._captureNum as number)
+    }
+  }
+
+  public get pureCaptureNum(): number | null {
+    return this._captureNum
   }
 
   /**

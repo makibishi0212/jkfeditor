@@ -75,5 +75,5 @@ export interface initObject {
 export interface initBoardObject {
   board?: Array<Array<Object>>
   color?: number
-  hands?: Array<Object>
+  hands?: Array<{ [index: string]: number }>
 }

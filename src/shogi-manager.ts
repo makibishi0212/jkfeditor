@@ -4,8 +4,14 @@ import * as SHOGI from './const/const'
 
 import MoveList from './moveList'
 import Move from './model/move'
-import { jkfObject, initObject, initBoardObject } from './const/interface'
+import {
+  jkfObject,
+  initObject,
+  initBoardObject,
+  boardObject
+} from './const/interface'
 import Field from './model/field'
+import { config } from 'shelljs'
 
 export default class ShogiManager {
   // 指し手番号
@@ -14,7 +20,7 @@ export default class ShogiManager {
   /** 特定の指し手における盤面などの情報 */
 
   // 現在の盤面情報
-  private field: Field
+  private _field: Field
 
   // 次の指し手の候補
   private _forkList: Object
@@ -51,6 +57,22 @@ export default class ShogiManager {
     return this.moveData.currentMoves
   }
 
+  public get board(): Array<Array<boardObject>> {
+    return this._field.board
+  }
+
+  public get hands(): Array<{ [index: string]: number }> {
+    return this._field.hands
+  }
+
+  public get currentNum() {
+    return this._currentNum
+  }
+
+  public set currentNum(num: number) {
+    this.go(num)
+  }
+
   /**
    * 選択した指し手番号へ移動する
    *
@@ -73,15 +95,29 @@ export default class ShogiManager {
           // 盤面と持ち駒の更新処理
 
           // 次に適用する指し手
-          const nextMove = this.moveData.getMove(tmpMoveNum)
+          const prevMove = this.moveData.getMove(tmpMoveNum)
 
-          this.field.applyMove(nextMove)
+          this._field.rewindMove(prevMove)
 
           tmpMoveNum--
         }
       } else {
+        // 更新後の指し手が現在の指し手より大きい場合(手を進める)
+        if (this._currentNum < newNum) {
+          let tmpMoveNum = this._currentNum
+          while (tmpMoveNum < this._currentNum) {
+            // 次に適用する指し手
+            const nextMove = this.moveData.getMove(tmpMoveNum)
+
+            this._field.applyMove(nextMove)
+
+            tmpMoveNum++
+          }
+        }
       }
     }
+
+    this._currentNum = newNum
   }
 
   /**
@@ -106,8 +142,8 @@ export default class ShogiManager {
    * @param jkf
    */
   private load(jkf: jkfObject) {
-    let board: Array<Array<Object>>
-    let hands: Array<Object> = [{}, {}]
+    let board: Array<Array<boardObject>>
+    let hands: Array<{ [index: string]: number }> = [{}, {}]
 
     // 指し手情報のコピー
     if (_.has(jkf, 'moves')) {
@@ -157,12 +193,12 @@ export default class ShogiManager {
             board = ((jkf.initial as initObject).data as initBoardObject)
               .board as Array<Array<Object>>
             hands = ((jkf.initial as initObject).data as initBoardObject)
-              .hands as Array<Object>
+              .hands as Array<{ [index: string]: number }>
             break
         }
       }
 
-      this.field = new Field(board, hands)
+      this._field = new Field(board, hands)
     }
 
     // 棋譜情報を代入
@@ -172,5 +208,229 @@ export default class ShogiManager {
   }
 }
 
+const jkfData = {
+  header: {
+    proponent_name: '先手善治',
+    opponent_name: '後手魔太郎',
+    title: 'テスト棋譜',
+    place: '畳',
+    start_time: '2003/05/03 10:30:00',
+    end_time: '2003/05/03 10:30:00',
+    limit_time: '00:25+00',
+    style: 'YAGURA'
+  },
+  initial: {
+    preset: 'OTHER',
+    data: {
+      // 初期配置
+      board: [
+        [
+          { color: 1, kind: 'KY' },
+          { color: 1, kind: 'KE' },
+          { color: 1, kind: 'GI' },
+          { color: 1, kind: 'KI' },
+          { color: 1, kind: 'OU' },
+          { color: 1, kind: 'KI' },
+          { color: 1, kind: 'GI' },
+          { color: 1, kind: 'KE' },
+          { color: 1, kind: 'KY' }
+        ],
+        [
+          {},
+          { color: 1, kind: 'HI' },
+          {},
+          {},
+          {},
+          {},
+          {},
+          { color: 1, kind: 'KA' },
+          {}
+        ],
+        [
+          { color: 1, kind: 'FU' },
+          { color: 1, kind: 'FU' },
+          { color: 1, kind: 'FU' },
+          { color: 1, kind: 'FU' },
+          { color: 1, kind: 'FU' },
+          { color: 1, kind: 'FU' },
+          { color: 1, kind: 'FU' },
+          { color: 1, kind: 'FU' },
+          { color: 1, kind: 'FU' }
+        ],
+        [{}, {}, {}, {}, {}, {}, {}, {}, {}],
+        [{}, {}, {}, {}, {}, {}, {}, {}, {}],
+        [{}, {}, {}, {}, {}, {}, {}, {}, {}],
+        [
+          { color: 0, kind: 'FU' },
+          { color: 0, kind: 'FU' },
+          { color: 0, kind: 'FU' },
+          { color: 0, kind: 'FU' },
+          { color: 0, kind: 'FU' },
+          { color: 0, kind: 'FU' },
+          { color: 0, kind: 'FU' },
+          { color: 0, kind: 'FU' },
+          { color: 0, kind: 'FU' }
+        ],
+        [
+          {},
+          { color: 0, kind: 'KA' },
+          {},
+          {},
+          {},
+          {},
+          {},
+          { color: 0, kind: 'HI' },
+          {}
+        ],
+        [
+          { color: 0, kind: 'KY' },
+          { color: 0, kind: 'KE' },
+          { color: 0, kind: 'GI' },
+          { color: 0, kind: 'KI' },
+          { color: 0, kind: 'OU' },
+          { color: 0, kind: 'KI' },
+          { color: 0, kind: 'GI' },
+          { color: 0, kind: 'KE' },
+          { color: 0, kind: 'KY' }
+        ]
+      ],
+      // 0なら先手、それ以外なら後手
+      color: 0,
+
+      // hands[0]は先手の持ち駒、hands[1]は後手の持ち駒
+      hands: [{}, {}]
+    },
+
+    mode: 'JOSEKI' // 独自定義 棋譜か定跡かを表す 'KIFU' または 'JOSEKI'
+  },
+  moves: [
+    { comments: ['分岐の例'] },
+    {
+      move: {
+        from: { x: 7, y: 7 },
+        to: { x: 7, y: 6 },
+        color: 0,
+        piece: 'FU'
+      }
+    },
+    {
+      move: {
+        from: { x: 3, y: 3 },
+        to: { x: 3, y: 4 },
+        color: 1,
+        piece: 'FU'
+      },
+      comments: [
+        '次の手で二種類が考えられる：７七桂か２二角成である．',
+        '２二角成を選ぶと筋違い角となる．'
+      ]
+    },
+    {
+      move: {
+        from: { x: 8, y: 9 },
+        to: { x: 7, y: 7 },
+        color: 0,
+        piece: 'KE'
+      },
+      forks: [
+        [
+          {
+            move: {
+              from: { x: 8, y: 8 },
+              to: { x: 2, y: 2 },
+              color: 0,
+              piece: 'KA',
+              capture: 'KA',
+              promote: false
+            }
+          },
+          {
+            move: {
+              from: { x: 3, y: 1 },
+              to: { x: 2, y: 2 },
+              color: 1,
+              piece: 'GI',
+              capture: 'KA',
+              same: true
+            }
+          },
+          {
+            move: { to: { x: 4, y: 5 }, color: 0, piece: 'KA' },
+            forks: [
+              [
+                {
+                  move: {
+                    from: { x: 2, y: 7 },
+                    to: { x: 2, y: 6 },
+                    color: 0,
+                    piece: 'FU'
+                  }
+                },
+                {
+                  move: {
+                    from: { x: 9, y: 3 },
+                    to: { x: 9, y: 4 },
+                    color: 1,
+                    piece: 'FU'
+                  },
+                  forks: [
+                    [
+                      {
+                        move: {
+                          from: { x: 1, y: 3 },
+                          to: { x: 1, y: 4 },
+                          color: 1,
+                          piece: 'FU'
+                        }
+                      }
+                    ]
+                  ]
+                }
+              ]
+            ]
+          },
+          {
+            move: {
+              from: { x: 9, y: 3 },
+              to: { x: 9, y: 4 },
+              color: 1,
+              piece: 'FU'
+            }
+          }
+        ]
+      ]
+    },
+    {
+      move: {
+        from: { x: 2, y: 2 },
+        to: { x: 7, y: 7 },
+        color: 1,
+        piece: 'KA',
+        capture: 'KE',
+        promote: true,
+        same: true
+      }
+    },
+    {
+      move: {
+        from: { x: 8, y: 8 },
+        to: { x: 7, y: 7 },
+        color: 0,
+        piece: 'KA',
+        capture: 'UM',
+        same: true
+      }
+    },
+    { move: { to: { x: 3, y: 3 }, color: 1, piece: 'KE', relative: 'H' } }
+  ]
+}
+
+const manager = new ShogiManager(jkfData)
+
+manager.currentNum++
+manager.currentNum++
+manager.currentNum++
+console.log(manager.board)
+
 // 次の実装
-// FieldのapplyMoveを実装
+// moveListでcurrentMOveCellリストが正常に作られない問題を解消

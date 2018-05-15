@@ -5,8 +5,12 @@ export default class Pos {
   private _y: number
 
   constructor(x: number, y: number) {
-    this._x = x
-    this._y = y
+    if (x >= 0 && x < 9 && y >= 0 && y < 9) {
+      this._x = x
+      this._y = y
+    } else {
+      throw new Error('盤面座標の値が範囲外です。')
+    }
   }
 
   /**

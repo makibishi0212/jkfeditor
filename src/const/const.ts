@@ -1,4 +1,6 @@
 import * as DEFINE from './interface'
+import ShogiManager from '../shogi-manager'
+import { NONAME } from 'dns'
 
 export const PLAYER = {
   SENTE: 0,
@@ -1291,5 +1293,25 @@ export class Info {
    */
   public static getKanji(komaNum: number): string {
     return this.komaData[komaNum].name
+  }
+
+  public static getJKFString(komaNum: number): string {
+    return this.komaData[komaNum].boardName
+  }
+
+  public static getPromote(komaNum: number): number | null {
+    if (this.komaData[komaNum].toPromote === KOMA.NONE) {
+      return null
+    } else {
+      return this.komaData[komaNum].toPromote
+    }
+  }
+
+  public static getOrigin(komaNum: number): number {
+    if (this.komaData[komaNum].fromPromote === KOMA.NONE) {
+      return komaNum
+    } else {
+      return this.komaData[komaNum].fromPromote
+    }
   }
 }
