@@ -5,6 +5,7 @@ import Move from './move'
 import * as SHOGI from '../const/const'
 import { PLAYER } from '../const/const'
 import Pos from './pos'
+import { config } from 'shelljs'
 
 // 将棋の盤面と手駒を合わせた、ある手数における状況を表すクラス
 
@@ -58,7 +59,11 @@ export default class Field {
           this.addHand(move.color, captureNum)
         }
       } else {
-        throw new Error('移動前、もしくは移動先の盤面座標が未定義です。')
+        if (!move.from && !move.to) {
+          // from,toともに未定義なら初期盤面かコメントのみ手番スキップ
+        } else {
+          throw new Error('移動前、もしくは移動先の盤面座標が未定義です。')
+        }
       }
     }
 
@@ -130,8 +135,8 @@ export default class Field {
    * @param info
    */
   private setBoardPiece(pos: Pos, info: boardObject) {
-    if (!_.has(pos, 'x') || !_.has(pos, 'y')) {
-      this._board[pos.y][pos.x] = _.cloneDeep(info)
+    if (pos) {
+      this._board[pos.ay][pos.ax] = _.cloneDeep(info)
     }
   }
 

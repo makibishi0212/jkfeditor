@@ -80,6 +80,7 @@ export default class ShogiManager {
    */
   public go(newNum: number) {
     // 更新後の指し手が指し手配列の範囲内で、現在のものと異なる場合のみ指し手更新処理を行う
+
     if (
       this._currentNum !== newNum &&
       newNum >= 0 &&
@@ -91,7 +92,7 @@ export default class ShogiManager {
         // 更新後の指し手が現在の指し手より小さい場合(手を戻す)
         let tmpMoveNum = this._currentNum
 
-        while (tmpMoveNum > this._currentNum) {
+        while (tmpMoveNum > newNum) {
           // 盤面と持ち駒の更新処理
 
           // 次に適用する指し手
@@ -105,7 +106,7 @@ export default class ShogiManager {
         // 更新後の指し手が現在の指し手より大きい場合(手を進める)
         if (this._currentNum < newNum) {
           let tmpMoveNum = this._currentNum
-          while (tmpMoveNum < this._currentNum) {
+          while (tmpMoveNum < newNum) {
             // 次に適用する指し手
             const nextMove = this.moveData.getMove(tmpMoveNum)
 
@@ -433,4 +434,4 @@ manager.currentNum++
 console.log(manager.board)
 
 // 次の実装
-// moveListでcurrentMOveCellリストが正常に作られない問題を解消
+// 盤面をコンソール上にいい感じに表示するmanager.dispを作る

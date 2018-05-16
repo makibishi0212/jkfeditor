@@ -58,13 +58,15 @@ export default class Move {
       // 持ち駒から置く手かどうか判定
       const move = moveObj.move as DEFINE.moveInfoObject
       if (_.has(move, 'from')) {
-        this._from = move.from as Pos
+        const from = move.from as DEFINE.posObject
+        this._from = new Pos(from.x, from.y)
       } else {
         this._isPut = true
       }
 
       if (_.has(move, 'to')) {
-        this._to = move.to as Pos
+        const to = move.to as DEFINE.posObject
+        this._to = new Pos(to.x, to.y)
       } else {
         throw new Error('指し手オブジェクトに"to"プロパティがありません。')
       }
@@ -132,7 +134,7 @@ export default class Move {
    * 取得した駒の番号を返す。その駒が成っている場合成り元の駒を返す。
    */
   public get captureNum(): number | null {
-    if (this._captureNum) {
+    if (!this._captureNum) {
       return null
     } else {
       return SHOGI.Info.getOrigin(this._captureNum as number)

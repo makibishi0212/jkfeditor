@@ -45,8 +45,8 @@ export interface moveObject {
 
 // json棋譜フォーマットで定義された駒の移動表現の定義オブジェクト
 export interface moveInfoObject {
-  to: PosObject
-  from?: PosObject
+  to: posObject
+  from?: posObject
   color: number
   piece: string
   same?: boolean
@@ -56,7 +56,7 @@ export interface moveInfoObject {
 }
 
 // 駒座標表現の定義オブジェクト
-export interface PosObject {
+export interface posObject {
   x: number
   y: number
 }

@@ -9,9 +9,6 @@ describe('Shogi-manger test', () => {
   })
 
   it('Shogi-manager Class is instantiable', () => {
-    const manager = new ShogiManager()
-    expect(manager).toBeInstanceOf(ShogiManager)
-
     // jsonフォーマットのjkf形式による棋譜データ
     const jkfData = {
       header: {

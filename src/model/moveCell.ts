@@ -80,6 +80,9 @@ export default class MoveCell {
     this._select = 0
   }
 
+  /**
+   * 分岐したひとつの枝であることを示す印をつける
+   */
   public branchize() {
     this._isBranch = true
   }
