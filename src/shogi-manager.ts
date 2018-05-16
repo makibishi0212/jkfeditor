@@ -122,6 +122,54 @@ export default class ShogiManager {
   }
 
   /**
+   * 現在の盤面を見やすい形で表した文字列を返す
+   */
+  public dispBoard(): string {
+    if (this._field.board) {
+      let banString = ''
+
+      banString += ' ＿＿＿＿＿＿＿＿＿' + '\n'
+      _.each(this._field.board, boardRow => {
+        banString += '|'
+        _.each(boardRow, (boardElm: boardObject) => {
+          if (_.has(boardElm, 'kind')) {
+            banString += SHOGI.Info.getKanji(
+              SHOGI.Info.komaAtoi(boardElm.kind as string)
+            )
+          } else {
+            banString += '　'
+          }
+        })
+        banString += '|' + '\n'
+      })
+      banString += ' ￣￣￣￣￣￣￣￣￣'
+
+      return banString
+    } else {
+      return ''
+    }
+  }
+
+  /**
+   * 次の指し手候補を返す
+   */
+  public dispNextMoves(): string {
+    const nextMoveCells = this.moveData.getNextMoves(this._currentNum - 1)
+    const nextSelect = this.moveData.getNextSelect(this._currentNum - 1)
+
+    let nextMoveString = ''
+    _.each(nextMoveCells, (move, index) => {
+      if (index === nextSelect) {
+        nextMoveString += '○'
+      } else {
+        nextMoveString += '　'
+      }
+      nextMoveString += move.info.name + '\n'
+    })
+    return nextMoveString
+  }
+
+  /**
    * 指し手を次の手として追加する
    * 最新の指し手を表示している状態でしか使えない
    *
@@ -430,8 +478,14 @@ const manager = new ShogiManager(jkfData)
 
 manager.currentNum++
 manager.currentNum++
+console.log(manager.dispBoard())
+console.log(manager.dispNextMoves())
 manager.currentNum++
-console.log(manager.board)
+console.log(manager.dispBoard())
+console.log(manager.dispNextMoves())
+manager.currentNum++
+console.log(manager.dispBoard())
+console.log(manager.dispNextMoves())
 
 // 次の実装
-// 盤面をコンソール上にいい感じに表示するmanager.dispを作る
+// 分岐が正しく作られていないので修正

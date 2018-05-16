@@ -130,6 +130,10 @@ export default class Move {
     return this._komaNum
   }
 
+  public get name(): string {
+    return this._name
+  }
+
   /**
    * 取得した駒の番号を返す。その駒が成っている場合成り元の駒を返す。
    */

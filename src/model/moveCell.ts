@@ -81,6 +81,19 @@ export default class MoveCell {
   }
 
   /**
+   * 指し手の分岐を切り替える
+   *
+   * @param forkIndex 分岐指し手のインデックス
+   */
+  public switchFork(forkIndex: number) {
+    if (_.size(this.next) > 1) {
+      this._select = forkIndex
+    } else {
+      throw new Error('not have fork')
+    }
+  }
+
+  /**
    * 分岐したひとつの枝であることを示す印をつける
    */
   public branchize() {

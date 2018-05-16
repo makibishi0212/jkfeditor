@@ -22,8 +22,25 @@ export default class MoveList {
     this.makeCurrentMoveArray()
   }
 
-  public getMove(moveNum: number) {
+  public getMove(moveNum: number): Move {
     return this._currentMoves[moveNum]
+  }
+
+  /**
+   * 現在の指し手から次の指し手候補の情報を返す
+   *
+   * @param moveNum
+   */
+  public getNextMoves(moveNum: number) {
+    const next = this._currentMoveCells[moveNum].next
+    return _.map(next, index => {
+      return this._moveCells[index]
+    })
+  }
+
+  public getNextSelect(moveNum: number) {
+    const select = this._currentMoveCells[moveNum].select
+    return select
   }
 
   public get currentMoves() {
