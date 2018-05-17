@@ -49,8 +49,13 @@ export default class MoveList {
    * @param moveNum
    * @param moveInfoObj
    */
-  public addMove(moveNum: number, moveInfoObj: moveInfoObject) {
-    // 未実装
+  public addMove(moveNum: number, moveObj: moveObject) {
+    // TODO:ここにmoveInfoObjが正しいかどうか判定する処理を入れる
+
+    const newIndex = this.makeMoveCell(moveObj, this._currentMoveCells[moveNum])
+    if (!_.isNumber(newIndex)) {
+      this.makeCurrentMoveArray()
+    }
   }
 
   public get currentMoves() {

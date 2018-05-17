@@ -1314,4 +1314,8 @@ export class Info {
       return this.komaData[komaNum].fromPromote
     }
   }
+
+  public static komaItoa(komaNum: number): string {
+    return this.komaData[komaNum].boardName
+  }
 }

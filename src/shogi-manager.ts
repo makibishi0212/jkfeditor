@@ -14,6 +14,7 @@ import {
 } from './const/interface'
 import Field from './model/field'
 import { config } from 'shelljs'
+import { move } from 'fs-extra'
 
 export default class ShogiManager {
   // 指し手番号
@@ -54,7 +55,7 @@ export default class ShogiManager {
    * jkfをエクスポートする
    */
   public export() {
-    // 未実装
+    // TODO:未実装
   }
 
   public get list(): Array<Move> {
@@ -87,7 +88,7 @@ export default class ShogiManager {
    * 現在の盤面が次の指し手候補を複数持つかどうかを返す
    */
   public get isFork(): boolean {
-    // 未実装
+    // TODO:未実装
     return true
   }
 
@@ -102,7 +103,7 @@ export default class ShogiManager {
     if (
       this._currentNum !== newNum &&
       newNum >= 0 &&
-      newNum < this.moveData.currentMoves.length
+      newNum <= this.moveData.currentMoves.length
     ) {
       // 現在の盤面及び各プレイヤーの手持ち駒、次の指し手候補、指し手番号が更新対象
 
@@ -142,7 +143,7 @@ export default class ShogiManager {
           newNum +
           'は範囲外です。0以上で' +
           this.moveData.currentMoves.length +
-          'より小さい必要があります。'
+          'より以下である必要があります。'
       )
     }
   }
@@ -196,26 +197,87 @@ export default class ShogiManager {
   }
 
   /**
+   * 先手の持ち駒を返す
+   */
+  public dispSenteHands(): string {
+    // TODO: 未実装
+    return ''
+  }
+
+  /**
+   * 後手の持ち駒を返す
+   */
+  public dispGoteHands(): string {
+    // TODO:未実装
+    return ''
+  }
+
+  /**
    * 受け取った指し手情報を次の手として追加する
-   * 最新の指し手を表示している状態でしか使えない
+   * 現在の指し手が最後の指し手でない場合は分岐指し手として追加する
    *
    * @param moveInfoObj 指し手情報オブジェクト
+   * @param comment コメント
    */
-  public add(moveInfoObj: moveInfoObject) {
+  public addMovefromObj(
+    moveInfoObj: moveInfoObject,
+    comment: Array<string> | string | null = null
+  ) {
+    // TODO:ここで現在の盤面で与えられた指し手が受理可能かを判定する
     if (!this.readonly) {
-      // 未実装
+      let moveObj: moveObject
+      if (_.isString(comment)) {
+        moveObj = { move: moveInfoObj, comments: [comment] }
+      } else if (_.isArray(comment)) {
+        moveObj = { move: moveInfoObj, comments: comment }
+      } else {
+        moveObj = { move: moveInfoObj }
+      }
+
+      // 指し手を追加する
+      this.moveData.addMove(this._currentNum, moveObj)
     } else {
       console.log('この棋譜は読み取り専用です。')
     }
   }
 
   /**
-   * 受け取った指し手情報を現在の盤面の分岐指し手として追加する
+   * 与えられた盤面の駒を移動する指し手を次の手として追加する
    *
-   * @param moveInfoObj 指し手情報オブジェクト
+   * @param fromX
+   * @param fromY
+   * @param toX
+   * @param toY
+   * @param promote
+   * @param comment
    */
-  public addFork(moveInfoObj: moveInfoObject) {
-    // 未実装
+  public addBoardMove(
+    fromX: number,
+    fromY: number,
+    toX: number,
+    toY: number,
+    promote: boolean,
+    comment: Array<string> | string | null = null
+  ) {
+    // TODO: 未実装
+    //this.makeMoveData()
+  }
+
+  /**
+   * 与えられた持ち駒から盤面に駒を置く指し手を次の手として追加する
+   *
+   * @param komaNum
+   * @param toX
+   * @param toY
+   * @param comment
+   */
+  public addHandMove(
+    komaNum: number,
+    toX: number,
+    toY: number,
+    comment: Array<string> | string | null = null
+  ) {
+    // TODO: 未実装
   }
 
   /**
@@ -224,7 +286,7 @@ export default class ShogiManager {
    * @param forkIndex
    */
   public switchFork(forkIndex: number) {
-    // 未実装
+    // TODO:未実装
   }
 
   /**
@@ -295,6 +357,63 @@ export default class ShogiManager {
     if (_.has(jkf, 'header')) {
       this.info = jkf['header'] as Object
     }
+  }
+
+  /**
+   * 指し手オブジェクトを作成する
+   *
+   * @param komaType
+   * @param fromX
+   * @param fromY
+   * @param toX
+   * @param toY
+   * @param promote
+   */
+  private makeMoveData(
+    komaType: number,
+    fromX: number,
+    fromY: number,
+    toX: number,
+    toY: number,
+    promote: boolean
+  ): moveInfoObject {
+    // TODO: from,toの各座標の範囲検査をつける
+
+    // 前の指し手を取得
+    const prevMove = this.moveData.currentMoves[this._currentNum]
+
+    // 手番のプレイヤーを取得
+    const color =
+      prevMove.color === SHOGI.PLAYER.SENTE
+        ? SHOGI.PLAYER.GOTE
+        : SHOGI.PLAYER.SENTE
+    const komaString = SHOGI.Info.komaItoa(komaType)
+
+    // 指し手オブジェクトを作成
+    const moveInfoObj: moveInfoObject = {
+      to: { x: toX, y: toY },
+      color: color,
+      piece: komaString
+    }
+
+    // 持ち駒を置く場合fromはなし
+    if (_.isNumber(fromX) && _.isNumber(fromY)) {
+      moveInfoObj.from = { x: fromX, y: fromY }
+    }
+
+    if (promote) {
+      moveInfoObj.promote = true
+    }
+
+    // 前の指し手と同じ位置に移動する場合sameプロパティを追加
+    if (_.isEqual(prevMove.to, moveInfoObj.to)) {
+      moveInfoObj.same = true
+    }
+
+    // 移動先に駒が存在する場合captureプロパティを追加
+    // TODO: 未実装
+
+    return moveInfoObj
   }
 }
 
@@ -532,5 +651,15 @@ console.log(manager.dispNextMoves())
 manager.currentNum++
 console.log(manager.dispBoard())
 console.log(manager.dispNextMoves())
+manager.currentNum++
+console.log(manager.dispBoard())
+console.log(manager.dispNextMoves())
+manager.currentNum++
+console.log(manager.dispBoard())
+console.log(manager.dispNextMoves())
+manager.currentNum++
+console.log(manager.dispBoard())
+console.log(manager.dispNextMoves())
 
 // 次の実装
+// 指し手の追加の実装
