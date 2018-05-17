@@ -3,7 +3,7 @@ import _ from 'lodash'
 import MoveCell from './model/movecell'
 import Move from './model/move'
 
-import { moveObject } from './const/interface'
+import { moveObject, moveInfoObject } from './const/interface'
 
 // 将棋用の指し手を管理するリストクラス
 
@@ -41,6 +41,16 @@ export default class MoveList {
   public getNextSelect(moveNum: number) {
     const select = this._currentMoveCells[moveNum].select
     return select
+  }
+
+  /**
+   * 指定指し手番号に指し手を追加する。moveNumが最新なら新規指し手の追加、そうでないなら分岐指し手の追加となる
+   *
+   * @param moveNum
+   * @param moveInfoObj
+   */
+  public addMove(moveNum: number, moveInfoObj: moveInfoObject) {
+    // 未実装
   }
 
   public get currentMoves() {

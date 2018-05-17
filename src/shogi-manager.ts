@@ -8,7 +8,9 @@ import {
   jkfObject,
   initObject,
   initBoardObject,
-  boardObject
+  boardObject,
+  moveObject,
+  moveInfoObject
 } from './const/interface'
 import Field from './model/field'
 import { config } from 'shelljs'
@@ -51,7 +53,9 @@ export default class ShogiManager {
   /**
    * jkfをエクスポートする
    */
-  public export() {}
+  public export() {
+    // 未実装
+  }
 
   public get list(): Array<Move> {
     return this.moveData.currentMoves
@@ -65,12 +69,26 @@ export default class ShogiManager {
     return this._field.hands
   }
 
+  /**
+   * 現在の盤面が棋譜の何番目の指し手のものか表示する
+   */
   public get currentNum() {
     return this._currentNum
   }
 
+  /**
+   * 指し手を進む/戻す
+   */
   public set currentNum(num: number) {
     this.go(num)
+  }
+
+  /**
+   * 現在の盤面が次の指し手候補を複数持つかどうかを返す
+   */
+  public get isFork(): boolean {
+    // 未実装
+    return true
   }
 
   /**
@@ -116,9 +134,17 @@ export default class ShogiManager {
           }
         }
       }
-    }
 
-    this._currentNum = newNum
+      this._currentNum = newNum
+    } else {
+      console.log(
+        '飛び先の指し手番号' +
+          newNum +
+          'は範囲外です。0以上で' +
+          this.moveData.currentMoves.length +
+          'より小さい必要があります。'
+      )
+    }
   }
 
   /**
@@ -170,21 +196,36 @@ export default class ShogiManager {
   }
 
   /**
-   * 指し手を次の手として追加する
+   * 受け取った指し手情報を次の手として追加する
    * 最新の指し手を表示している状態でしか使えない
    *
-   * @param from
-   * @param to
+   * @param moveInfoObj 指し手情報オブジェクト
    */
-  public add(from: Object, to: Object) {}
+  public add(moveInfoObj: moveInfoObject) {
+    if (!this.readonly) {
+      // 未実装
+    } else {
+      console.log('この棋譜は読み取り専用です。')
+    }
+  }
 
   /**
-   * 指し手を次の指し手候補として追加する
+   * 受け取った指し手情報を現在の盤面の分岐指し手として追加する
    *
-   * @param from
-   * @param to
+   * @param moveInfoObj 指し手情報オブジェクト
    */
-  public fork(from: Object, to: Object) {}
+  public addFork(moveInfoObj: moveInfoObject) {
+    // 未実装
+  }
+
+  /**
+   * 指し手の分岐を切り替える
+   *
+   * @param forkIndex
+   */
+  public switchFork(forkIndex: number) {
+    // 未実装
+  }
 
   /**
    * jkfオブジェクトをロードする
