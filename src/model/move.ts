@@ -92,7 +92,7 @@ export default class Move {
 
       // 駒を取ったか判定
       if (_.has(move, 'capture')) {
-        this._captureNum = move.capture as number
+        this._captureNum = SHOGI.Info.komaAtoi(move.capture as string) as number
       }
     } else {
       this._from = null

@@ -160,9 +160,9 @@ export default class ShogiManager {
     let nextMoveString = ''
     _.each(nextMoveCells, (move, index) => {
       if (index === nextSelect) {
-        nextMoveString += '○'
+        nextMoveString += '>'
       } else {
-        nextMoveString += '　'
+        nextMoveString += ' '
       }
       nextMoveString += move.info.name + '\n'
     })
@@ -477,6 +477,11 @@ const jkfData = {
 const manager = new ShogiManager(jkfData)
 
 manager.currentNum++
+console.log(manager.dispBoard())
+console.log(manager.dispNextMoves())
+manager.currentNum++
+console.log(manager.dispBoard())
+console.log(manager.dispNextMoves())
 manager.currentNum++
 console.log(manager.dispBoard())
 console.log(manager.dispNextMoves())
@@ -488,4 +493,3 @@ console.log(manager.dispBoard())
 console.log(manager.dispNextMoves())
 
 // 次の実装
-// 分岐が正しく作られていないので修正

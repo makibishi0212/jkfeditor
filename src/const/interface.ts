@@ -41,6 +41,7 @@ export interface komaMoveObject {
 export interface moveObject {
   move?: moveInfoObject
   comments?: Array<string>
+  forks?: Array<Array<moveObject>>
 }
 
 // json棋譜フォーマットで定義された駒の移動表現の定義オブジェクト
@@ -52,7 +53,7 @@ export interface moveInfoObject {
   same?: boolean
   relative?: string
   promote?: boolean
-  capture?: number
+  capture?: string
 }
 
 // 駒座標表現の定義オブジェクト

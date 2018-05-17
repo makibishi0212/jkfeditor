@@ -86,6 +86,29 @@ export default class MoveList {
     // ここで作成する原始指し手セルを作成し、そのインデックスを受け取る
     const newIndex = this.makePrimitiveMoveCell(moveObj, prevMoveCell)
 
+    // インデックスが分岐指し手を持つ場合、その指し手に対しても同様に指し手セルを作成する
+    if (_.has(moveObj, 'forks')) {
+      // newIndexとして作成したセルから派生する分岐のループ
+      _.each(moveObj['forks'], forkArray => {
+        // 大元の指し手セルのひとつ前のセル
+        let tmpPrevMoveCell = prevMoveCell
+
+        _.each(forkArray, forkMoveObj => {
+          // ひとつ前のセルのインデックスが入る
+          const subIndex = this.makeMoveCell(
+            forkMoveObj,
+            tmpPrevMoveCell
+          ) as number
+          tmpPrevMoveCell = !_.isUndefined(this._moveCells[subIndex])
+            ? this._moveCells[subIndex]
+            : null
+        })
+
+        // tmpPrevMoveCellをリセット
+        tmpPrevMoveCell = prevMoveCell
+      })
+    }
+
     return newIndex
   }
 
