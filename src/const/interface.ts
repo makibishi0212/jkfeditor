@@ -32,7 +32,7 @@ export interface komaDataObject {
 
 // 駒の移動タイプの表現オブジェクト
 export interface komaMoveObject {
-  type: number
+  type: string
   x: number
   y: number
 }

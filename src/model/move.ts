@@ -1,10 +1,15 @@
 import _ from 'lodash'
 
 import * as SHOGI from '../const/const'
-import * as DEFINE from '../const/interface'
+import KomaInfo from '../const/komaInfo'
 
 import Pos from './pos'
-import { boardObject } from '../const/interface'
+import {
+  boardObject,
+  moveObject,
+  moveInfoObject,
+  posObject
+} from '../const/interface'
 
 // 将棋用の指し手情報クラス
 
@@ -39,7 +44,7 @@ export default class Move {
   // 持ち駒から置く手かどうか
   private _isPut: boolean = false
 
-  constructor(moveObj: DEFINE.moveObject, isBranch: boolean) {
+  constructor(moveObj: moveObject, isBranch: boolean) {
     this._name = this.getMoveName(moveObj)
     this._isBranch = isBranch
 
@@ -56,16 +61,16 @@ export default class Move {
     // 指し手情報をもつか判定
     if (_.has(moveObj, 'move')) {
       // 持ち駒から置く手かどうか判定
-      const move = moveObj.move as DEFINE.moveInfoObject
+      const move = moveObj.move as moveInfoObject
       if (_.has(move, 'from')) {
-        const from = move.from as DEFINE.posObject
+        const from = move.from as posObject
         this._from = new Pos(from.x, from.y)
       } else {
         this._isPut = true
       }
 
       if (_.has(move, 'to')) {
-        const to = move.to as DEFINE.posObject
+        const to = move.to as posObject
         this._to = new Pos(to.x, to.y)
       } else {
         throw new Error('指し手オブジェクトに"to"プロパティがありません。')
@@ -80,7 +85,7 @@ export default class Move {
 
       // 駒情報をセット
       if (_.has(move, 'piece')) {
-        this._komaNum = SHOGI.Info.komaAtoi(move.piece)
+        this._komaNum = KomaInfo.komaAtoi(move.piece)
       } else {
         throw new Error('指し手オブジェクトに"piece"プロパティがありません。')
       }
@@ -92,7 +97,7 @@ export default class Move {
 
       // 駒を取ったか判定
       if (_.has(move, 'capture')) {
-        this._captureNum = SHOGI.Info.komaAtoi(move.capture as string) as number
+        this._captureNum = KomaInfo.komaAtoi(move.capture as string) as number
       }
     } else {
       this._from = null
@@ -105,8 +110,8 @@ export default class Move {
    */
   public get boardObj(): boardObject {
     const kind = this._isPromote
-      ? SHOGI.Info.getJKFString(SHOGI.Info.getPromote(this._komaNum) as number)
-      : SHOGI.Info.getJKFString(this._komaNum)
+      ? KomaInfo.getJKFString(KomaInfo.getPromote(this._komaNum) as number)
+      : KomaInfo.getJKFString(this._komaNum)
     return { color: this.color, kind: kind }
   }
 
@@ -141,7 +146,7 @@ export default class Move {
     if (!this._captureNum) {
       return null
     } else {
-      return SHOGI.Info.getOrigin(this._captureNum as number)
+      return KomaInfo.getOrigin(this._captureNum as number)
     }
   }
 
@@ -153,19 +158,19 @@ export default class Move {
    * 指し手オブジェクトから指し手の名前を返す
    * @param moveObj
    */
-  private getMoveName(moveObj: DEFINE.moveObject): string {
+  private getMoveName(moveObj: moveObject): string {
     if (_.has(moveObj, 'move')) {
-      const moveInfo = moveObj.move as DEFINE.moveInfoObject
+      const moveInfo = moveObj.move as moveInfoObject
       if (
         _.has(moveInfo, 'to') &&
         _.has(moveInfo, 'color') &&
         _.has(moveInfo, 'piece')
       ) {
         // 駒番号を取得
-        const komaNum = SHOGI.Info.komaAtoi(moveInfo.piece)
+        const komaNum = KomaInfo.komaAtoi(moveInfo.piece)
 
         // 駒名を取得
-        let komaString = SHOGI.Info.getKanji(komaNum)
+        let komaString = KomaInfo.getKanji(komaNum)
 
         // 先手後手表示を代入
         const turnString = moveInfo.color === SHOGI.PLAYER.SENTE ? '☗' : '☖'

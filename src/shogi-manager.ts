@@ -1,9 +1,11 @@
 import _ from 'lodash'
 
 import * as SHOGI from './const/const'
+import KomaInfo from './const/komaInfo'
 
 import MoveList from './moveList'
 import Move from './model/move'
+import Pos from './model/pos'
 import {
   jkfObject,
   initObject,
@@ -93,6 +95,18 @@ export default class ShogiManager {
   }
 
   /**
+   * 現在の盤面の駒を取得する
+   *
+   * @param kx 盤面のX座標 7六歩の7
+   * @param ky 盤面のY座標 7六歩の六
+   */
+  public getBoardPiece(kx: number, ky: number): boardObject {
+    const pos = new Pos(kx, ky)
+
+    return this._field.board[pos.ay][pos.ax]
+  }
+
+  /**
    * 選択した指し手番号へ移動する
    *
    * @param moveNum
@@ -139,11 +153,11 @@ export default class ShogiManager {
       this._currentNum = newNum
     } else {
       console.log(
-        '飛び先の指し手番号' +
+        '指定の指し手番号 ' +
           newNum +
-          'は範囲外です。0以上で' +
+          ' は範囲外です。0以上で' +
           this.moveData.currentMoves.length +
-          'より以下である必要があります。'
+          '以下である必要があります。'
       )
     }
   }
@@ -160,8 +174,8 @@ export default class ShogiManager {
         banString += '|'
         _.each(boardRow, (boardElm: boardObject) => {
           if (_.has(boardElm, 'kind')) {
-            banString += SHOGI.Info.getKanji(
-              SHOGI.Info.komaAtoi(boardElm.kind as string)
+            banString += KomaInfo.getKanji(
+              KomaInfo.komaAtoi(boardElm.kind as string)
             )
           } else {
             banString += '　'
@@ -305,7 +319,7 @@ export default class ShogiManager {
     }
 
     // 平手状態を代入
-    board = _.cloneDeep(SHOGI.Info.hirateBoard)
+    board = _.cloneDeep(KomaInfo.hirateBoard)
 
     // 特殊な初期状態が登録されているか判定
     if (_.has(jkf, 'initial')) {
@@ -318,28 +332,28 @@ export default class ShogiManager {
             // 平手は代入済
             break
           case 'KY': // 香落ち
-            board = _.cloneDeep(SHOGI.Info.komaochiBoards[SHOGI.KOMAOCHI.KYO])
+            board = _.cloneDeep(KomaInfo.komaochiBoards[SHOGI.KOMAOCHI.KYO])
             break
           case 'KA': // 角落ち
-            board = _.cloneDeep(SHOGI.Info.komaochiBoards[SHOGI.KOMAOCHI.KAKU])
+            board = _.cloneDeep(KomaInfo.komaochiBoards[SHOGI.KOMAOCHI.KAKU])
             break
           case 'HI': // 飛車落ち
-            board = _.cloneDeep(SHOGI.Info.komaochiBoards[SHOGI.KOMAOCHI.HISHA])
+            board = _.cloneDeep(KomaInfo.komaochiBoards[SHOGI.KOMAOCHI.HISHA])
             break
           case 'HIKY': // 飛香落ち
-            board = _.cloneDeep(SHOGI.Info.komaochiBoards[SHOGI.KOMAOCHI.HIKYO])
+            board = _.cloneDeep(KomaInfo.komaochiBoards[SHOGI.KOMAOCHI.HIKYO])
             break
           case '2': // 2枚落ち
-            board = _.cloneDeep(SHOGI.Info.komaochiBoards[SHOGI.KOMAOCHI.NI])
+            board = _.cloneDeep(KomaInfo.komaochiBoards[SHOGI.KOMAOCHI.NI])
             break
           case '4': // 4枚落ち
-            board = _.cloneDeep(SHOGI.Info.komaochiBoards[SHOGI.KOMAOCHI.YON])
+            board = _.cloneDeep(KomaInfo.komaochiBoards[SHOGI.KOMAOCHI.YON])
             break
           case '6': // 6枚落ち
-            board = _.cloneDeep(SHOGI.Info.komaochiBoards[SHOGI.KOMAOCHI.ROKU])
+            board = _.cloneDeep(KomaInfo.komaochiBoards[SHOGI.KOMAOCHI.ROKU])
             break
           case '8': // 8枚落ち
-            board = _.cloneDeep(SHOGI.Info.komaochiBoards[SHOGI.KOMAOCHI.HACHI])
+            board = _.cloneDeep(KomaInfo.komaochiBoards[SHOGI.KOMAOCHI.HACHI])
             break
           case 'OTHER': // 上記以外
             board = ((jkf.initial as initObject).data as initBoardObject)
@@ -370,7 +384,7 @@ export default class ShogiManager {
    * @param promote
    */
   private makeMoveData(
-    komaType: number,
+    komaNum: number,
     fromX: number,
     fromY: number,
     toX: number,
@@ -387,7 +401,7 @@ export default class ShogiManager {
       prevMove.color === SHOGI.PLAYER.SENTE
         ? SHOGI.PLAYER.GOTE
         : SHOGI.PLAYER.SENTE
-    const komaString = SHOGI.Info.komaItoa(komaType)
+    const komaString = KomaInfo.komaItoa(komaNum)
 
     // 指し手オブジェクトを作成
     const moveInfoObj: moveInfoObject = {
@@ -411,7 +425,223 @@ export default class ShogiManager {
     }
 
     // 移動先に駒が存在する場合captureプロパティを追加
-    // TODO: 未実装
+    const toPosObj: boardObject = this.getBoardPiece(toX, toY)
+    if (!_.isEmpty(toPosObj)) {
+      if (_.has(toPosObj, 'kind')) {
+        if (toPosObj.color === color) {
+          throw new Error('自分の駒を取る移動です。')
+        }
+        moveInfoObj.capture = toPosObj.kind
+      }
+    }
+
+    // toの位置に移動できる同じ種類の駒の位置を格納する
+    const rivals: Array<Pos> = []
+
+    // ベクトル移動可能かどうか
+    let dirMovable = false
+
+    _.each(this.board, (boardRow, ay) => {
+      _.each(boardRow, (koma, ax) => {
+        if (_.has(koma, 'kind')) {
+          // 移動対象の駒と同一タイプ・同一プレイヤーの駒かどうか調べる
+          if (
+            koma.kind === moveInfoObj.piece &&
+            koma.color === moveInfoObj.color &&
+            (ax !== fromX || ay !== fromY)
+          ) {
+            // 上記if条件を満たす駒の場合は、その駒がtoの位置に移動できるか確認する
+
+            const komaMoves = KomaInfo.getMoves(komaNum)
+
+            // 候補の駒がtoの位置に到達しうる場合trueを代入
+            const relative: boolean = _.some(komaMoves, move => {
+              // 駒の動きをひとつずつ検討し、toPosの位置に到達する可能性を検討する
+              let mx = move.x
+              let my = move.y
+
+              if (!color) {
+                // 先手の場合
+                my *= -1
+              } else {
+                // 後手の場合
+                mx *= -1
+              }
+
+              switch (move.type) {
+                case 'pos':
+                  if (Pos.inRange(ay + my, ax + mx)) {
+                    if (ax + mx === toX && ay + my === toY) {
+                      return true
+                    }
+                  }
+                  break
+                case 'dir':
+                  dirMovable = true
+
+                  let movable = true
+                  let nextX = ax
+                  let nextY = ay
+
+                  while (movable) {
+                    nextX += mx
+                    nextY += my
+                    if (Pos.inRange(nextX, nextY)) {
+                      if (_.isEmpty(this._field.board[nextY][nextX])) {
+                        if (nextX === toX && nextY === toY) {
+                          return true
+                        }
+                      } else {
+                        movable = false
+                        if (nextX === toX && nextY === toY) {
+                          return true
+                        }
+                      }
+                    } else {
+                      movable = false
+                    }
+                  }
+                  break
+                default:
+                  throw new Error('未知の移動タイプです。')
+              }
+
+              return false
+            })
+
+            // toの位置に到達できる駒の情報は相対情報を作成する時に利用する
+            if (relative) {
+              rivals.push(new Pos(ax, ay))
+            }
+          }
+        }
+      })
+    })
+
+    if (!_.isEmpty(rivals)) {
+      // toの位置に同じ種類の駒が移動できる場合相対情報を追加
+      moveInfoObj.relative = ''
+
+      if (fromX != null && fromY != null) {
+        // 同一x軸に他に駒がない
+        let onlyX = true
+
+        // 同一y軸に他に駒がない
+        let onlyY = true
+
+        // 一番左ならtrue
+        let isLeft = true
+
+        // 一番右ならtrue
+        let isRight = true
+
+        // 一番上ならtrue
+        let isUp = true
+
+        // 一番下ならtrue
+        let isDown = true
+
+        _.each(rivals, (pos: Pos) => {
+          if (color === SHOGI.PLAYER.SENTE) {
+            if (pos.x < fromX) {
+              isLeft = false
+            } else if (pos.x > fromX) {
+              isRight = false
+            } else {
+              onlyX = false
+            }
+
+            if (pos.y < fromY) {
+              isDown = false
+            } else if (pos.y > fromY) {
+              isUp = false
+            } else {
+              onlyY = false
+            }
+          } else {
+            // 後手の場合
+            if (pos.x < fromX) {
+              isRight = false
+            } else if (pos.x > fromX) {
+              isLeft = false
+            } else {
+              onlyX = false
+            }
+
+            if (pos.y < fromY) {
+              isUp = false
+            } else if (pos.y > fromY) {
+              isDown = false
+            } else {
+              onlyY = false
+            }
+          }
+        })
+
+        // 全てが横並びならtrue
+        let sideBySide = isUp && isDown ? true : false
+
+        // 全てが縦並びならtrue
+        let tandem = isLeft && isRight ? true : false
+
+        // 右、左、直
+        let XrelStr: string = ''
+
+        // 上、引、寄
+        let YrelStr: string = ''
+
+        if (isRight && !isLeft) {
+          XrelStr = 'R'
+        } else if (!isRight && isLeft) {
+          XrelStr = 'L'
+        }
+
+        if (!dirMovable && fromX === toX) {
+          if (color === SHOGI.PLAYER.SENTE && fromY > toY) {
+            XrelStr = 'C'
+          } else if (color === SHOGI.PLAYER.GOTE && fromY < toY) {
+            // 後手
+            XrelStr = 'C'
+          }
+        }
+
+        // ここの条件が違う
+        if (fromY > toY) {
+          YrelStr = 'U'
+
+          if (XrelStr === 'C') {
+            YrelStr = ''
+          }
+        } else if (fromY < toY) {
+          YrelStr = 'D'
+        } else {
+          YrelStr = 'M'
+        }
+
+        if (sideBySide && tandem) {
+          throw new Error('相対情報の判定エラー')
+        } else if (sideBySide && !tandem) {
+          moveInfoObj.relative = XrelStr
+        } else if (!sideBySide && tandem) {
+          moveInfoObj.relative = YrelStr
+        } else {
+          // !sideBySide && !tandemの場合
+
+          if (onlyX && onlyY) {
+            moveInfoObj.relative = XrelStr
+          } else if (onlyX && !onlyY) {
+            moveInfoObj.relative = XrelStr
+          } else if (!onlyX && onlyY) {
+            moveInfoObj.relative = YrelStr
+          } else {
+            moveInfoObj.relative = XrelStr + YrelStr
+          }
+        }
+      } else {
+        // 持ち駒から置く場合は「打」のみで終了
+        moveInfoObj.relative = 'H'
+      }
+    }
 
     return moveInfoObj
   }

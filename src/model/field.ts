@@ -3,9 +3,9 @@ import _ from 'lodash'
 import { moveInfoObject, boardObject } from '../const/interface'
 import Move from './move'
 import * as SHOGI from '../const/const'
+import KomaInfo from '../const/komaInfo'
 import { PLAYER } from '../const/const'
 import Pos from './pos'
-import { config } from 'shelljs'
 
 // 将棋の盤面と手駒を合わせた、ある手数における状況を表すクラス
 
@@ -92,7 +92,7 @@ export default class Field {
         // 駒を移動元にセット
         this.setBoardPiece(from, {
           color: move.color,
-          kind: SHOGI.Info.getJKFString(move.komaNum)
+          kind: KomaInfo.getJKFString(move.komaNum)
         })
 
         // 駒を取る処理が発生する場合
@@ -105,11 +105,11 @@ export default class Field {
               move.color === SHOGI.PLAYER.SENTE
                 ? SHOGI.PLAYER.GOTE
                 : SHOGI.PLAYER.SENTE,
-            kind: SHOGI.Info.getJKFString(capture)
+            kind: KomaInfo.getJKFString(capture)
           })
 
           // 持ち駒から駒を減らす
-          const hand = SHOGI.Info.getOrigin(capture)
+          const hand = KomaInfo.getOrigin(capture)
           this.deleteHand(move.color, hand)
         }
       } else {
@@ -148,7 +148,7 @@ export default class Field {
    */
   private addHand(player: number, komaNum: number) {
     if (_.has(this._hands, player)) {
-      const komaString = SHOGI.Info.getJKFString(komaNum)
+      const komaString = KomaInfo.getJKFString(komaNum)
       if (_.has(this._hands[player], komaString)) {
         this._hands[player][komaString]++
       } else {
@@ -167,7 +167,7 @@ export default class Field {
    */
   private deleteHand(player: number, komaNum: number) {
     if (_.has(this._hands, player)) {
-      const komaString = SHOGI.Info.getJKFString(komaNum)
+      const komaString = KomaInfo.getJKFString(komaNum)
       if (_.has(this._hands[player], komaString)) {
         this._hands[player][komaString]--
       } else {
