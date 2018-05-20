@@ -17,6 +17,8 @@ import {
 import Field from './model/field'
 import { config } from 'shelljs'
 import { move } from 'fs-extra'
+import MoveCell from './model/moveCell'
+import { KOMA, board } from './const/const'
 
 export default class ShogiManager {
   // 指し手番号
@@ -90,8 +92,13 @@ export default class ShogiManager {
    * 現在の盤面が次の指し手候補を複数持つかどうかを返す
    */
   public get isFork(): boolean {
-    // TODO:未実装
-    return true
+    const nextMoveCells = this.moveData.getNextMoves(this._currentNum - 1)
+
+    if (nextMoveCells.length > 1) {
+      return true
+    } else {
+      return false
+    }
   }
 
   /**
@@ -141,7 +148,8 @@ export default class ShogiManager {
           let tmpMoveNum = this._currentNum
           while (tmpMoveNum < newNum) {
             // 次に適用する指し手
-            const nextMove = this.moveData.getMove(tmpMoveNum)
+            const nextMove = this.moveData.getMove(tmpMoveNum + 1)
+            console.log(nextMove)
 
             this._field.applyMove(nextMove)
 
@@ -150,7 +158,9 @@ export default class ShogiManager {
         }
       }
 
-      this._currentNum = newNum
+      if (newNum < this.moveData.currentMoves.length) {
+        this._currentNum = newNum
+      }
     } else {
       console.log(
         '指定の指し手番号 ' +
@@ -160,6 +170,16 @@ export default class ShogiManager {
           '以下である必要があります。'
       )
     }
+  }
+
+  public dispCurrentInfo(): string {
+    let currentInfoString = ''
+    currentInfoString += this._currentNum + '手目\n\n'
+    currentInfoString += this.dispGoteHand() + '\n'
+    currentInfoString += this.dispBoard() + '\n'
+    currentInfoString += this.dispSenteHand() + '\n\n'
+    //currentInfoString += this.dispKifuMoves()
+    return currentInfoString
   }
 
   /**
@@ -192,6 +212,24 @@ export default class ShogiManager {
   }
 
   /**
+   * 現在の棋譜を返す
+   */
+  public dispKifuMoves(): string {
+    let kifuMovesString = ''
+
+    _.each(this.moveData.currentMoves, (move, index) => {
+      if (index === this._currentNum) {
+        kifuMovesString += '>'
+      } else {
+        kifuMovesString += ' '
+      }
+      kifuMovesString += index + ': ' + move.name + '\n'
+    })
+
+    return kifuMovesString
+  }
+
+  /**
    * 次の指し手候補を返す
    */
   public dispNextMoves(): string {
@@ -199,13 +237,13 @@ export default class ShogiManager {
     const nextSelect = this.moveData.getNextSelect(this._currentNum - 1)
 
     let nextMoveString = ''
-    _.each(nextMoveCells, (move, index) => {
+    _.each(nextMoveCells, (move: MoveCell, index: number) => {
       if (index === nextSelect) {
         nextMoveString += '>'
       } else {
         nextMoveString += ' '
       }
-      nextMoveString += move.info.name + '\n'
+      nextMoveString += index + ': ' + move.info.name + '\n'
     })
     return nextMoveString
   }
@@ -213,17 +251,35 @@ export default class ShogiManager {
   /**
    * 先手の持ち駒を返す
    */
-  public dispSenteHands(): string {
-    // TODO: 未実装
-    return ''
+  public dispSenteHand(): string {
+    const senteHand = this._field.hands[SHOGI.PLAYER.SENTE]
+
+    let senteHandString: string = '[先手持ち駒] '
+    _.each(senteHand, (keepNum: number, komaType: string) => {
+      senteHandString +=
+        KomaInfo.getKanji(KomaInfo.komaAtoi(komaType)) +
+        ':' +
+        keepNum.toString() +
+        ' \n'
+    })
+    return senteHandString
   }
 
   /**
    * 後手の持ち駒を返す
    */
-  public dispGoteHands(): string {
-    // TODO:未実装
-    return ''
+  public dispGoteHand(): string {
+    const goteHand = this._field.hands[SHOGI.PLAYER.GOTE]
+
+    let goteHandString: string = '[後手持ち駒] '
+    _.each(goteHand, (keepNum: number, komaType: string) => {
+      goteHandString +=
+        KomaInfo.getKanji(KomaInfo.komaAtoi(komaType)) +
+        ':' +
+        keepNum.toString() +
+        ' \n'
+    })
+    return goteHandString
   }
 
   /**
@@ -270,11 +326,24 @@ export default class ShogiManager {
     fromY: number,
     toX: number,
     toY: number,
-    promote: boolean,
+    promote: boolean = false,
     comment: Array<string> | string | null = null
   ) {
-    // TODO: 未実装
-    //this.makeMoveData()
+    const boardObj: boardObject = this.getBoardPiece(fromX, fromY)
+    let moveObj: boardObject | null = null
+    if (_.has(boardObj, 'color')) {
+      moveObj = this.makeMoveData(
+        KomaInfo.komaAtoi(boardObj.kind as string),
+        fromX,
+        fromY,
+        toX,
+        toY,
+        promote
+      )
+      this.addMovefromObj(moveObj as moveInfoObject, comment)
+    } else {
+      console.log('fromの座標に駒が存在しません。')
+    }
   }
 
   /**
@@ -291,7 +360,8 @@ export default class ShogiManager {
     toY: number,
     comment: Array<string> | string | null = null
   ) {
-    // TODO: 未実装
+    const moveObj = this.makeMoveData(komaNum, null, null, toX, toY, false)
+    this.addMovefromObj(moveObj, comment)
   }
 
   /**
@@ -300,7 +370,11 @@ export default class ShogiManager {
    * @param forkIndex
    */
   public switchFork(forkIndex: number) {
-    // TODO:未実装
+    if (this.isFork) {
+      this.moveData.switchFork(this._currentNum, forkIndex)
+    } else {
+      console.log('現在の指し手は分岐をもっていません。')
+    }
   }
 
   /**
@@ -385,15 +459,13 @@ export default class ShogiManager {
    */
   private makeMoveData(
     komaNum: number,
-    fromX: number,
-    fromY: number,
+    fromX: number | null,
+    fromY: number | null,
     toX: number,
     toY: number,
     promote: boolean
   ): moveInfoObject {
-    // TODO: from,toの各座標の範囲検査をつける
-
-    // 前の指し手を取得
+    // 前の指し手(現在の盤面になる前に最後に適用した指し手)を取得
     const prevMove = this.moveData.currentMoves[this._currentNum]
 
     // 手番のプレイヤーを取得
@@ -413,6 +485,22 @@ export default class ShogiManager {
     // 持ち駒を置く場合fromはなし
     if (_.isNumber(fromX) && _.isNumber(fromY)) {
       moveInfoObj.from = { x: fromX, y: fromY }
+      if (!Pos.inRange(fromX, fromY)) {
+        throw Error('fromの座標が盤面の範囲外です。')
+      }
+
+      const fromPosObj: boardObject = this.getBoardPiece(fromX, fromY)
+      if (!_.isEmpty(fromPosObj)) {
+        if (_.has(fromPosObj, 'kind')) {
+          if (fromPosObj.color != color) {
+            throw new Error('相手の駒は移動できません。')
+          }
+        }
+      }
+    }
+
+    if (!Pos.inRange(toX, toY)) {
+      throw Error('toの座標が盤面の範囲外です。')
     }
 
     if (promote) {
@@ -867,29 +955,40 @@ const jkfData = {
 const manager = new ShogiManager(jkfData)
 
 manager.currentNum++
-console.log(manager.dispBoard())
-console.log(manager.dispNextMoves())
+console.log(manager.dispCurrentInfo())
+
 manager.currentNum++
-console.log(manager.dispBoard())
-console.log(manager.dispNextMoves())
+console.log(manager.dispCurrentInfo())
+
 manager.currentNum++
-console.log(manager.dispBoard())
-console.log(manager.dispNextMoves())
+console.log(manager.dispCurrentInfo())
+console.log(manager.dispKifuMoves())
+
 manager.currentNum++
-console.log(manager.dispBoard())
-console.log(manager.dispNextMoves())
+console.log(manager.dispCurrentInfo())
+
 manager.currentNum++
-console.log(manager.dispBoard())
-console.log(manager.dispNextMoves())
+console.log(manager.dispCurrentInfo())
+
 manager.currentNum++
-console.log(manager.dispBoard())
-console.log(manager.dispNextMoves())
+console.log(manager.dispCurrentInfo())
+
 manager.currentNum++
-console.log(manager.dispBoard())
-console.log(manager.dispNextMoves())
+console.log(manager.dispCurrentInfo())
+
 manager.currentNum++
-console.log(manager.dispBoard())
-console.log(manager.dispNextMoves())
+console.log(manager.dispCurrentInfo())
+
+manager.currentNum++
+console.log(manager.dispCurrentInfo())
+
+// TODO: ここで起こるバグの修正
+manager.addBoardMove(2, 8, 8, 8)
+manager.currentNum++
+console.log(manager.dispCurrentInfo())
+
+manager.currentNum++
+console.log(manager.dispCurrentInfo())
 
 // 次の実装
 // 指し手の追加の実装

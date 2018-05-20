@@ -43,6 +43,10 @@ export default class MoveList {
     return select
   }
 
+  public get currentMoves() {
+    return this._currentMoves
+  }
+
   /**
    * 指定指し手番号に指し手を追加する。moveNumが最新なら新規指し手の追加、そうでないなら分岐指し手の追加となる
    *
@@ -51,15 +55,30 @@ export default class MoveList {
    */
   public addMove(moveNum: number, moveObj: moveObject) {
     // TODO:ここにmoveInfoObjが正しいかどうか判定する処理を入れる
-
     const newIndex = this.makeMoveCell(moveObj, this._currentMoveCells[moveNum])
-    if (!_.isNumber(newIndex)) {
+
+    if (_.isNumber(newIndex)) {
       this.makeCurrentMoveArray()
+      console.log(moveObj)
     }
   }
 
-  public get currentMoves() {
-    return this._currentMoves
+  public switchFork(moveNum: number, forkIndex: number) {
+    // 更新の必要がない場合何もしない
+    if (moveNum <= 0) {
+      throw new Error('初期盤面では棋譜分岐できません。')
+    }
+
+    if (_.isNumber(this._currentMoveCells[moveNum].prev)) {
+      this._moveCells[
+        this._currentMoveCells[moveNum].prev as number
+      ].switchFork(forkIndex)
+
+      // 現在の分岐を作成し直す
+      this.makeCurrentMoveArray()
+    } else {
+      throw new Error('分岐切り替え処理に失敗しました。')
+    }
   }
 
   // json棋譜フォーマットの指し手情報配列から指し手セル配列を作成する
@@ -174,7 +193,7 @@ export default class MoveList {
       : null
 
     // セルのnextをひとつずつ辿っていき、次の指し手が存在しないセルに到達したら終了
-    while (cell && cell.next && _.size(cell.next)) {
+    while (cell) {
       this._currentMoveCells.push(cell)
       this._currentMoves.push(cell.info)
 

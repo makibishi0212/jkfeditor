@@ -19,7 +19,7 @@ export default class MoveCell {
   private _next: Array<number> = []
 
   // 前の指し手のインデックス 前の指し手が存在しない場合はnull
-  private prev: number | null = null
+  private _prev: number | null = null
 
   // this.nextの、現在指し手として選択しているものが格納されているインデックス
   private _select: number = 0
@@ -43,9 +43,14 @@ export default class MoveCell {
     isBranch: boolean
   ) {
     this._index = index
+    this._prev = prevIndex
 
     // 指し手情報を作成
     this._info = new Move(moveObj, isBranch)
+  }
+
+  public get prev(): number | null {
+    return this._prev
   }
 
   public get next(): Array<number> {
