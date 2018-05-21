@@ -124,7 +124,7 @@ export default class ShogiManager {
     if (
       this._currentNum !== newNum &&
       newNum >= 0 &&
-      newNum <= this.moveData.currentMoves.length
+      newNum < this.moveData.currentMoves.length
     ) {
       // 現在の盤面及び各プレイヤーの手持ち駒、次の指し手候補、指し手番号が更新対象
 
@@ -149,7 +149,6 @@ export default class ShogiManager {
           while (tmpMoveNum < newNum) {
             // 次に適用する指し手
             const nextMove = this.moveData.getMove(tmpMoveNum + 1)
-            console.log(nextMove)
 
             this._field.applyMove(nextMove)
 
@@ -167,7 +166,7 @@ export default class ShogiManager {
           newNum +
           ' は範囲外です。0以上で' +
           this.moveData.currentMoves.length +
-          '以下である必要があります。'
+          'より小さい必要があります。'
       )
     }
   }
@@ -979,16 +978,12 @@ console.log(manager.dispCurrentInfo())
 manager.currentNum++
 console.log(manager.dispCurrentInfo())
 
-manager.currentNum++
-console.log(manager.dispCurrentInfo())
-
-// TODO: ここで起こるバグの修正
 manager.addBoardMove(2, 8, 8, 8)
 manager.currentNum++
 console.log(manager.dispCurrentInfo())
 
-manager.currentNum++
-console.log(manager.dispCurrentInfo())
+//manager.currentNum++
+//console.log(manager.dispCurrentInfo())
 
 // 次の実装
 // 指し手の追加の実装

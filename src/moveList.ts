@@ -59,7 +59,6 @@ export default class MoveList {
 
     if (_.isNumber(newIndex)) {
       this.makeCurrentMoveArray()
-      console.log(moveObj)
     }
   }
 
