@@ -360,7 +360,9 @@ export default class ShogiManager {
     comment: Array<string> | string | null = null
   ) {
     const moveObj = this.makeMoveData(komaNum, null, null, toX, toY, false)
-    this.addMovefromObj(moveObj, comment)
+    if (moveObj) {
+      this.addMovefromObj(moveObj, comment)
+    }
   }
 
   /**
@@ -369,8 +371,15 @@ export default class ShogiManager {
    * @param forkIndex
    */
   public switchFork(forkIndex: number) {
+    if (this.currentNum <= 0) {
+      console.error('初期盤面では棋譜分岐できません。')
+    }
+
     if (this.isFork) {
-      this.moveData.switchFork(this._currentNum, forkIndex)
+      // まず分岐前の手に戻す
+      this.currentNum--
+      this.moveData.switchFork(this._currentNum + 1, forkIndex)
+      this.currentNum++
     } else {
       console.log('現在の指し手は分岐をもっていません。')
     }
@@ -463,7 +472,7 @@ export default class ShogiManager {
     toX: number,
     toY: number,
     promote: boolean
-  ): moveInfoObject {
+  ): moveInfoObject | null {
     // 前の指し手(現在の盤面になる前に最後に適用した指し手)を取得
     const prevMove = this.moveData.currentMoves[this._currentNum]
 
@@ -485,21 +494,24 @@ export default class ShogiManager {
     if (_.isNumber(fromX) && _.isNumber(fromY)) {
       moveInfoObj.from = { x: fromX, y: fromY }
       if (!Pos.inRange(fromX, fromY)) {
-        throw Error('fromの座標が盤面の範囲外です。')
+        console.error('fromの座標が盤面の範囲外です。')
+        return null
       }
 
       const fromPosObj: boardObject = this.getBoardPiece(fromX, fromY)
       if (!_.isEmpty(fromPosObj)) {
         if (_.has(fromPosObj, 'kind')) {
           if (fromPosObj.color != color) {
-            throw new Error('相手の駒は移動できません。')
+            console.error('相手の駒は移動できません。')
+            return null
           }
         }
       }
     }
 
     if (!Pos.inRange(toX, toY)) {
-      throw Error('toの座標が盤面の範囲外です。')
+      console.error('toの座標が盤面の範囲外です。')
+      return null
     }
 
     if (promote) {
@@ -516,7 +528,8 @@ export default class ShogiManager {
     if (!_.isEmpty(toPosObj)) {
       if (_.has(toPosObj, 'kind')) {
         if (toPosObj.color === color) {
-          throw new Error('自分の駒を取る移動です。')
+          console.error('自分の駒を取る移動です。')
+          return null
         }
         moveInfoObj.capture = toPosObj.kind
       }
@@ -961,6 +974,9 @@ console.log(manager.dispCurrentInfo())
 
 manager.currentNum++
 console.log(manager.dispCurrentInfo())
+console.log(manager.dispNextMoves())
+manager.switchFork(1)
+console.log(manager.dispCurrentInfo())
 console.log(manager.dispKifuMoves())
 
 manager.currentNum++
@@ -978,10 +994,17 @@ console.log(manager.dispCurrentInfo())
 manager.currentNum++
 console.log(manager.dispCurrentInfo())
 
-manager.addBoardMove(2, 8, 8, 8)
+//manager.addBoardMove(2, 8, 8, 8)
 manager.currentNum++
 console.log(manager.dispCurrentInfo())
 
+//manager.addBoardMove(3, 3, 4, 5)
+manager.currentNum++
+console.log(manager.dispCurrentInfo())
+
+manager.addHandMove(SHOGI.KOMA.KA, 3, 3)
+manager.currentNum++
+console.log(manager.dispCurrentInfo())
 //manager.currentNum++
 //console.log(manager.dispCurrentInfo())
 
