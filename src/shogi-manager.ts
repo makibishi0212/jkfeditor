@@ -303,10 +303,26 @@ export default class ShogiManager {
         moveObj = { move: moveInfoObj }
       }
 
+      if (!moveInfoObj.from) {
+        // fromがない場合はtoの位置が空いているか確認
+        if (
+          !_.isEqual(this.getBoardPiece(moveInfoObj.to.x, moveInfoObj.to.y), {})
+        ) {
+          console.error(
+            '持ち駒から配置する指し手の場合は空きマスを指定して下さい。'
+          )
+        }
+      } else {
+        this._field.isMovable(
+          new Pos(moveInfoObj.from.x, moveInfoObj.from.y),
+          new Pos(moveInfoObj.to.x, moveInfoObj.to.y)
+        )
+      }
+
       // 指し手を追加する
       this.moveData.addMove(this._currentNum, moveObj)
     } else {
-      console.log('この棋譜は読み取り専用です。')
+      console.error('この棋譜は読み取り専用です。')
     }
   }
 
@@ -975,7 +991,7 @@ console.log(manager.dispCurrentInfo())
 manager.currentNum++
 console.log(manager.dispCurrentInfo())
 console.log(manager.dispNextMoves())
-manager.switchFork(1)
+//manager.switchFork(1)
 console.log(manager.dispCurrentInfo())
 console.log(manager.dispKifuMoves())
 
@@ -994,19 +1010,17 @@ console.log(manager.dispCurrentInfo())
 manager.currentNum++
 console.log(manager.dispCurrentInfo())
 
-//manager.addBoardMove(2, 8, 8, 8)
+manager.addBoardMove(2, 8, 8, 8)
 manager.currentNum++
 console.log(manager.dispCurrentInfo())
 
-//manager.addBoardMove(3, 3, 4, 5)
+manager.addBoardMove(3, 3, 4, 5)
 manager.currentNum++
 console.log(manager.dispCurrentInfo())
 
 manager.addHandMove(SHOGI.KOMA.KA, 3, 3)
 manager.currentNum++
 console.log(manager.dispCurrentInfo())
-//manager.currentNum++
-//console.log(manager.dispCurrentInfo())
 
 // 次の実装
 // 指し手の追加の実装

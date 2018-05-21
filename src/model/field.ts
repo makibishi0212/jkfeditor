@@ -1,6 +1,11 @@
 import _ from 'lodash'
 
-import { moveInfoObject, boardObject } from '../const/interface'
+import {
+  moveInfoObject,
+  boardObject,
+  komaDataObject,
+  komaMoveObject
+} from '../const/interface'
 import Move from './move'
 import * as SHOGI from '../const/const'
 import KomaInfo from '../const/komaInfo'
@@ -11,7 +16,7 @@ import Pos from './pos'
 
 export default class Field {
   // 81マスの盤面
-  private _board: Array<Array<Object>>
+  private _board: Array<Array<boardObject>>
 
   // 手駒
   private _hands: Array<{ [index: string]: number }>
@@ -118,6 +123,53 @@ export default class Field {
     }
 
     this._color = move.color
+  }
+
+  /**
+   * from座標の駒がto座標の位置に移動できるか判定する
+   *
+   * @param fromX
+   * @param fromY
+   * @param toX
+   * @param toY
+   */
+  public isMovable(from: Pos, to: Pos): boolean {
+    // TODO: 未実装
+    const komaNum = _.has(this._board[from.ay][from.ax], 'kind')
+      ? KomaInfo.komaAtoi(this._board[from.ay][from.ax].kind as string)
+      : null
+
+    if (!komaNum) {
+      console.error('from指定座標に駒がありません。')
+      return false
+    }
+
+    const color = this._board[from.ay][from.ax].color as number
+
+    // TODO: 駒の移動タイプと上記変数比較
+    const moves = KomaInfo.getMoves(komaNum)
+
+    _.some(moves, (move: komaMoveObject) => {
+      if (move.type === SHOGI.MOVETYPE.POS) {
+        let mx = move.x
+        let my = move.y
+
+        if (color === SHOGI.PLAYER.SENTE) {
+          my *= -1
+        } else {
+          mx *= -1
+        }
+        if (from.ax + move.x === to.ax && from.ay + move.y === to.ay) {
+          return true
+        } else {
+          return false
+        }
+      } else {
+        // TODO: dir時のmovable判定
+      }
+    })
+
+    return true
   }
 
   public get board() {

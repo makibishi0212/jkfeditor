@@ -1,4 +1,4 @@
-import { komaDataObject } from './interface'
+import { komaDataObject, komaMoveObject } from './interface'
 import * as SHOGI from './const'
 
 // 駒の情報を取得できるクラス
