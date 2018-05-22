@@ -229,6 +229,14 @@ export default class ShogiManager {
   }
 
   /**
+   * 現在の棋譜の全ての分岐をツリーとして表示する
+   */
+  public dispKifuTree(): string {
+    // TODO: 未実装
+    return ''
+  }
+
+  /**
    * 次の指し手候補を返す
    */
   public dispNextMoves(): string {
@@ -305,18 +313,27 @@ export default class ShogiManager {
 
       if (!moveInfoObj.from) {
         // fromがない場合はtoの位置が空いているか確認
+        // TODO: 持ち駒に対象駒があるのか判定
         if (
           !_.isEqual(this.getBoardPiece(moveInfoObj.to.x, moveInfoObj.to.y), {})
         ) {
           console.error(
-            '持ち駒から配置する指し手の場合は空きマスを指定して下さい。'
+            '持ち駒から配置する指し手の場合は空きマスを指定して下さい。',
+            'TO:[x:' + moveInfoObj.to.x + ',' + 'y:' + moveInfoObj.to.y + ']',
+            this.getBoardPiece(moveInfoObj.to.x, moveInfoObj.to.y)
           )
+          return
         }
       } else {
-        this._field.isMovable(
+        const isMovable = this._field.isMovable(
           new Pos(moveInfoObj.from.x, moveInfoObj.from.y),
           new Pos(moveInfoObj.to.x, moveInfoObj.to.y)
         )
+
+        if (!isMovable) {
+          console.error('指定された指し手は移動不可能です。')
+          return
+        }
       }
 
       // 指し手を追加する
@@ -355,7 +372,10 @@ export default class ShogiManager {
         toY,
         promote
       )
-      this.addMovefromObj(moveObj as moveInfoObject, comment)
+
+      if (moveObj) {
+        this.addMovefromObj(moveObj as moveInfoObject, comment)
+      }
     } else {
       console.log('fromの座標に駒が存在しません。')
     }
@@ -991,7 +1011,7 @@ console.log(manager.dispCurrentInfo())
 manager.currentNum++
 console.log(manager.dispCurrentInfo())
 console.log(manager.dispNextMoves())
-//manager.switchFork(1)
+manager.switchFork(1)
 console.log(manager.dispCurrentInfo())
 console.log(manager.dispKifuMoves())
 

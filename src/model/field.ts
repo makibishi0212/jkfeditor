@@ -149,27 +149,49 @@ export default class Field {
     // TODO: 駒の移動タイプと上記変数比較
     const moves = KomaInfo.getMoves(komaNum)
 
-    _.some(moves, (move: komaMoveObject) => {
-      if (move.type === SHOGI.MOVETYPE.POS) {
-        let mx = move.x
-        let my = move.y
+    return _.some(moves, (move: komaMoveObject) => {
+      let mx = move.x
+      let my = move.y
 
-        if (color === SHOGI.PLAYER.SENTE) {
-          my *= -1
-        } else {
-          mx *= -1
-        }
+      if (color === SHOGI.PLAYER.SENTE) {
+        my *= -1
+      } else {
+        mx *= -1
+      }
+
+      if (move.type === SHOGI.MOVETYPE.POS) {
         if (from.ax + move.x === to.ax && from.ay + move.y === to.ay) {
           return true
         } else {
           return false
         }
       } else {
-        // TODO: dir時のmovable判定
+        // ベクトル移動の場合は移動不可能になるまでその方向への移動を行い、そのマスが移動先マスと一致する場合は終了する
+        // まだ指定方向に移動可能かどうか
+        let stillMovable = true
+        let nextX = from.ax
+        let nextY = from.ay
+
+        while (stillMovable) {
+          nextX = nextX + mx
+          nextY = nextY + my
+
+          if (Pos.inRange(nextX, nextY)) {
+            if (!_.isEmpty(this._board[nextY][nextX])) {
+              // 進行対象マスに駒が存在する場合は終了する
+              stillMovable = false
+            }
+
+            if (nextX === to.ax && nextY === to.ay) {
+              return true
+            }
+          } else {
+            // 移動先マスが盤面の範囲外となる場合も終了する
+            stillMovable = false
+          }
+        }
       }
     })
-
-    return true
   }
 
   public get board() {
