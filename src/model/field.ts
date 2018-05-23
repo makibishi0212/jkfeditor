@@ -194,6 +194,34 @@ export default class Field {
     })
   }
 
+  /**
+   * 指定プレイヤーが該当の駒を持っているかどうか
+   *
+   * @param player
+   * @param komaNum
+   */
+  public isInHand(player: number, komaNum: number): boolean {
+    if (player === SHOGI.PLAYER.SENTE) {
+      if (this._hands[SHOGI.PLAYER.SENTE]) {
+      }
+    } else {
+    }
+
+    const komaString = KomaInfo.komaItoa(komaNum)
+    if (this._hands[player] && _.has(this._hands[player], komaString)) {
+      // 指定の駒が手持ちに存在すればtrueを返す
+      if (this._hands[player][komaString] >= 1) {
+        return true
+      }
+    }
+
+    return false
+  }
+
+  public get color() {
+    return this._color
+  }
+
   public get board() {
     return this._board
   }

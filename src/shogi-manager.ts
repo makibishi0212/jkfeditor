@@ -2,6 +2,7 @@ import _ from 'lodash'
 
 import * as SHOGI from './const/const'
 import KomaInfo from './const/komaInfo'
+import Util from './util'
 
 import MoveList from './moveList'
 import Move from './model/move'
@@ -18,11 +19,14 @@ import Field from './model/field'
 import { config } from 'shelljs'
 import { move } from 'fs-extra'
 import MoveCell from './model/moveCell'
-import { KOMA, board } from './const/const'
+import { KOMA, board, PLAYER } from './const/const'
 
 export default class ShogiManager {
   // 指し手番号
   private _currentNum: number = 0
+
+  // 現在盤面において最後に指したプレイヤー
+  private _player: number = PLAYER.SENTE
 
   /** 特定の指し手における盤面などの情報 */
 
@@ -300,7 +304,6 @@ export default class ShogiManager {
     moveInfoObj: moveInfoObject,
     comment: Array<string> | string | null = null
   ) {
-    // TODO:ここで現在の盤面で与えられた指し手が受理可能かを判定する
     if (!this.readonly) {
       let moveObj: moveObject
       if (_.isString(comment)) {
@@ -314,6 +317,17 @@ export default class ShogiManager {
       if (!moveInfoObj.from) {
         // fromがない場合はtoの位置が空いているか確認
         // TODO: 持ち駒に対象駒があるのか判定
+        // TODO: 移動できない場所への配置かどうか判定
+        if (
+          !this._field.isInHand(
+            Util.oppoPlayer(this._field.color),
+            KomaInfo.komaAtoi(moveInfoObj.piece)
+          )
+        ) {
+          console.error('打ち駒が手持ち駒の中にありません。')
+          return
+        }
+
         if (
           !_.isEqual(this.getBoardPiece(moveInfoObj.to.x, moveInfoObj.to.y), {})
         ) {
@@ -1038,7 +1052,7 @@ manager.addBoardMove(3, 3, 4, 5)
 manager.currentNum++
 console.log(manager.dispCurrentInfo())
 
-manager.addHandMove(SHOGI.KOMA.KA, 3, 3)
+manager.addHandMove(SHOGI.KOMA.KE, 3, 3)
 manager.currentNum++
 console.log(manager.dispCurrentInfo())
 
