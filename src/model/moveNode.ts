@@ -5,14 +5,14 @@ import { moveObject } from '../const/interface'
 
 // 将棋用の指し手リストクラス
 
-export default class MoveCell {
+export default class MoveNode {
   // 指し手の基本情報
   private _info: Move
 
   // json棋譜フォーマットで定義されている元の指し手情報
   private _moveObj: moveObject
 
-  // このリストセルのmoveCellArray上のインデックス
+  // このリストセルのmoveNodeArray上のインデックス
   private _index: number
 
   // 次の指し手候補のインデックスを格納する配列
@@ -28,7 +28,7 @@ export default class MoveCell {
   private _isBranch: boolean = false
 
   /**
-   * MoveCellクラス
+   * MoveNodeクラス
    * 指し手のリスト構造におけるひとつのセルを表現する
    *
    * @param moveObj セルの元となるひとつのjson棋譜オブジェクトの指し手オブジェクト

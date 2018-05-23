@@ -18,7 +18,7 @@ import {
 import Field from './model/field'
 import { config } from 'shelljs'
 import { move } from 'fs-extra'
-import MoveCell from './model/moveCell'
+import MoveNode from './model/moveNode'
 import { KOMA, board, PLAYER } from './const/const'
 
 export default class ShogiManager {
@@ -96,9 +96,9 @@ export default class ShogiManager {
    * 現在の盤面が次の指し手候補を複数持つかどうかを返す
    */
   public get isFork(): boolean {
-    const nextMoveCells = this.moveData.getNextMoves(this._currentNum - 1)
+    const nextMoveNodes = this.moveData.getNextMoves(this._currentNum - 1)
 
-    if (nextMoveCells.length > 1) {
+    if (nextMoveNodes.length > 1) {
       return true
     } else {
       return false
@@ -185,6 +185,10 @@ export default class ShogiManager {
     return currentInfoString
   }
 
+  public dispKifuTree(): string {
+    return this.moveData.dispKifuTree()
+  }
+
   /**
    * 現在の盤面を見やすい形で表した文字列を返す
    */
@@ -233,22 +237,14 @@ export default class ShogiManager {
   }
 
   /**
-   * 現在の棋譜の全ての分岐をツリーとして表示する
-   */
-  public dispKifuTree(): string {
-    // TODO: 未実装
-    return ''
-  }
-
-  /**
    * 次の指し手候補を返す
    */
   public dispNextMoves(): string {
-    const nextMoveCells = this.moveData.getNextMoves(this._currentNum - 1)
+    const nextMoveNodes = this.moveData.getNextMoves(this._currentNum - 1)
     const nextSelect = this.moveData.getNextSelect(this._currentNum - 1)
 
     let nextMoveString = ''
-    _.each(nextMoveCells, (move: MoveCell, index: number) => {
+    _.each(nextMoveNodes, (move: MoveNode, index: number) => {
       if (index === nextSelect) {
         nextMoveString += '>'
       } else {
@@ -1030,6 +1026,7 @@ console.log(manager.dispCurrentInfo())
 console.log(manager.dispKifuMoves())
 
 manager.currentNum++
+manager.addBoardMove(2, 8, 8, 8)
 console.log(manager.dispCurrentInfo())
 
 manager.currentNum++
@@ -1055,6 +1052,9 @@ console.log(manager.dispCurrentInfo())
 manager.addHandMove(SHOGI.KOMA.KE, 3, 3)
 manager.currentNum++
 console.log(manager.dispCurrentInfo())
+
+console.log(manager.dispKifuTree())
+console.log(manager.dispKifuMoves())
 
 // 次の実装
 // 指し手の追加の実装
