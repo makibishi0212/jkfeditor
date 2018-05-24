@@ -227,6 +227,24 @@ describe('Shogi-manger test', () => {
       ]
     }
 
-    const manager2 = new ShogiManager(jkfData)
+    const manager = new ShogiManager(jkfData)
+    manager.currentNum++
+    manager.currentNum++
+
+    console.log(manager.dispCurrentInfo())
+    console.log(manager.dispNextMoves())
+    manager.currentNum++
+    console.log(manager.dispKifuMoves())
+    manager.currentNum--
+    manager.switchFork(1)
+    console.log(manager.dispKifuMoves())
+    manager.go(6)
+    manager.addBoardMove(4, 5, 6, 3, true, ['KAKU', 'NARI'])
+    manager.currentNum++
+    manager.addHandMove(6, 6, 4, 'KAKUOKI')
+    manager.currentNum++
+    manager.addBoardMove(6, 3, 6, 4)
+    manager.currentNum++
+    console.log(manager.dispCurrentInfo())
   })
 })

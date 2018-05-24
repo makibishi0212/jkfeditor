@@ -44,9 +44,13 @@ export default class Move {
   // 持ち駒から置く手かどうか
   private _isPut: boolean = false
 
+  // jkf表現時のオブジェクト
+  private _moveObj: moveObject
+
   constructor(moveObj: moveObject, isBranch: boolean) {
     this._name = this.getMoveName(moveObj)
     this._isBranch = isBranch
+    this._moveObj = moveObj
 
     if (_.has(moveObj, 'comments')) {
       this._comments = moveObj.comments as Array<string>
@@ -113,6 +117,10 @@ export default class Move {
       ? KomaInfo.getJKFString(KomaInfo.getPromote(this._komaNum) as number)
       : KomaInfo.getJKFString(this._komaNum)
     return { color: this.color, kind: kind }
+  }
+
+  public get moveObj(): moveObject {
+    return this._moveObj
   }
 
   public get isPut(): boolean {

@@ -79,13 +79,15 @@ export default class MoveList {
       throw new Error('初期盤面では棋譜分岐できません。')
     }
 
-    if (_.isNumber(this._currentMoveNodes[moveNum].prev)) {
-      this._moveNodes[
-        this._currentMoveNodes[moveNum].prev as number
-      ].switchFork(forkIndex)
-
-      // 現在の分岐を作成し直す
-      this.makeCurrentMoveArray()
+    if (_.isNumber(this._currentMoveNodes[moveNum].index)) {
+      if (
+        this._moveNodes[
+          this._currentMoveNodes[moveNum].index as number
+        ].switchFork(forkIndex)
+      ) {
+        // 現在の分岐を作成し直す
+        this.makeCurrentMoveArray()
+      }
     } else {
       throw new Error('分岐切り替え処理に失敗しました。')
     }
@@ -95,7 +97,7 @@ export default class MoveList {
    * 現在の棋譜の全ての分岐をツリーとして表示する
    */
   public dispKifuTree(): string {
-    // TODO: 未実装
+    // TODO: もっと分かりやすい表示にする
     let kifuTreeString = ''
 
     const startNode = this.startNode
@@ -106,6 +108,47 @@ export default class MoveList {
     kifuTreeString = this.makeTreeString(startNode, 0, 0)
 
     return kifuTreeString
+  }
+
+  public exportJkfMoves(
+    startMoveNode: MoveNode = this._moveNodes[0]
+  ): Array<Object> {
+    const moves: Array<Object> = []
+
+    let targetMoveNode: MoveNode | null = startMoveNode
+    // 分岐を持つ指し手の最初の指し手かどうか
+    let isFirst: boolean = true
+
+    while (targetMoveNode) {
+      // 前の指し手の選択肢が複数
+      const nodes = _.isNumber(targetMoveNode.prev)
+        ? _.size(this._moveNodes[targetMoveNode.prev].next)
+        : 1
+
+      if (nodes > 1 && !isFirst) {
+        const prevMoveNode = this._moveNodes[targetMoveNode.prev as number]
+        const forks = []
+        const nextSize = _.size(prevMoveNode.next)
+
+        for (let i = 1; i < nextSize; i++)
+          forks.push(this.exportJkfMoves(this._moveNodes[prevMoveNode.next[i]]))
+
+        const forkedObj = _.cloneDeep(targetMoveNode.moveObj)
+        forkedObj.forks = forks
+        moves.push(forkedObj)
+      } else {
+        moves.push(targetMoveNode.moveObj)
+      }
+
+      targetMoveNode =
+        _.size(targetMoveNode.next) >= 0
+          ? this._moveNodes[targetMoveNode.next[0]]
+          : null
+
+      isFirst = false
+    }
+
+    return moves
   }
 
   private makeTreeString(node: MoveNode, hierarchy: number, kifuNum: number) {

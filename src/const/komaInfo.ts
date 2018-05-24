@@ -585,81 +585,80 @@ export default class KomaInfo {
     '八枚落ち'
   ]
 
-  public static hirateBoard: Array<Array<Object>> = [
-    [
-      { color: 1, kind: 'KY' },
-      { color: 1, kind: 'KE' },
-      { color: 1, kind: 'GI' },
-      { color: 1, kind: 'KI' },
-      { color: 1, kind: 'OU' },
-      { color: 1, kind: 'KI' },
-      { color: 1, kind: 'GI' },
-      { color: 1, kind: 'KE' },
-      { color: 1, kind: 'KY' }
+  public static initBoards: { [index: string]: Array<Array<Object>> } = {
+    HIRATE: [
+      [
+        { color: 1, kind: 'KY' },
+        { color: 1, kind: 'KE' },
+        { color: 1, kind: 'GI' },
+        { color: 1, kind: 'KI' },
+        { color: 1, kind: 'OU' },
+        { color: 1, kind: 'KI' },
+        { color: 1, kind: 'GI' },
+        { color: 1, kind: 'KE' },
+        { color: 1, kind: 'KY' }
+      ],
+      [
+        {},
+        { color: 1, kind: 'HI' },
+        {},
+        {},
+        {},
+        {},
+        {},
+        { color: 1, kind: 'KA' },
+        {}
+      ],
+      [
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' }
+      ],
+      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
+      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
+      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
+      [
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' }
+      ],
+      [
+        {},
+        { color: 0, kind: 'KA' },
+        {},
+        {},
+        {},
+        {},
+        {},
+        { color: 0, kind: 'HI' },
+        {}
+      ],
+      [
+        { color: 0, kind: 'KY' },
+        { color: 0, kind: 'KE' },
+        { color: 0, kind: 'GI' },
+        { color: 0, kind: 'KI' },
+        { color: 0, kind: 'OU' },
+        { color: 0, kind: 'KI' },
+        { color: 0, kind: 'GI' },
+        { color: 0, kind: 'KE' },
+        { color: 0, kind: 'KY' }
+      ]
     ],
-    [
-      {},
-      { color: 1, kind: 'HI' },
-      {},
-      {},
-      {},
-      {},
-      {},
-      { color: 1, kind: 'KA' },
-      {}
-    ],
-    [
-      { color: 1, kind: 'FU' },
-      { color: 1, kind: 'FU' },
-      { color: 1, kind: 'FU' },
-      { color: 1, kind: 'FU' },
-      { color: 1, kind: 'FU' },
-      { color: 1, kind: 'FU' },
-      { color: 1, kind: 'FU' },
-      { color: 1, kind: 'FU' },
-      { color: 1, kind: 'FU' }
-    ],
-    [{}, {}, {}, {}, {}, {}, {}, {}, {}],
-    [{}, {}, {}, {}, {}, {}, {}, {}, {}],
-    [{}, {}, {}, {}, {}, {}, {}, {}, {}],
-    [
-      { color: 0, kind: 'FU' },
-      { color: 0, kind: 'FU' },
-      { color: 0, kind: 'FU' },
-      { color: 0, kind: 'FU' },
-      { color: 0, kind: 'FU' },
-      { color: 0, kind: 'FU' },
-      { color: 0, kind: 'FU' },
-      { color: 0, kind: 'FU' },
-      { color: 0, kind: 'FU' }
-    ],
-    [
-      {},
-      { color: 0, kind: 'KA' },
-      {},
-      {},
-      {},
-      {},
-      {},
-      { color: 0, kind: 'HI' },
-      {}
-    ],
-    [
-      { color: 0, kind: 'KY' },
-      { color: 0, kind: 'KE' },
-      { color: 0, kind: 'GI' },
-      { color: 0, kind: 'KI' },
-      { color: 0, kind: 'OU' },
-      { color: 0, kind: 'KI' },
-      { color: 0, kind: 'GI' },
-      { color: 0, kind: 'KE' },
-      { color: 0, kind: 'KY' }
-    ]
-  ]
-
-  public static komaochiBoards: Array<Array<Array<Object>>> = [
     // 香落ち
-    [
+    KY: [
       [
         { color: 1, kind: 'KY' },
         { color: 1, kind: 'KE' },
@@ -732,7 +731,7 @@ export default class KomaInfo {
     ],
 
     // 角落ち
-    [
+    KA: [
       [
         { color: 1, kind: 'KY' },
         { color: 1, kind: 'KE' },
@@ -795,7 +794,7 @@ export default class KomaInfo {
     ],
 
     // 飛車落ち
-    [
+    HI: [
       [
         { color: 1, kind: 'KY' },
         { color: 1, kind: 'KE' },
@@ -858,7 +857,7 @@ export default class KomaInfo {
     ],
 
     // 飛香落ち
-    [
+    HIKY: [
       [
         { color: 1, kind: 'KY' },
         { color: 1, kind: 'KE' },
@@ -921,7 +920,7 @@ export default class KomaInfo {
     ],
 
     // 2枚落ち
-    [
+    '2': [
       [
         { color: 1, kind: 'KY' },
         { color: 1, kind: 'KE' },
@@ -984,7 +983,7 @@ export default class KomaInfo {
     ],
 
     // 4枚落ち
-    [
+    '4': [
       [
         { color: 1, kind: 'KY' },
         { color: 1, kind: 'KE' },
@@ -1047,7 +1046,7 @@ export default class KomaInfo {
     ],
 
     // 6枚落ち
-    [
+    '6': [
       [
         { color: 1, kind: 'KY' },
         { color: 1, kind: 'KE' },
@@ -1110,7 +1109,7 @@ export default class KomaInfo {
     ],
 
     // 8枚落ち
-    [
+    '8': [
       [
         { color: 1, kind: 'KY' },
         { color: 1, kind: 'KE' },
@@ -1171,7 +1170,7 @@ export default class KomaInfo {
         {}
       ]
     ]
-  ]
+  }
 
   /**
    * 駒名の文字配列から駒番号を返す

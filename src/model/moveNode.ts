@@ -44,6 +44,7 @@ export default class MoveNode {
   ) {
     this._index = index
     this._prev = prevIndex
+    this._moveObj = moveObj
 
     // 指し手情報を作成
     this._info = new Move(moveObj, isBranch)
@@ -90,11 +91,13 @@ export default class MoveNode {
    *
    * @param forkIndex 分岐指し手のインデックス
    */
-  public switchFork(forkIndex: number) {
+  public switchFork(forkIndex: number): boolean {
     if (_.size(this.next) > 1) {
       this._select = forkIndex
+      return true
     } else {
-      throw new Error('not have fork')
+      console.error('not have fork')
+      return false
     }
   }
 

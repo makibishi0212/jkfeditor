@@ -49,6 +49,9 @@ export default class ShogiManager {
   // 棋譜の指し手以外の情報
   private info: Object
 
+  // プリセット
+  private preset: string = 'HIRATE'
+
   /**
    * jkfを渡して初期化
    * @param jkf
@@ -62,8 +65,25 @@ export default class ShogiManager {
   /**
    * jkfをエクスポートする
    */
-  public export() {
+  public export(): jkfObject {
     // TODO:未実装
+    const jkfObj: jkfObject = {}
+
+    if (_.isObject(this.info)) {
+      jkfObj.header = this.info as initObject
+    }
+
+    if (this.preset != SHOGI.KOMAOCHI.HIRATE) {
+      jkfObj.initial = { preset: this.preset }
+
+      if (this.preset === SHOGI.KOMAOCHI.OTHER) {
+        jkfObj.initial.data = this._field.initData
+      }
+    }
+
+    jkfObj.moves = this.moveData.exportJkfMoves()
+
+    return jkfObj
   }
 
   public get list(): Array<Move> {
@@ -96,7 +116,7 @@ export default class ShogiManager {
    * 現在の盤面が次の指し手候補を複数持つかどうかを返す
    */
   public get isFork(): boolean {
-    const nextMoveNodes = this.moveData.getNextMoves(this._currentNum - 1)
+    const nextMoveNodes = this.moveData.getNextMoves(this._currentNum)
 
     if (nextMoveNodes.length > 1) {
       return true
@@ -240,8 +260,8 @@ export default class ShogiManager {
    * 次の指し手候補を返す
    */
   public dispNextMoves(): string {
-    const nextMoveNodes = this.moveData.getNextMoves(this._currentNum - 1)
-    const nextSelect = this.moveData.getNextSelect(this._currentNum - 1)
+    const nextMoveNodes = this.moveData.getNextMoves(this._currentNum)
+    const nextSelect = this.moveData.getNextSelect(this._currentNum)
 
     let nextMoveString = ''
     _.each(nextMoveNodes, (move: MoveNode, index: number) => {
@@ -371,6 +391,7 @@ export default class ShogiManager {
     promote: boolean = false,
     comment: Array<string> | string | null = null
   ) {
+    // TODO: 「同」が反映されない不具合を修正
     const boardObj: boardObject = this.getBoardPiece(fromX, fromY)
     let moveObj: boardObject | null = null
     if (_.has(boardObj, 'color')) {
@@ -422,10 +443,7 @@ export default class ShogiManager {
     }
 
     if (this.isFork) {
-      // まず分岐前の手に戻す
-      this.currentNum--
-      this.moveData.switchFork(this._currentNum + 1, forkIndex)
-      this.currentNum++
+      this.moveData.switchFork(this._currentNum, forkIndex)
     } else {
       console.log('現在の指し手は分岐をもっていません。')
     }
@@ -447,7 +465,7 @@ export default class ShogiManager {
     }
 
     // 平手状態を代入
-    board = _.cloneDeep(KomaInfo.hirateBoard)
+    board = _.cloneDeep(KomaInfo.initBoards[SHOGI.KOMAOCHI.HIRATE])
 
     // 特殊な初期状態が登録されているか判定
     if (_.has(jkf, 'initial')) {
@@ -460,30 +478,39 @@ export default class ShogiManager {
             // 平手は代入済
             break
           case 'KY': // 香落ち
-            board = _.cloneDeep(KomaInfo.komaochiBoards[SHOGI.KOMAOCHI.KYO])
+            this.preset = SHOGI.KOMAOCHI.KYO
+            board = _.cloneDeep(KomaInfo.initBoards[SHOGI.KOMAOCHI.KYO])
             break
           case 'KA': // 角落ち
-            board = _.cloneDeep(KomaInfo.komaochiBoards[SHOGI.KOMAOCHI.KAKU])
+            this.preset = SHOGI.KOMAOCHI.KAKU
+            board = _.cloneDeep(KomaInfo.initBoards[SHOGI.KOMAOCHI.KAKU])
             break
           case 'HI': // 飛車落ち
-            board = _.cloneDeep(KomaInfo.komaochiBoards[SHOGI.KOMAOCHI.HISHA])
+            this.preset = SHOGI.KOMAOCHI.HISHA
+            board = _.cloneDeep(KomaInfo.initBoards[SHOGI.KOMAOCHI.HISHA])
             break
           case 'HIKY': // 飛香落ち
-            board = _.cloneDeep(KomaInfo.komaochiBoards[SHOGI.KOMAOCHI.HIKYO])
+            this.preset = SHOGI.KOMAOCHI.HIKYO
+            board = _.cloneDeep(KomaInfo.initBoards[SHOGI.KOMAOCHI.HIKYO])
             break
           case '2': // 2枚落ち
-            board = _.cloneDeep(KomaInfo.komaochiBoards[SHOGI.KOMAOCHI.NI])
+            this.preset = SHOGI.KOMAOCHI.NI
+            board = _.cloneDeep(KomaInfo.initBoards[SHOGI.KOMAOCHI.NI])
             break
           case '4': // 4枚落ち
-            board = _.cloneDeep(KomaInfo.komaochiBoards[SHOGI.KOMAOCHI.YON])
+            this.preset = SHOGI.KOMAOCHI.YON
+            board = _.cloneDeep(KomaInfo.initBoards[SHOGI.KOMAOCHI.YON])
             break
           case '6': // 6枚落ち
-            board = _.cloneDeep(KomaInfo.komaochiBoards[SHOGI.KOMAOCHI.ROKU])
+            this.preset = SHOGI.KOMAOCHI.ROKU
+            board = _.cloneDeep(KomaInfo.initBoards[SHOGI.KOMAOCHI.ROKU])
             break
           case '8': // 8枚落ち
-            board = _.cloneDeep(KomaInfo.komaochiBoards[SHOGI.KOMAOCHI.HACHI])
+            this.preset = SHOGI.KOMAOCHI.HACHI
+            board = _.cloneDeep(KomaInfo.initBoards[SHOGI.KOMAOCHI.HACHI])
             break
           case 'OTHER': // 上記以外
+            this.preset = SHOGI.KOMAOCHI.OTHER
             board = ((jkf.initial as initObject).data as initBoardObject)
               .board as Array<Array<Object>>
             hands = ((jkf.initial as initObject).data as initBoardObject)
@@ -884,9 +911,7 @@ const jkfData = {
 
       // hands[0]は先手の持ち駒、hands[1]は後手の持ち駒
       hands: [{}, {}]
-    },
-
-    mode: 'JOSEKI' // 独自定義 棋譜か定跡かを表す 'KIFU' または 'JOSEKI'
+    }
   },
   moves: [
     { comments: ['分岐の例'] },
@@ -1009,52 +1034,6 @@ const jkfData = {
     { move: { to: { x: 3, y: 3 }, color: 1, piece: 'KE', relative: 'H' } }
   ]
 }
-
-const manager = new ShogiManager(jkfData)
-
-manager.currentNum++
-console.log(manager.dispCurrentInfo())
-
-manager.currentNum++
-console.log(manager.dispCurrentInfo())
-
-manager.currentNum++
-console.log(manager.dispCurrentInfo())
-console.log(manager.dispNextMoves())
-manager.switchFork(1)
-console.log(manager.dispCurrentInfo())
-console.log(manager.dispKifuMoves())
-
-manager.currentNum++
-manager.addBoardMove(2, 8, 8, 8)
-console.log(manager.dispCurrentInfo())
-
-manager.currentNum++
-console.log(manager.dispCurrentInfo())
-
-manager.currentNum++
-console.log(manager.dispCurrentInfo())
-
-manager.currentNum++
-console.log(manager.dispCurrentInfo())
-
-manager.currentNum++
-console.log(manager.dispCurrentInfo())
-
-manager.addBoardMove(2, 8, 8, 8)
-manager.currentNum++
-console.log(manager.dispCurrentInfo())
-
-manager.addBoardMove(3, 3, 4, 5)
-manager.currentNum++
-console.log(manager.dispCurrentInfo())
-
-manager.addHandMove(SHOGI.KOMA.KE, 3, 3)
-manager.currentNum++
-console.log(manager.dispCurrentInfo())
-
-console.log(manager.dispKifuTree())
-console.log(manager.dispKifuMoves())
 
 // 次の実装
 // 指し手の追加の実装

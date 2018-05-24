@@ -36,14 +36,16 @@ export const board = {
 
 // 駒落ちの種類
 export const KOMAOCHI = {
-  KYO: 0,
-  KAKU: 1,
-  HISHA: 2,
-  HIKYO: 3,
-  NI: 4,
-  YON: 5,
-  ROKU: 6,
-  HACHI: 7
+  HIRATE: 'HIRATE',
+  KYO: 'KY',
+  KAKU: 'KA',
+  HISHA: 'HI',
+  HIKYO: 'HIKY',
+  NI: '2',
+  YON: '4',
+  ROKU: '6',
+  HACHI: '8',
+  OTHER: 'OTHER'
 }
 
 // 駒の移動タイプの種類

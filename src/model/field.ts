@@ -4,7 +4,8 @@ import {
   moveInfoObject,
   boardObject,
   komaDataObject,
-  komaMoveObject
+  komaMoveObject,
+  initBoardObject
 } from '../const/interface'
 import Move from './move'
 import * as SHOGI from '../const/const'
@@ -24,6 +25,15 @@ export default class Field {
   // 最後に手を指したプレイヤー
   private _color: number
 
+  // 初期状態の盤面
+  private _initBoard: Array<Array<boardObject>>
+
+  // 手駒
+  private _initHands: Array<{ [index: string]: number }>
+
+  // 最後に手を指したプレイヤー
+  private _initColor: number
+
   constructor(
     board: Array<Array<Object>>,
     hands: Array<{ [index: string]: number }> = [{}, {}],
@@ -31,6 +41,10 @@ export default class Field {
   ) {
     this._board = board
     this._hands = hands
+
+    this._initBoard = _.cloneDeep(board)
+    this._initHands = _.cloneDeep(hands)
+    this._initColor = color
   }
 
   // 現在の盤面に対して指し手情報を適用する
@@ -216,6 +230,24 @@ export default class Field {
     }
 
     return false
+  }
+
+  public get initData() {
+    const initData: initBoardObject = {}
+
+    if (this._initBoard) {
+      initData.board = this._initBoard
+    }
+
+    if (this._initHands) {
+      initData.hands = this._initHands
+    }
+
+    if (this._color) {
+      initData.color = this._color
+    }
+
+    return initData
   }
 
   public get color() {
