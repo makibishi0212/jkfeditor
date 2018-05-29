@@ -31,7 +31,7 @@ export default class Pos {
    * 盤面を反転した場合の棋譜座標を返す
    */
   public reverse() {
-    return new Pos(9 - this._ax, this._ay - 1)
+    return new Pos(10 - this._kx, 10 - this._ky)
   }
 
   /**
