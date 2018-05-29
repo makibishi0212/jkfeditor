@@ -172,7 +172,7 @@ export default class Move {
    */
   public addComment(comment: string) {
     if (_.isArray(this._comments)) {
-      ;(this._comments as Array<string>).push(commentZ)
+      ;(this._comments as Array<string>).push(comment)
     } else {
       this._comments = [comment]
     }

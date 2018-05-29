@@ -113,7 +113,7 @@ export default class ShogiManager {
   }
 
   public addComment(comment: string) {
-    this.comment.addComment(comment)
+    this.moveData.getMove(this._currentNum).addComment(comment)
   }
 
   /**
@@ -347,7 +347,6 @@ export default class ShogiManager {
 
       if (!moveInfoObj.from) {
         // fromがない場合はtoの位置が空いているか確認
-        // TODO: 持ち駒に対象駒があるのか判定
         // TODO: 移動できない場所への配置かどうか判定
         if (
           !this._field.isInHand(
@@ -355,7 +354,7 @@ export default class ShogiManager {
             KomaInfo.komaAtoi(moveInfoObj.piece)
           )
         ) {
-          console.error('打ち駒が手持ち駒の中にありません。')
+          console.error('打つ駒が手持ち駒の中にありません。')
           return
         }
 
@@ -1053,4 +1052,3 @@ const jkfData = {
 }
 
 // 次の実装
-// 指し手の追加の実装

@@ -189,8 +189,10 @@ export default class Field {
           nextX = nextX + mx
           nextY = nextY + my
 
+          const nextPos = new Pos(nextX, nextY)
+
           if (Pos.inRange(nextX, nextY)) {
-            if (!_.isEmpty(this._board[nextY][nextX])) {
+            if (!_.isEmpty(this._board[nextPos.ay][nextPos.ax])) {
               // 進行対象マスに駒が存在する場合は終了する
               stillMovable = false
             }

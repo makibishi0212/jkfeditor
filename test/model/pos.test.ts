@@ -19,11 +19,17 @@ describe('MoveNode class test', () => {
 
   it('inRangeが正しく動作している', () => {
     expect(Pos.inRange(5, 5)).toBe(true)
-    expect(Pos.inRange(8, 8)).toBe(true)
-    expect(Pos.inRange(0, 0)).toBe(true)
+    expect(Pos.inRange(9, 9)).toBe(true)
+    expect(Pos.inRange(1, 1)).toBe(true)
     expect(Pos.inRange(10, 5)).toBe(false)
     expect(Pos.inRange(5, 10)).toBe(false)
-    expect(Pos.inRange(-1, 5)).toBe(false)
-    expect(Pos.inRange(5, -1)).toBe(false)
+    expect(Pos.inRange(0, 5)).toBe(false)
+    expect(Pos.inRange(5, 0)).toBe(false)
+  })
+
+  it('範囲外の値による初期化', () => {
+    expect(() => {
+      new Pos(10, 10)
+    }).toThrowError('盤面座標の値が範囲外です。')
   })
 })
