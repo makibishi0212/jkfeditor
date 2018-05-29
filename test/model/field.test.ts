@@ -105,6 +105,218 @@ const customBoard1 = [
 ]
 const customField1 = new Field(customBoard1, [{}, {}], PLAYER.GOTE)
 
+const customBoard2 = [
+  [
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {
+      kind: 'KI',
+      color: 1
+    },
+    {
+      kind: 'OU',
+      color: 1
+    }
+  ],
+  [
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {
+      kind: 'KY',
+      color: 1
+    },
+    {
+      kind: 'GI',
+      color: 1
+    },
+    {
+      kind: 'KA',
+      color: 1
+    }
+  ],
+  [
+    {},
+    {},
+    {
+      kind: 'GI',
+      color: 1
+    },
+    {
+      kind: 'FU',
+      color: 1
+    },
+    {
+      kind: 'FU',
+      color: 1
+    },
+    {
+      kind: 'KI',
+      color: 1
+    },
+    {
+      kind: 'KI',
+      color: 1
+    },
+    {
+      kind: 'GI',
+      color: 1
+    },
+    {
+      kind: 'KI',
+      color: 1
+    }
+  ],
+  [
+    {},
+    {},
+    {
+      kind: 'FU',
+      color: 1
+    },
+    {},
+    {},
+    {
+      kind: 'FU',
+      color: 1
+    },
+    {
+      kind: 'FU',
+      color: 1
+    },
+    {
+      kind: 'FU',
+      color: 1
+    },
+    {}
+  ],
+  [
+    {},
+    {
+      kind: 'FU',
+      color: 1
+    },
+    {},
+    {},
+    {
+      kind: 'FU',
+      color: 0
+    },
+    {},
+    {},
+    {},
+    {
+      kind: 'FU',
+      color: 0
+    }
+  ],
+  [
+    {},
+    {},
+    {},
+    {},
+    {},
+    {
+      kind: 'KE',
+      color: 0
+    },
+    {
+      kind: 'KY',
+      color: 0
+    },
+    {
+      kind: 'FU',
+      color: 0
+    },
+    {}
+  ],
+  [
+    {},
+    {
+      kind: 'FU',
+      color: 0
+    },
+    {
+      kind: 'FU',
+      color: 0
+    },
+    {},
+    {
+      kind: 'FU',
+      color: 0
+    },
+    {},
+    {
+      kind: 'KY',
+      color: 0
+    },
+    {
+      kind: 'KE',
+      color: 0
+    },
+    {}
+  ],
+  [
+    {},
+    {
+      kind: 'GI',
+      color: 0
+    },
+    {
+      kind: 'KA',
+      color: 0
+    },
+    {},
+    {},
+    {},
+    {
+      kind: 'KY',
+      color: 0
+    },
+    {},
+    {}
+  ],
+  [
+    {},
+    {
+      kind: 'OU',
+      color: 0
+    },
+    {},
+    {},
+    {},
+    {
+      kind: 'HI',
+      color: 0
+    },
+    {
+      kind: 'HI',
+      color: 0
+    },
+    {},
+    {}
+  ]
+]
+const customHand2 = [
+  {
+    FU: 1,
+    KE: 1
+  },
+  {
+    FU: 1,
+    KE: 1
+  }
+]
+const customField2 = new Field(customBoard2, customHand2)
+
 describe('Field class test', () => {
   it('平手の盤面が正常に初期化されている', () => {
     expect(hirateField.board).toEqual(KomaInfo.initBoards[BOARD.HIRATE])
@@ -128,5 +340,11 @@ describe('Field class test', () => {
     expect(customField1.board).toEqual(customBoard1)
     expect(customField1.hands).toEqual([{}, {}])
     expect(customField1.color).toEqual(PLAYER.GOTE)
+  })
+
+  it('カスタム2の盤面が正常に初期化されている', () => {
+    expect(customField2.board).toEqual(customBoard2)
+    expect(customField2.hands).toEqual(customHand2)
+    expect(customField2.color).toEqual(PLAYER.SENTE)
   })
 })

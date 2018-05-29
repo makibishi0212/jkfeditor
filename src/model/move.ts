@@ -47,7 +47,7 @@ export default class Move {
   // jkf表現時のオブジェクト
   private _moveObj: moveObject
 
-  constructor(moveObj: moveObject, isBranch: boolean) {
+  constructor(moveObj: moveObject, isBranch: boolean = false) {
     this._name = this.getMoveName(moveObj)
     this._isBranch = isBranch
     this._moveObj = moveObj
@@ -145,6 +145,10 @@ export default class Move {
 
   public get name(): string {
     return this._name
+  }
+
+  public get comments(): Array<string> | null {
+    return this._comments
   }
 
   /**
