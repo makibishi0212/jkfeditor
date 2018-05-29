@@ -1,4 +1,7 @@
+import _ from 'lodash'
 import ShogiManager from '../src/shogi-manager'
+import KomaInfo from '../src/const/komaInfo'
+import { BOARD } from '../src/const/const'
 
 // jsonフォーマットのjkf形式による棋譜データ
 const jkfData = {
@@ -13,88 +16,7 @@ const jkfData = {
     style: 'YAGURA'
   },
   initial: {
-    preset: 'OTHER',
-    data: {
-      // 初期配置
-      board: [
-        [
-          { color: 1, kind: 'KY' },
-          { color: 1, kind: 'KE' },
-          { color: 1, kind: 'GI' },
-          { color: 1, kind: 'KI' },
-          { color: 1, kind: 'OU' },
-          { color: 1, kind: 'KI' },
-          { color: 1, kind: 'GI' },
-          { color: 1, kind: 'KE' },
-          { color: 1, kind: 'KY' }
-        ],
-        [
-          {},
-          { color: 1, kind: 'HI' },
-          {},
-          {},
-          {},
-          {},
-          {},
-          { color: 1, kind: 'KA' },
-          {}
-        ],
-        [
-          { color: 1, kind: 'FU' },
-          { color: 1, kind: 'FU' },
-          { color: 1, kind: 'FU' },
-          { color: 1, kind: 'FU' },
-          { color: 1, kind: 'FU' },
-          { color: 1, kind: 'FU' },
-          { color: 1, kind: 'FU' },
-          { color: 1, kind: 'FU' },
-          { color: 1, kind: 'FU' }
-        ],
-        [{}, {}, {}, {}, {}, {}, {}, {}, {}],
-        [{}, {}, {}, {}, {}, {}, {}, {}, {}],
-        [{}, {}, {}, {}, {}, {}, {}, {}, {}],
-        [
-          { color: 0, kind: 'FU' },
-          { color: 0, kind: 'FU' },
-          { color: 0, kind: 'FU' },
-          { color: 0, kind: 'FU' },
-          { color: 0, kind: 'FU' },
-          { color: 0, kind: 'FU' },
-          { color: 0, kind: 'FU' },
-          { color: 0, kind: 'FU' },
-          { color: 0, kind: 'FU' }
-        ],
-        [
-          {},
-          { color: 0, kind: 'KA' },
-          {},
-          {},
-          {},
-          {},
-          {},
-          { color: 0, kind: 'HI' },
-          {}
-        ],
-        [
-          { color: 0, kind: 'KY' },
-          { color: 0, kind: 'KE' },
-          { color: 0, kind: 'GI' },
-          { color: 0, kind: 'KI' },
-          { color: 0, kind: 'OU' },
-          { color: 0, kind: 'KI' },
-          { color: 0, kind: 'GI' },
-          { color: 0, kind: 'KE' },
-          { color: 0, kind: 'KY' }
-        ]
-      ],
-      // 0なら先手、それ以外なら後手
-      color: 0,
-
-      // hands[0]は先手の持ち駒、hands[1]は後手の持ち駒
-      hands: [{}, {}]
-    },
-
-    mode: 'JOSEKI' // 独自定義 棋譜か定跡かを表す 'KIFU' または 'JOSEKI'
+    preset: 'HIRATE'
   },
   moves: [
     { comments: ['分岐の例'] },
@@ -218,18 +140,46 @@ const jkfData = {
   ]
 }
 
-const manager = new ShogiManager(jkfData)
+const hirateBoard = _.cloneDeep(KomaInfo.initBoards[BOARD.HIRATE])
+const jkfLoadManager = new ShogiManager(jkfData)
+const readOnlyLoadManger = new ShogiManager(jkfData, true)
+const newManager = new ShogiManager()
 
 /**
  * Shogi-manager test
  */
 describe('Shogi-manger test', () => {
-  it('works if true is truthy', () => {
-    expect(true).toBeTruthy()
+  let testManager: ShogiManager
+
+  it('jkfLoadManagerが正常に初期化されている', () => {
+    testManager = jkfLoadManager
+    expect(testManager.currentNum).toBe(0)
+    expect(testManager.board).toEqual(hirateBoard)
+    expect(testManager.comment).toEqual(['分岐の例'])
   })
 
-  it('Shogi-managerクラスが正常に初期化されている', () => {
-    manager.currentNum++
-    manager.currentNum++
+  it('readOnlyLoadMangerが正常に初期化されている', () => {
+    testManager = readOnlyLoadManger
+    expect(testManager.currentNum).toBe(0)
+    expect(testManager.board).toEqual(hirateBoard)
+    expect(testManager.comment).toEqual(['分岐の例'])
+  })
+
+  it('newMangerが正常に初期化されている', () => {
+    testManager = newManager
+    expect(testManager.currentNum).toBe(0)
+    expect(testManager.board).toEqual(hirateBoard)
+    expect(testManager.comment).toEqual(null)
+  })
+
+  it('指し手の追加', () => {
+    testManager.addBoardMove(7, 7, 7, 6)
+    testManager.currentNum++
+    console.log(testManager.dispCurrentInfo())
+    testManager.addBoardMove(3, 3, 3, 4)
+    testManager.currentNum++
+    console.log(testManager.dispCurrentInfo())
+    testManager.currentNum--
+    console.log(testManager.dispNextMoves())
   })
 })

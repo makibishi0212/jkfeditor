@@ -59,10 +59,10 @@ const relativeMoveObj = {
 }
 const relativeMove = new Move(relativeMoveObj)
 
-describe('通常ムーブが正しく初期化されている', () => {
+describe('Move class test', () => {
   let testMove: Move
 
-  it('normal Move', () => {
+  it('normal Moveが正常に初期化されている', () => {
     testMove = normalMove
     expect(testMove.name).toBe('☗3四香')
     expect(testMove.komaNum).toBe(KOMA.KY)
@@ -81,7 +81,7 @@ describe('通常ムーブが正しく初期化されている', () => {
     expect(testMove.comments).toBe(null)
   })
 
-  it('promote Move', () => {
+  it('promote Moveが正常に初期化されている', () => {
     testMove = promoteMove
     expect(testMove.name).toBe('☗3三香成')
     expect(testMove.komaNum).toBe(KOMA.KY)
@@ -100,7 +100,7 @@ describe('通常ムーブが正しく初期化されている', () => {
     expect(testMove.comments).toBe(promoteMoveObj.comments)
   })
 
-  it('relative Move', () => {
+  it('relative Moveが正常に初期化されている', () => {
     testMove = relativeMove
     expect(testMove.name).toBe('☖同金直')
     expect(testMove.komaNum).toBe(KOMA.KI)

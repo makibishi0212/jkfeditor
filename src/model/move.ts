@@ -167,6 +167,18 @@ export default class Move {
   }
 
   /**
+   * コメントを追加する
+   * @param comment
+   */
+  public addComment(comment: string) {
+    if (_.isArray(this._comments)) {
+      ;(this._comments as Array<string>).push(commentZ)
+    } else {
+      this._comments = [comment]
+    }
+  }
+
+  /**
    * 指し手オブジェクトから指し手の名前を返す
    * @param moveObj
    */

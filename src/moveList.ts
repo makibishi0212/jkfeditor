@@ -190,6 +190,7 @@ export default class MoveList {
   ): number | void {
     let isTheSame: boolean = false
 
+    // 一つ前の指し手の分岐に同一の指し手があれば破棄する
     if (
       !_.isEmpty(prevMoveNode) &&
       _.size((prevMoveNode as MoveNode).next) > 0
@@ -201,7 +202,7 @@ export default class MoveList {
       })
 
       if (isTheSame) {
-        return
+        console.error('同一の指し手が含まれています。')
       }
     }
 

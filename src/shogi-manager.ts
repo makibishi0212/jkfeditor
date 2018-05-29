@@ -74,7 +74,7 @@ export default class ShogiManager {
   }
 
   public get comment(): any {
-    return this.moveData.currentMoves[this._currentNum].moveObj.comments
+    return this.moveData.getMove(this._currentNum).comments
   }
 
   public get board(): Array<Array<boardObject>> {
@@ -110,6 +110,10 @@ export default class ShogiManager {
     } else {
       return false
     }
+  }
+
+  public addComment(comment: string) {
+    this.comment.addComment(comment)
   }
 
   /**
@@ -196,7 +200,7 @@ export default class ShogiManager {
         this._currentNum = newNum
       }
     } else {
-      console.log(
+      console.error(
         '指定の指し手番号 ' +
           newNum +
           ' は範囲外です。0以上で' +
@@ -419,7 +423,7 @@ export default class ShogiManager {
         this.addMovefromObj(moveObj as moveInfoObject, comment)
       }
     } else {
-      console.log('fromの座標に駒が存在しません。')
+      console.error('fromの座標に駒が存在しません。')
     }
   }
 
@@ -529,9 +533,9 @@ export default class ShogiManager {
             break
         }
       }
-
-      this._field = new Field(board, hands)
     }
+
+    this._field = new Field(board, hands)
 
     // 棋譜情報を代入
     if (_.has(jkf, 'header')) {
@@ -560,8 +564,10 @@ export default class ShogiManager {
     // 前の指し手(現在の盤面になる前に最後に適用した指し手)を取得
     const prevMove = this.lastMove
 
-    // 手番のプレイヤーを取得
-    const color = prevMove.color === PLAYER.SENTE ? PLAYER.GOTE : PLAYER.SENTE
+    // 手番のプレイヤーを取得(未定義の場合初期盤面)
+    const color = _.has(prevMove, 'color')
+      ? prevMove.color === PLAYER.SENTE ? PLAYER.GOTE : PLAYER.SENTE
+      : PLAYER.SENTE
 
     // komaStringの書式がただしいか判定
 
@@ -601,8 +607,10 @@ export default class ShogiManager {
     }
 
     // 前の指し手と同じ位置に移動する場合sameプロパティを追加
-    if (_.isEqual(prevMove.to, moveInfoObj.to)) {
-      moveInfoObj.same = true
+    if (_.has(prevMove, 'to')) {
+      if (_.isEqual(prevMove.to, moveInfoObj.to)) {
+        moveInfoObj.same = true
+      }
     }
 
     // 移動先に駒が存在する場合captureプロパティを追加

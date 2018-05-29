@@ -21,8 +21,8 @@ export default class MoveNode {
   // 前の指し手のインデックス 前の指し手が存在しない場合はnull
   private _prev: number | null = null
 
-  // this.nextの、現在指し手として選択しているものが格納されているインデックス
-  private _select: number = 0
+  // this.nextの、現在指し手として選択しているものが格納されているインデックス 何も指定していない場合は-1
+  private _select: number = -1
 
   // 複数の指し手候補のひとつの指し手であるかどうか
   private _isBranch: boolean = false
@@ -82,8 +82,10 @@ export default class MoveNode {
   public addNext(nextNum: number) {
     this._next.push(nextNum)
 
-    // 選択指し手をリセットする
-    this._select = 0
+    // まだ何も選択されていない場合はselectを設定する
+    if (this.select === -1) {
+      this._select = 0
+    }
   }
 
   /**

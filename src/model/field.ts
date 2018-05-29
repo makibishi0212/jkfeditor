@@ -149,7 +149,6 @@ export default class Field {
    * @param toY
    */
   public isMovable(from: Pos, to: Pos): boolean {
-    // TODO: 未実装
     const komaNum = _.has(this._board[from.ay][from.ax], 'kind')
       ? KomaInfo.komaAtoi(this._board[from.ay][from.ax].kind as string)
       : null
@@ -161,7 +160,6 @@ export default class Field {
 
     const color = this._board[from.ay][from.ax].color as number
 
-    // TODO: 駒の移動タイプと上記変数比較
     const moves = KomaInfo.getMoves(komaNum)
 
     return _.some(moves, (move: komaMoveObject) => {
@@ -175,7 +173,7 @@ export default class Field {
       }
 
       if (move.type === SHOGI.MOVETYPE.POS) {
-        if (from.ax + move.x === to.ax && from.ay + move.y === to.ay) {
+        if (from.x + mx === to.x && from.y + my === to.y) {
           return true
         } else {
           return false
@@ -184,8 +182,8 @@ export default class Field {
         // ベクトル移動の場合は移動不可能になるまでその方向への移動を行い、そのマスが移動先マスと一致する場合は終了する
         // まだ指定方向に移動可能かどうか
         let stillMovable = true
-        let nextX = from.ax
-        let nextY = from.ay
+        let nextX = from.x
+        let nextY = from.y
 
         while (stillMovable) {
           nextX = nextX + mx
@@ -197,7 +195,7 @@ export default class Field {
               stillMovable = false
             }
 
-            if (nextX === to.ax && nextY === to.ay) {
+            if (nextX === to.x && nextY === to.y) {
               return true
             }
           } else {
