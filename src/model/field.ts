@@ -41,6 +41,7 @@ export default class Field {
   ) {
     this._board = board
     this._hands = hands
+    this._color = color
 
     this._initBoard = _.cloneDeep(board)
     this._initHands = _.cloneDeep(hands)
@@ -250,14 +251,23 @@ export default class Field {
     return initData
   }
 
+  /**
+   * 最後に指したプレイヤーを返す
+   */
   public get color() {
     return this._color
   }
 
+  /**
+   * 現在の盤面を返す
+   */
   public get board() {
     return this._board
   }
 
+  /**
+   * 現在のそれぞれの手持ち駒を返す
+   */
   public get hands() {
     return this._hands
   }

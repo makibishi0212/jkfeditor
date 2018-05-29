@@ -1,6 +1,5 @@
 import _ from 'lodash'
 
-import * as SHOGI from './const/const'
 import KomaInfo from './const/komaInfo'
 import Util from './util'
 
@@ -19,7 +18,7 @@ import Field from './model/field'
 import { config } from 'shelljs'
 import { move } from 'fs-extra'
 import MoveNode from './model/moveNode'
-import { KOMA, board, PLAYER } from './const/const'
+import { KOMA, PLAYER, BOARD } from './const/const'
 
 export default class ShogiManager {
   // 指し手番号
@@ -62,32 +61,20 @@ export default class ShogiManager {
     this.load(jkf)
   }
 
-  /**
-   * jkfをエクスポートする
-   */
-  public export(): jkfObject {
-    // TODO:未実装
-    const jkfObj: jkfObject = {}
-
-    if (_.isObject(this.info)) {
-      jkfObj.header = this.info as initObject
-    }
-
-    if (this.preset != SHOGI.KOMAOCHI.HIRATE) {
-      jkfObj.initial = { preset: this.preset }
-
-      if (this.preset === SHOGI.KOMAOCHI.OTHER) {
-        jkfObj.initial.data = this._field.initData
-      }
-    }
-
-    jkfObj.moves = this.moveData.exportJkfMoves()
-
-    return jkfObj
-  }
-
   public get list(): Array<Move> {
     return this.moveData.currentMoves
+  }
+
+  /**
+   * 最後に指された手の移動情報を表示する
+   */
+  public get lastMove(): moveInfoObject {
+    return this.moveData.currentMoves[this._currentNum].moveObj
+      .move as moveInfoObject
+  }
+
+  public get comment(): any {
+    return this.moveData.currentMoves[this._currentNum].moveObj.comments
   }
 
   public get board(): Array<Array<boardObject>> {
@@ -123,6 +110,30 @@ export default class ShogiManager {
     } else {
       return false
     }
+  }
+
+  /**
+   * jkfをエクスポートする
+   */
+  public export(): jkfObject {
+    // TODO:未実装
+    const jkfObj: jkfObject = {}
+
+    if (_.isObject(this.info)) {
+      jkfObj.header = this.info as initObject
+    }
+
+    if (this.preset != BOARD.HIRATE) {
+      jkfObj.initial = { preset: this.preset }
+
+      if (this.preset === BOARD.OTHER) {
+        jkfObj.initial.data = this._field.initData
+      }
+    }
+
+    jkfObj.moves = this.moveData.exportJkfMoves()
+
+    return jkfObj
   }
 
   /**
@@ -279,7 +290,7 @@ export default class ShogiManager {
    * 先手の持ち駒を返す
    */
   public dispSenteHand(): string {
-    const senteHand = this._field.hands[SHOGI.PLAYER.SENTE]
+    const senteHand = this._field.hands[PLAYER.SENTE]
 
     let senteHandString: string = '[先手持ち駒] '
     _.each(senteHand, (keepNum: number, komaType: string) => {
@@ -296,7 +307,7 @@ export default class ShogiManager {
    * 後手の持ち駒を返す
    */
   public dispGoteHand(): string {
-    const goteHand = this._field.hands[SHOGI.PLAYER.GOTE]
+    const goteHand = this._field.hands[PLAYER.GOTE]
 
     let goteHandString: string = '[後手持ち駒] '
     _.each(goteHand, (keepNum: number, komaType: string) => {
@@ -394,9 +405,9 @@ export default class ShogiManager {
     // TODO: 「同」が反映されない不具合を修正
     const boardObj: boardObject = this.getBoardPiece(fromX, fromY)
     let moveObj: boardObject | null = null
-    if (_.has(boardObj, 'color')) {
+    if (_.has(boardObj, 'color') && _.has(boardObj, 'kind')) {
       moveObj = this.makeMoveData(
-        KomaInfo.komaAtoi(boardObj.kind as string),
+        boardObj.kind as string,
         fromX,
         fromY,
         toX,
@@ -421,12 +432,12 @@ export default class ShogiManager {
    * @param comment
    */
   public addHandMove(
-    komaNum: number,
+    komaString: string,
     toX: number,
     toY: number,
     comment: Array<string> | string | null = null
   ) {
-    const moveObj = this.makeMoveData(komaNum, null, null, toX, toY, false)
+    const moveObj = this.makeMoveData(komaString, null, null, toX, toY, false)
     if (moveObj) {
       this.addMovefromObj(moveObj, comment)
     }
@@ -465,7 +476,7 @@ export default class ShogiManager {
     }
 
     // 平手状態を代入
-    board = _.cloneDeep(KomaInfo.initBoards[SHOGI.KOMAOCHI.HIRATE])
+    board = _.cloneDeep(KomaInfo.initBoards[BOARD.HIRATE])
 
     // 特殊な初期状態が登録されているか判定
     if (_.has(jkf, 'initial')) {
@@ -478,39 +489,39 @@ export default class ShogiManager {
             // 平手は代入済
             break
           case 'KY': // 香落ち
-            this.preset = SHOGI.KOMAOCHI.KYO
-            board = _.cloneDeep(KomaInfo.initBoards[SHOGI.KOMAOCHI.KYO])
+            this.preset = BOARD.KYO
+            board = _.cloneDeep(KomaInfo.initBoards[BOARD.KYO])
             break
           case 'KA': // 角落ち
-            this.preset = SHOGI.KOMAOCHI.KAKU
-            board = _.cloneDeep(KomaInfo.initBoards[SHOGI.KOMAOCHI.KAKU])
+            this.preset = BOARD.KAKU
+            board = _.cloneDeep(KomaInfo.initBoards[BOARD.KAKU])
             break
           case 'HI': // 飛車落ち
-            this.preset = SHOGI.KOMAOCHI.HISHA
-            board = _.cloneDeep(KomaInfo.initBoards[SHOGI.KOMAOCHI.HISHA])
+            this.preset = BOARD.HISHA
+            board = _.cloneDeep(KomaInfo.initBoards[BOARD.HISHA])
             break
           case 'HIKY': // 飛香落ち
-            this.preset = SHOGI.KOMAOCHI.HIKYO
-            board = _.cloneDeep(KomaInfo.initBoards[SHOGI.KOMAOCHI.HIKYO])
+            this.preset = BOARD.HIKYO
+            board = _.cloneDeep(KomaInfo.initBoards[BOARD.HIKYO])
             break
           case '2': // 2枚落ち
-            this.preset = SHOGI.KOMAOCHI.NI
-            board = _.cloneDeep(KomaInfo.initBoards[SHOGI.KOMAOCHI.NI])
+            this.preset = BOARD.NI
+            board = _.cloneDeep(KomaInfo.initBoards[BOARD.NI])
             break
           case '4': // 4枚落ち
-            this.preset = SHOGI.KOMAOCHI.YON
-            board = _.cloneDeep(KomaInfo.initBoards[SHOGI.KOMAOCHI.YON])
+            this.preset = BOARD.YON
+            board = _.cloneDeep(KomaInfo.initBoards[BOARD.YON])
             break
           case '6': // 6枚落ち
-            this.preset = SHOGI.KOMAOCHI.ROKU
-            board = _.cloneDeep(KomaInfo.initBoards[SHOGI.KOMAOCHI.ROKU])
+            this.preset = BOARD.ROKU
+            board = _.cloneDeep(KomaInfo.initBoards[BOARD.ROKU])
             break
           case '8': // 8枚落ち
-            this.preset = SHOGI.KOMAOCHI.HACHI
-            board = _.cloneDeep(KomaInfo.initBoards[SHOGI.KOMAOCHI.HACHI])
+            this.preset = BOARD.HACHI
+            board = _.cloneDeep(KomaInfo.initBoards[BOARD.HACHI])
             break
           case 'OTHER': // 上記以外
-            this.preset = SHOGI.KOMAOCHI.OTHER
+            this.preset = BOARD.OTHER
             board = ((jkf.initial as initObject).data as initBoardObject)
               .board as Array<Array<Object>>
             hands = ((jkf.initial as initObject).data as initBoardObject)
@@ -539,7 +550,7 @@ export default class ShogiManager {
    * @param promote
    */
   private makeMoveData(
-    komaNum: number,
+    komaString: string,
     fromX: number | null,
     fromY: number | null,
     toX: number,
@@ -547,14 +558,12 @@ export default class ShogiManager {
     promote: boolean
   ): moveInfoObject | null {
     // 前の指し手(現在の盤面になる前に最後に適用した指し手)を取得
-    const prevMove = this.moveData.currentMoves[this._currentNum]
+    const prevMove = this.lastMove
 
     // 手番のプレイヤーを取得
-    const color =
-      prevMove.color === SHOGI.PLAYER.SENTE
-        ? SHOGI.PLAYER.GOTE
-        : SHOGI.PLAYER.SENTE
-    const komaString = KomaInfo.komaItoa(komaNum)
+    const color = prevMove.color === PLAYER.SENTE ? PLAYER.GOTE : PLAYER.SENTE
+
+    // komaStringの書式がただしいか判定
 
     // 指し手オブジェクトを作成
     const moveInfoObj: moveInfoObject = {
@@ -625,7 +634,7 @@ export default class ShogiManager {
           ) {
             // 上記if条件を満たす駒の場合は、その駒がtoの位置に移動できるか確認する
 
-            const komaMoves = KomaInfo.getMoves(komaNum)
+            const komaMoves = KomaInfo.getMoves(KomaInfo.komaAtoi(komaString))
 
             // 候補の駒がtoの位置に到達しうる場合trueを代入
             const relative: boolean = _.some(komaMoves, move => {
@@ -715,7 +724,7 @@ export default class ShogiManager {
         let isDown = true
 
         _.each(rivals, (pos: Pos) => {
-          if (color === SHOGI.PLAYER.SENTE) {
+          if (color === PLAYER.SENTE) {
             if (pos.x < fromX) {
               isLeft = false
             } else if (pos.x > fromX) {
@@ -770,9 +779,9 @@ export default class ShogiManager {
         }
 
         if (!dirMovable && fromX === toX) {
-          if (color === SHOGI.PLAYER.SENTE && fromY > toY) {
+          if (color === PLAYER.SENTE && fromY > toY) {
             XrelStr = 'C'
-          } else if (color === SHOGI.PLAYER.GOTE && fromY < toY) {
+          } else if (color === PLAYER.GOTE && fromY < toY) {
             // 後手
             XrelStr = 'C'
           }

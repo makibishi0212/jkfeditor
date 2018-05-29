@@ -27,15 +27,8 @@ export const KOMA = {
   RY: 14 // 龍
 }
 
-// 盤面の種類
-export const board = {
-  HIRATE: 0,
-  KOMAOCHI: 1,
-  CUSTOM: 2
-}
-
 // 駒落ちの種類
-export const KOMAOCHI = {
+export const BOARD = {
   HIRATE: 'HIRATE',
   KYO: 'KY',
   KAKU: 'KA',
