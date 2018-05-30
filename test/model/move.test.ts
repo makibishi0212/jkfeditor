@@ -40,7 +40,7 @@ const promoteMoveObj = {
 }
 const promoteMove = new Move(promoteMoveObj)
 
-const relativeMoveObj = {
+const relativeMoveObj1 = {
   move: {
     to: {
       x: 3,
@@ -57,7 +57,7 @@ const relativeMoveObj = {
     relative: 'C'
   }
 }
-const relativeMove = new Move(relativeMoveObj)
+const relativeMove1 = new Move(relativeMoveObj1)
 
 describe('Move class test', () => {
   let testMove: Move
@@ -100,8 +100,8 @@ describe('Move class test', () => {
     expect(testMove.comments).toBe(promoteMoveObj.comments)
   })
 
-  it('relative Moveが正常に初期化されている', () => {
-    testMove = relativeMove
+  it('relative Move1が正常に初期化されている', () => {
+    testMove = relativeMove1
     expect(testMove.name).toBe('☖同金直')
     expect(testMove.komaNum).toBe(KOMA.KI)
     expect(testMove.color).toBe(PLAYER.GOTE)

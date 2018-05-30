@@ -1,5 +1,6 @@
 import _ from 'lodash'
 import Field from '../../src/model/field'
+import Move from '../../src/model/move'
 import KomaInfo from '../../src/const/komaInfo'
 import { BOARD, PLAYER } from '../../src/const/const'
 
@@ -346,5 +347,182 @@ describe('Field class test', () => {
     expect(customField2.board).toEqual(customBoard2)
     expect(customField2.hands).toEqual(customHand2)
     expect(customField2.color).toEqual(PLAYER.SENTE)
+  })
+
+  it('通常の駒移動が正しく盤面に適用されることを確認', () => {
+    const normalMoveObj = {
+      move: {
+        to: {
+          x: 9,
+          y: 6
+        },
+        color: 0,
+        piece: 'FU',
+        from: {
+          x: 9,
+          y: 7
+        }
+      }
+    }
+    hirateField.applyMove(new Move(normalMoveObj))
+
+    expect(hirateField.board).toEqual([
+      [
+        { color: 1, kind: 'KY' },
+        { color: 1, kind: 'KE' },
+        { color: 1, kind: 'GI' },
+        { color: 1, kind: 'KI' },
+        { color: 1, kind: 'OU' },
+        { color: 1, kind: 'KI' },
+        { color: 1, kind: 'GI' },
+        { color: 1, kind: 'KE' },
+        { color: 1, kind: 'KY' }
+      ],
+      [
+        {},
+        { color: 1, kind: 'HI' },
+        {},
+        {},
+        {},
+        {},
+        {},
+        { color: 1, kind: 'KA' },
+        {}
+      ],
+      [
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' }
+      ],
+      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
+      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
+      [{ color: 0, kind: 'FU' }, {}, {}, {}, {}, {}, {}, {}, {}],
+      [
+        {},
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' }
+      ],
+      [
+        {},
+        { color: 0, kind: 'KA' },
+        {},
+        {},
+        {},
+        {},
+        {},
+        { color: 0, kind: 'HI' },
+        {}
+      ],
+      [
+        { color: 0, kind: 'KY' },
+        { color: 0, kind: 'KE' },
+        { color: 0, kind: 'GI' },
+        { color: 0, kind: 'KI' },
+        { color: 0, kind: 'OU' },
+        { color: 0, kind: 'KI' },
+        { color: 0, kind: 'GI' },
+        { color: 0, kind: 'KE' },
+        { color: 0, kind: 'KY' }
+      ]
+    ])
+
+    const normalMoveObj2 = {
+      move: {
+        to: {
+          x: 9,
+          y: 4
+        },
+        color: 1,
+        piece: 'FU',
+        from: {
+          x: 9,
+          y: 3
+        }
+      }
+    }
+    hirateField.applyMove(new Move(normalMoveObj2))
+    expect(hirateField.board).toEqual([
+      [
+        { color: 1, kind: 'KY' },
+        { color: 1, kind: 'KE' },
+        { color: 1, kind: 'GI' },
+        { color: 1, kind: 'KI' },
+        { color: 1, kind: 'OU' },
+        { color: 1, kind: 'KI' },
+        { color: 1, kind: 'GI' },
+        { color: 1, kind: 'KE' },
+        { color: 1, kind: 'KY' }
+      ],
+      [
+        {},
+        { color: 1, kind: 'HI' },
+        {},
+        {},
+        {},
+        {},
+        {},
+        { color: 1, kind: 'KA' },
+        {}
+      ],
+      [
+        {},
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' }
+      ],
+      [{ color: 1, kind: 'FU' }, {}, {}, {}, {}, {}, {}, {}, {}],
+      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
+      [{ color: 0, kind: 'FU' }, {}, {}, {}, {}, {}, {}, {}, {}],
+      [
+        {},
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' }
+      ],
+      [
+        {},
+        { color: 0, kind: 'KA' },
+        {},
+        {},
+        {},
+        {},
+        {},
+        { color: 0, kind: 'HI' },
+        {}
+      ],
+      [
+        { color: 0, kind: 'KY' },
+        { color: 0, kind: 'KE' },
+        { color: 0, kind: 'GI' },
+        { color: 0, kind: 'KI' },
+        { color: 0, kind: 'OU' },
+        { color: 0, kind: 'KI' },
+        { color: 0, kind: 'GI' },
+        { color: 0, kind: 'KE' },
+        { color: 0, kind: 'KY' }
+      ]
+    ])
   })
 })

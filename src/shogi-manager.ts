@@ -112,6 +112,10 @@ export default class ShogiManager {
     }
   }
 
+  /**
+   * 現在の指し手にコメントを追加する
+   * @param comment
+   */
   public addComment(comment: string) {
     this.moveData.getMove(this._currentNum).addComment(comment)
   }
@@ -322,6 +326,18 @@ export default class ShogiManager {
         ' \n'
     })
     return goteHandString
+  }
+
+  /**
+   * 現在の指し手を削除する
+   */
+  public deleteMove() {
+    if (!this.readonly) {
+      this.currentNum--
+      this.moveData.deleteMove(this.currentNum + 1)
+    } else {
+      console.error('この棋譜は読み取り専用です。')
+    }
   }
 
   /**
@@ -1052,3 +1068,12 @@ const jkfData = {
 }
 
 // 次の実装
+// TODO: 指し手・分岐の削除APIを追加
+// TODO: コメントの削除処理を追加
+// TODO: 重複指し手が分岐候補に登録されないことをテストする
+// TODO: disp〜()で提供されている情報相当のオブジェクトを返すAPIの作成
+// TODO: 成れない駒に対するpromoteなどありえない動作の検出をより厳密に行う
+// TODO: 相対位置判定のテスト・実装
+// TODO: 各APIの入力をオブジェクトにする
+// TODO: throw Errorを最低限しか利用しないようにする
+// TODO: npm登録

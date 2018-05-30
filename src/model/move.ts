@@ -38,18 +38,14 @@ export default class Move {
   // 指し手のコメント配列
   private _comments: Array<string> | null = null
 
-  // この指し手が分岐するかどうか
-  private _isBranch: boolean = false
-
   // 持ち駒から置く手かどうか
   private _isPut: boolean = false
 
   // jkf表現時のオブジェクト
   private _moveObj: moveObject
 
-  constructor(moveObj: moveObject, isBranch: boolean = false) {
+  constructor(moveObj: moveObject) {
     this._name = this.getMoveName(moveObj)
-    this._isBranch = isBranch
     this._moveObj = moveObj
 
     if (_.has(moveObj, 'comments')) {

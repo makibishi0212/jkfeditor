@@ -267,7 +267,6 @@ describe('Shogi-manger test', () => {
       capture: 'KA',
       from: { x: 7, y: 9 }
     })
-    console.log(testManager.dispCurrentInfo())
   })
 
   it('持ち駒からの指し手追加', () => {
@@ -356,5 +355,12 @@ describe('Shogi-manger test', () => {
     expect(spyLog.mock.calls[0][0]).toEqual(
       '打つ駒が手持ち駒の中にありません。'
     )
+  })
+
+  it('指し手の削除', () => {
+    testManager = newManager
+    console.log(testManager.dispCurrentInfo())
+    testManager.deleteMove()
+    console.log(testManager.dispCurrentInfo())
   })
 })

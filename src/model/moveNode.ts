@@ -34,7 +34,6 @@ export default class MoveNode {
    * @param moveObj セルの元となるひとつのjson棋譜オブジェクトの指し手オブジェクト
    * @param index  この指し手セルに対して割り当てられるインデックス
    * @param prevIndex この指し手セルの前の指し手を表す指し手セルのインデックス
-   * @param fork 複数の指し手候補のひとつの指し手であるかどうか
    */
   constructor(
     moveObj: moveObject,
@@ -47,7 +46,7 @@ export default class MoveNode {
     this._moveObj = moveObj
 
     // 指し手情報を作成
-    this._info = new Move(moveObj, isBranch)
+    this._info = new Move(moveObj)
   }
 
   public get prev(): number | null {
@@ -81,11 +80,29 @@ export default class MoveNode {
    */
   public addNext(nextNum: number) {
     this._next.push(nextNum)
+    // TODO: 同一のnextNumが登録されないようにする
 
     // まだ何も選択されていない場合はselectを設定する
     if (this.select === -1) {
       this._select = 0
     }
+  }
+
+  public deleteNext(deleteNum: number) {
+    if (!_.size(this._next)) {
+      console.error('このノードには次の指し手候補が登録されていません。')
+      return
+    }
+    _.each(this._next, (nextNum, index) => {
+      if (nextNum === deleteNum) {
+        this._next.splice(index, 1)
+        if (this.select === index) {
+          // 現在の次の指し手が削除する指し手の場合はselectをひとつ下げる
+          this._select--
+        }
+        return
+      }
+    })
   }
 
   /**

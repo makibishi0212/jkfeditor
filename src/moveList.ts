@@ -73,6 +73,18 @@ export default class MoveList {
     }
   }
 
+  /**
+   * 指定指し手番号の指し手を削除する。
+   *
+   * @param moveNum
+   */
+  public deleteMove(moveNum: number) {
+    const deleteNode = this._currentMoveNodes[moveNum]
+    this._moveNodes[deleteNode.prev as number].deleteNext(deleteNode.index)
+
+    this.makeCurrentMoveArray()
+  }
+
   public switchFork(moveNum: number, forkIndex: number) {
     // 更新の必要がない場合何もしない
     if (moveNum <= 0) {
