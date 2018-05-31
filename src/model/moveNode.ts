@@ -93,10 +93,10 @@ export default class MoveNode {
    *
    * @param deleteNum
    */
-  public deleteNext(deleteNum: number) {
+  public deleteNext(deleteNum: number): boolean {
     if (!_.size(this._next)) {
       console.error('このノードには次の指し手候補が登録されていません。')
-      return
+      return false
     }
     _.each(this._next, (nextNum, index) => {
       if (nextNum === deleteNum) {
@@ -105,9 +105,11 @@ export default class MoveNode {
           // 現在の次の指し手が削除する指し手の場合はselectをひとつ下げる
           this._select--
         }
-        return
+        return true
       }
     })
+
+    return false
   }
 
   /**
@@ -120,7 +122,27 @@ export default class MoveNode {
       this._select = forkIndex
       return true
     } else {
-      console.error('not have fork')
+      console.error('この指し手は複数の分岐を持っていません。')
+      return false
+    }
+  }
+
+  public swapFork(forkIndex1: number, forkIndex2: number): boolean {
+    const next1 = this.next[forkIndex1]
+    const next2 = this.next[forkIndex2]
+    if (next1 && next2) {
+      if (this.select === forkIndex1) {
+        this._select = forkIndex2
+      } else if (this.select === forkIndex2) {
+        this._select = forkIndex1
+      }
+
+      this.next[forkIndex1] = next2
+      this.next[forkIndex2] = next1
+
+      return true
+    } else {
+      console.error('指定された分岐候補のいずれかが未定義です。')
       return false
     }
   }

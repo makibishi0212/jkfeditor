@@ -121,6 +121,13 @@ export default class ShogiManager {
   }
 
   /**
+   * 現在の指し手のコメントをリセットする
+   */
+  public resetComment() {
+    this.moveData.getMove(this.currentNum).removeComment()
+  }
+
+  /**
    * jkfをエクスポートする
    */
   public export(): jkfObject {
@@ -468,10 +475,6 @@ export default class ShogiManager {
    * @param forkIndex
    */
   public switchFork(forkIndex: number) {
-    if (this.currentNum <= 0) {
-      console.error('初期盤面では棋譜分岐できません。')
-    }
-
     if (this.isFork) {
       this.moveData.switchFork(this.currentNum, forkIndex)
     } else {
@@ -480,16 +483,32 @@ export default class ShogiManager {
   }
 
   /**
+   * 指定された指し手の分岐を削除する
    *
+   * @param forkIndex
    */
   public deleteFork(forkIndex: number) {
     if (!this.readonly) {
-      if (this.currentNum <= 0) {
-        console.error('初期盤面は棋譜分岐を持っていません。')
-      }
-
       if (this.isFork) {
         this.moveData.deleteFork(this.currentNum, forkIndex)
+      } else {
+        console.log('現在の指し手は分岐を持っていません。')
+      }
+    } else {
+      console.error('この棋譜は読み取り専用です。')
+    }
+  }
+
+  /**
+   * 指定された2つの分岐の順番を入れ替える
+   *
+   * @param forkIndex1
+   * @param forkIndex2
+   */
+  public swapFork(forkIndex1: number, forkIndex2: number) {
+    if (!this.readonly) {
+      if (this.isFork) {
+        this.moveData.swapFork(this.currentNum, forkIndex1, forkIndex2)
       } else {
         console.log('現在の指し手は分岐を持っていません。')
       }
@@ -872,7 +891,6 @@ export default class ShogiManager {
 }
 
 // 次の実装
-// TODO: コメントの削除処理を追加
 // TODO: 分岐指し手の順番の入れ替えを追加
 // TODO: 重複指し手が分岐候補に登録されないことをテストする
 // TODO: disp〜()で提供されている情報相当のオブジェクトを返すAPIの作成

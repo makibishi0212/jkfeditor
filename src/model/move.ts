@@ -175,6 +175,13 @@ export default class Move {
   }
 
   /**
+   * コメントを全削除する
+   */
+  public removeComment() {
+    this._comments = []
+  }
+
+  /**
    * 指し手オブジェクトから指し手の名前を返す
    * @param moveObj
    */
