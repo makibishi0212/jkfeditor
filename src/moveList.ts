@@ -85,6 +85,36 @@ export default class MoveList {
     this.makeCurrentMoveArray()
   }
 
+  public deleteFork(moveNum: number, forkIndex: number) {
+    // 更新の必要がない場合何もしない
+    if (moveNum <= 0) {
+      throw new Error('初期盤面では棋譜分岐できません。')
+    }
+
+    if (_.isNumber(this._currentMoveNodes[moveNum].index)) {
+      // TODO: moveNodeの分岐削除処理
+      const deleteIndex = this._currentMoveNodes[moveNum].next[forkIndex]
+
+      if (_.isNumber(deleteIndex)) {
+        this._moveNodes[this._currentMoveNodes[moveNum].index].deleteNext(
+          deleteIndex
+        )
+      } else {
+        throw new Error('削除対象の分岐が存在しません。')
+      }
+
+      this.makeCurrentMoveArray()
+    } else {
+      throw new Error('指し手が見つかりません。')
+    }
+  }
+
+  /**
+   * 指し手の分岐を切り替える
+   *
+   * @param moveNum 切り替え対象の指し手
+   * @param forkIndex 切り替える指し手のインデックス
+   */
   public switchFork(moveNum: number, forkIndex: number) {
     // 更新の必要がない場合何もしない
     if (moveNum <= 0) {
@@ -99,6 +129,8 @@ export default class MoveList {
       ) {
         // 現在の分岐を作成し直す
         this.makeCurrentMoveArray()
+      } else {
+        throw new Error('分岐切り替え処理に失敗しました。')
       }
     } else {
       throw new Error('分岐切り替え処理に失敗しました。')

@@ -74,7 +74,7 @@ export default class MoveNode {
   }
 
   /**
-   * 次の指し手候補セルを追加する
+   * 次の指し手候補ノードを追加する
    *
    * @param nextNum 次の指し手となる指し手セルの追加
    */
@@ -88,6 +88,11 @@ export default class MoveNode {
     }
   }
 
+  /**
+   * 指定した指し手候補ノードを削除する
+   *
+   * @param deleteNum
+   */
   public deleteNext(deleteNum: number) {
     if (!_.size(this._next)) {
       console.error('このノードには次の指し手候補が登録されていません。')

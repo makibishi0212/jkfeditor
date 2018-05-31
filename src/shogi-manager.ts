@@ -69,12 +69,12 @@ export default class ShogiManager {
    * 最後に指された手の移動情報を表示する
    */
   public get lastMove(): moveInfoObject {
-    return this.moveData.currentMoves[this._currentNum].moveObj
+    return this.moveData.currentMoves[this.currentNum].moveObj
       .move as moveInfoObject
   }
 
   public get comment(): any {
-    return this.moveData.getMove(this._currentNum).comments
+    return this.moveData.getMove(this.currentNum).comments
   }
 
   public get board(): Array<Array<boardObject>> {
@@ -103,7 +103,7 @@ export default class ShogiManager {
    * 現在の盤面が次の指し手候補を複数持つかどうかを返す
    */
   public get isFork(): boolean {
-    const nextMoveNodes = this.moveData.getNextMoves(this._currentNum)
+    const nextMoveNodes = this.moveData.getNextMoves(this.currentNum)
 
     if (nextMoveNodes.length > 1) {
       return true
@@ -117,7 +117,7 @@ export default class ShogiManager {
    * @param comment
    */
   public addComment(comment: string) {
-    this.moveData.getMove(this._currentNum).addComment(comment)
+    this.moveData.getMove(this.currentNum).addComment(comment)
   }
 
   /**
@@ -473,9 +473,28 @@ export default class ShogiManager {
     }
 
     if (this.isFork) {
-      this.moveData.switchFork(this._currentNum, forkIndex)
+      this.moveData.switchFork(this.currentNum, forkIndex)
     } else {
       console.log('現在の指し手は分岐をもっていません。')
+    }
+  }
+
+  /**
+   *
+   */
+  public deleteFork(forkIndex: number) {
+    if (!this.readonly) {
+      if (this.currentNum <= 0) {
+        console.error('初期盤面は棋譜分岐を持っていません。')
+      }
+
+      if (this.isFork) {
+        this.moveData.deleteFork(this.currentNum, forkIndex)
+      } else {
+        console.log('現在の指し手は分岐を持っていません。')
+      }
+    } else {
+      console.error('この棋譜は読み取り専用です。')
     }
   }
 

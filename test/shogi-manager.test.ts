@@ -363,4 +363,8 @@ describe('Shogi-manger test', () => {
     testManager.deleteMove()
     console.log(testManager.dispCurrentInfo())
   })
+
+  it('分岐指し手の削除', () => {
+    testManager = newManager
+  })
 })
