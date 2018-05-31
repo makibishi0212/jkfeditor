@@ -8,9 +8,8 @@ import {
   initBoardObject
 } from '../const/interface'
 import Move from './move'
-import * as SHOGI from '../const/const'
+import { PLAYER, MOVETYPE } from '../const/const'
 import KomaInfo from '../const/komaInfo'
-import { PLAYER } from '../const/const'
 import Pos from './pos'
 
 // 将棋の盤面と手駒を合わせた、ある手数における状況を表すクラス
@@ -121,10 +120,7 @@ export default class Field {
 
           // 取っていた駒を盤面に配置する
           this.setBoardPiece(to, {
-            color:
-              move.color === SHOGI.PLAYER.SENTE
-                ? SHOGI.PLAYER.GOTE
-                : SHOGI.PLAYER.SENTE,
+            color: move.color === PLAYER.SENTE ? PLAYER.GOTE : PLAYER.SENTE,
             kind: KomaInfo.getJKFString(capture)
           })
 
@@ -166,13 +162,13 @@ export default class Field {
       let mx = move.x
       let my = move.y
 
-      if (color === SHOGI.PLAYER.SENTE) {
+      if (color === PLAYER.SENTE) {
         my *= -1
       } else {
         mx *= -1
       }
 
-      if (move.type === SHOGI.MOVETYPE.POS) {
+      if (move.type === MOVETYPE.POS) {
         if (from.x + mx === to.x && from.y + my === to.y) {
           return true
         } else {
@@ -216,8 +212,8 @@ export default class Field {
    * @param komaNum
    */
   public isInHand(player: number, komaNum: number): boolean {
-    if (player === SHOGI.PLAYER.SENTE) {
-      if (this._hands[SHOGI.PLAYER.SENTE]) {
+    if (player === PLAYER.SENTE) {
+      if (this._hands[PLAYER.SENTE]) {
       }
     } else {
     }

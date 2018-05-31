@@ -1,6 +1,6 @@
 import _ from 'lodash'
 
-import * as SHOGI from '../const/const'
+import { PLAYER, KOMA } from '../const/const'
 import KomaInfo from '../const/komaInfo'
 
 import Pos from './pos'
@@ -18,7 +18,7 @@ export default class Move {
   private _name: string = '初期配置'
 
   // 移動対象の駒番号
-  private _komaNum: number = SHOGI.KOMA.NONE
+  private _komaNum: number = KOMA.NONE
 
   // 駒の移動元座標情報
   private _from: Pos | null = null
@@ -27,7 +27,7 @@ export default class Move {
   private _to: Pos | null = null
 
   // 手番のプレイヤー番号
-  private _color: number = SHOGI.PLAYER.SENTE
+  private _color: number = PLAYER.SENTE
 
   // 移動によって手持ちにする駒
   private _captureNum: number | null = null
@@ -56,7 +56,7 @@ export default class Move {
     this._isPut = false
 
     // 初期盤面の場合、次の手が先手の手番となるので、最初は後手の手としておく
-    this._color = SHOGI.PLAYER.GOTE
+    this._color = PLAYER.GOTE
 
     // 指し手情報をもつか判定
     if (_.has(moveObj, 'move')) {
@@ -193,7 +193,7 @@ export default class Move {
         let komaString = KomaInfo.getKanji(komaNum)
 
         // 先手後手表示を代入
-        const turnString = moveInfo.color === SHOGI.PLAYER.SENTE ? '☗' : '☖'
+        const turnString = moveInfo.color === PLAYER.SENTE ? '☗' : '☖'
 
         let komaPosString = '同'
         if (!_.has(moveInfo, 'same')) {

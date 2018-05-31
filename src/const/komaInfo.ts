@@ -1,5 +1,5 @@
 import { komaDataObject, komaMoveObject } from './interface'
-import * as SHOGI from './const'
+import { KOMA, MOVETYPE } from './const'
 
 // 駒の情報を取得できるクラス
 export default class KomaInfo {
@@ -12,8 +12,8 @@ export default class KomaInfo {
       moves: [],
       canPromote: true, // 成れるかどうか
       isPromote: false, // 成り駒かどうか
-      toPromote: SHOGI.KOMA.NONE, // 成り先
-      fromPromote: SHOGI.KOMA.NONE // 成り元
+      toPromote: KOMA.NONE, // 成り先
+      fromPromote: KOMA.NONE // 成り元
     },
     {
       // 歩
@@ -23,15 +23,15 @@ export default class KomaInfo {
       moves: [
         // 進行方向定義 (posなら進行位置、dirなら進行方向)
         {
-          type: SHOGI.MOVETYPE.POS,
+          type: MOVETYPE.POS,
           x: 0,
           y: 1
         }
       ],
       canPromote: true, // 成れるかどうか
       isPromote: false, // 成り駒かどうか
-      toPromote: SHOGI.KOMA.TO, // 成り先
-      fromPromote: SHOGI.KOMA.NONE // 成り元
+      toPromote: KOMA.TO, // 成り先
+      fromPromote: KOMA.NONE // 成り元
     },
     {
       // 香
@@ -41,15 +41,15 @@ export default class KomaInfo {
       moves: [
         // 進行方向定義 (posなら進行位置、dirなら進行方向)
         {
-          type: SHOGI.MOVETYPE.DIR,
+          type: MOVETYPE.DIR,
           x: 0,
           y: 1
         }
       ],
       canPromote: true, // 成れるかどうか
       isPromote: false, // 成り駒かどうか
-      toPromote: SHOGI.KOMA.NY, // 成り先
-      fromPromote: SHOGI.KOMA.NONE // 成り元
+      toPromote: KOMA.NY, // 成り先
+      fromPromote: KOMA.NONE // 成り元
     },
     {
       // 桂馬
@@ -59,20 +59,20 @@ export default class KomaInfo {
       moves: [
         // 進行方向定義 (posなら進行位置、dirなら進行方向)
         {
-          type: SHOGI.MOVETYPE.POS,
+          type: MOVETYPE.POS,
           x: -1,
           y: 2
         },
         {
-          type: SHOGI.MOVETYPE.POS,
+          type: MOVETYPE.POS,
           x: 1,
           y: 2
         }
       ],
       canPromote: true, // 成れるかどうか
       isPromote: false, // 成り駒かどうか
-      toPromote: SHOGI.KOMA.NK, // 成り先
-      fromPromote: SHOGI.KOMA.NONE // 成り元
+      toPromote: KOMA.NK, // 成り先
+      fromPromote: KOMA.NONE // 成り元
     },
     {
       // 銀
@@ -82,35 +82,35 @@ export default class KomaInfo {
       moves: [
         // 進行方向定義 (posなら進行位置、dirなら進行方向)
         {
-          type: SHOGI.MOVETYPE.POS,
+          type: MOVETYPE.POS,
           x: 0,
           y: 1
         },
         {
-          type: SHOGI.MOVETYPE.POS,
+          type: MOVETYPE.POS,
           x: -1,
           y: 1
         },
         {
-          type: SHOGI.MOVETYPE.POS,
+          type: MOVETYPE.POS,
           x: 1,
           y: 1
         },
         {
-          type: SHOGI.MOVETYPE.POS,
+          type: MOVETYPE.POS,
           x: -1,
           y: -1
         },
         {
-          type: SHOGI.MOVETYPE.POS,
+          type: MOVETYPE.POS,
           x: 1,
           y: -1
         }
       ],
       canPromote: true, // 成れるかどうか
       isPromote: false, // 成り駒かどうか
-      toPromote: SHOGI.KOMA.NG, // 成り先
-      fromPromote: SHOGI.KOMA.NONE // 成り元
+      toPromote: KOMA.NG, // 成り先
+      fromPromote: KOMA.NONE // 成り元
     },
     {
       // 金
@@ -120,40 +120,40 @@ export default class KomaInfo {
       moves: [
         // 進行方向定義 (posなら進行位置、dirなら進行方向)
         {
-          type: SHOGI.MOVETYPE.POS,
+          type: MOVETYPE.POS,
           x: -1,
           y: 1
         },
         {
-          type: SHOGI.MOVETYPE.POS,
+          type: MOVETYPE.POS,
           x: -1,
           y: 0
         },
         {
-          type: SHOGI.MOVETYPE.POS,
+          type: MOVETYPE.POS,
           x: 0,
           y: 1
         },
         {
-          type: SHOGI.MOVETYPE.POS,
+          type: MOVETYPE.POS,
           x: 0,
           y: -1
         },
         {
-          type: SHOGI.MOVETYPE.POS,
+          type: MOVETYPE.POS,
           x: 1,
           y: 1
         },
         {
-          type: SHOGI.MOVETYPE.POS,
+          type: MOVETYPE.POS,
           x: 1,
           y: 0
         }
       ],
       canPromote: false, // 成れるかどうか
       isPromote: false, // 成り駒かどうか
-      toPromote: SHOGI.KOMA.NONE, // 成り先
-      fromPromote: SHOGI.KOMA.NONE // 成り元
+      toPromote: KOMA.NONE, // 成り先
+      fromPromote: KOMA.NONE // 成り元
     },
     {
       // 角
@@ -163,30 +163,30 @@ export default class KomaInfo {
       moves: [
         // 進行方向定義 (posなら進行位置、dirなら進行方向)
         {
-          type: SHOGI.MOVETYPE.DIR,
+          type: MOVETYPE.DIR,
           x: -1,
           y: 1
         },
         {
-          type: SHOGI.MOVETYPE.DIR,
+          type: MOVETYPE.DIR,
           x: 1,
           y: 1
         },
         {
-          type: SHOGI.MOVETYPE.DIR,
+          type: MOVETYPE.DIR,
           x: -1,
           y: -1
         },
         {
-          type: SHOGI.MOVETYPE.DIR,
+          type: MOVETYPE.DIR,
           x: 1,
           y: -1
         }
       ],
       canPromote: true, // 成れるかどうか
       isPromote: false, // 成り駒かどうか
-      toPromote: SHOGI.KOMA.UM, // 成り先
-      fromPromote: SHOGI.KOMA.NONE // 成り元
+      toPromote: KOMA.UM, // 成り先
+      fromPromote: KOMA.NONE // 成り元
     },
     {
       // 飛車
@@ -196,30 +196,30 @@ export default class KomaInfo {
       moves: [
         // 進行方向定義 (posなら進行位置、dirなら進行方向)
         {
-          type: SHOGI.MOVETYPE.DIR,
+          type: MOVETYPE.DIR,
           x: 1,
           y: 0
         },
         {
-          type: SHOGI.MOVETYPE.DIR,
+          type: MOVETYPE.DIR,
           x: 0,
           y: 1
         },
         {
-          type: SHOGI.MOVETYPE.DIR,
+          type: MOVETYPE.DIR,
           x: -1,
           y: 0
         },
         {
-          type: SHOGI.MOVETYPE.DIR,
+          type: MOVETYPE.DIR,
           x: 0,
           y: -1
         }
       ],
       canPromote: true, // 成れるかどうか
       isPromote: false, // 成り駒かどうか
-      toPromote: SHOGI.KOMA.RY, // 成り先
-      fromPromote: SHOGI.KOMA.NONE // 成り元
+      toPromote: KOMA.RY, // 成り先
+      fromPromote: KOMA.NONE // 成り元
     },
     {
       // 王
@@ -229,50 +229,50 @@ export default class KomaInfo {
       moves: [
         // 進行方向定義 (posなら進行位置、dirなら進行方向)
         {
-          type: SHOGI.MOVETYPE.POS,
+          type: MOVETYPE.POS,
           x: -1,
           y: 1
         },
         {
-          type: SHOGI.MOVETYPE.POS,
+          type: MOVETYPE.POS,
           x: -1,
           y: 0
         },
         {
-          type: SHOGI.MOVETYPE.POS,
+          type: MOVETYPE.POS,
           x: 0,
           y: 1
         },
         {
-          type: SHOGI.MOVETYPE.POS,
+          type: MOVETYPE.POS,
           x: 0,
           y: -1
         },
         {
-          type: SHOGI.MOVETYPE.POS,
+          type: MOVETYPE.POS,
           x: 1,
           y: 1
         },
         {
-          type: SHOGI.MOVETYPE.POS,
+          type: MOVETYPE.POS,
           x: 1,
           y: 0
         },
         {
-          type: SHOGI.MOVETYPE.POS,
+          type: MOVETYPE.POS,
           x: -1,
           y: -1
         },
         {
-          type: SHOGI.MOVETYPE.POS,
+          type: MOVETYPE.POS,
           x: 1,
           y: -1
         }
       ],
       canPromote: false, // 成れるかどうか
       isPromote: false, // 成り駒かどうか
-      toPromote: SHOGI.KOMA.NONE, // 成り先
-      fromPromote: SHOGI.KOMA.NONE // 成り元
+      toPromote: KOMA.NONE, // 成り先
+      fromPromote: KOMA.NONE // 成り元
     },
     {
       // と金
@@ -282,40 +282,40 @@ export default class KomaInfo {
       moves: [
         // 進行方向定義 (posなら進行位置、dirなら進行方向)
         {
-          type: SHOGI.MOVETYPE.POS,
+          type: MOVETYPE.POS,
           x: -1,
           y: 1
         },
         {
-          type: SHOGI.MOVETYPE.POS,
+          type: MOVETYPE.POS,
           x: -1,
           y: 0
         },
         {
-          type: SHOGI.MOVETYPE.POS,
+          type: MOVETYPE.POS,
           x: 0,
           y: 1
         },
         {
-          type: SHOGI.MOVETYPE.POS,
+          type: MOVETYPE.POS,
           x: 0,
           y: -1
         },
         {
-          type: SHOGI.MOVETYPE.POS,
+          type: MOVETYPE.POS,
           x: 1,
           y: 1
         },
         {
-          type: SHOGI.MOVETYPE.POS,
+          type: MOVETYPE.POS,
           x: 1,
           y: 0
         }
       ],
       canPromote: false, // 成れるかどうか
       isPromote: true, // 成り駒かどうか
-      toPromote: SHOGI.KOMA.NONE, // 成り先
-      fromPromote: SHOGI.KOMA.FU // 成り元
+      toPromote: KOMA.NONE, // 成り先
+      fromPromote: KOMA.FU // 成り元
     },
     {
       // 成香
@@ -325,40 +325,40 @@ export default class KomaInfo {
       moves: [
         // 進行方向定義 (posなら進行位置、dirなら進行方向)
         {
-          type: SHOGI.MOVETYPE.POS,
+          type: MOVETYPE.POS,
           x: -1,
           y: 1
         },
         {
-          type: SHOGI.MOVETYPE.POS,
+          type: MOVETYPE.POS,
           x: -1,
           y: 0
         },
         {
-          type: SHOGI.MOVETYPE.POS,
+          type: MOVETYPE.POS,
           x: 0,
           y: 1
         },
         {
-          type: SHOGI.MOVETYPE.POS,
+          type: MOVETYPE.POS,
           x: 0,
           y: -1
         },
         {
-          type: SHOGI.MOVETYPE.POS,
+          type: MOVETYPE.POS,
           x: 1,
           y: 1
         },
         {
-          type: SHOGI.MOVETYPE.POS,
+          type: MOVETYPE.POS,
           x: 1,
           y: 0
         }
       ],
       canPromote: false, // 成れるかどうか
       isPromote: true, // 成り駒かどうか
-      toPromote: SHOGI.KOMA.NONE, // 成り先
-      fromPromote: SHOGI.KOMA.KY // 成り元
+      toPromote: KOMA.NONE, // 成り先
+      fromPromote: KOMA.KY // 成り元
     },
     {
       // 成桂
@@ -368,40 +368,40 @@ export default class KomaInfo {
       moves: [
         // 進行方向定義 (posなら進行位置、dirなら進行方向)
         {
-          type: SHOGI.MOVETYPE.POS,
+          type: MOVETYPE.POS,
           x: -1,
           y: 1
         },
         {
-          type: SHOGI.MOVETYPE.POS,
+          type: MOVETYPE.POS,
           x: -1,
           y: 0
         },
         {
-          type: SHOGI.MOVETYPE.POS,
+          type: MOVETYPE.POS,
           x: 0,
           y: 1
         },
         {
-          type: SHOGI.MOVETYPE.POS,
+          type: MOVETYPE.POS,
           x: 0,
           y: -1
         },
         {
-          type: SHOGI.MOVETYPE.POS,
+          type: MOVETYPE.POS,
           x: 1,
           y: 1
         },
         {
-          type: SHOGI.MOVETYPE.POS,
+          type: MOVETYPE.POS,
           x: 1,
           y: 0
         }
       ],
       canPromote: false, // 成れるかどうか
       isPromote: true, // 成り駒かどうか
-      toPromote: SHOGI.KOMA.NONE, // 成り先
-      fromPromote: SHOGI.KOMA.KE // 成り元
+      toPromote: KOMA.NONE, // 成り先
+      fromPromote: KOMA.KE // 成り元
     },
     {
       // 成銀
@@ -411,40 +411,40 @@ export default class KomaInfo {
       moves: [
         // 進行方向定義 (posなら進行位置、dirなら進行方向)
         {
-          type: SHOGI.MOVETYPE.POS,
+          type: MOVETYPE.POS,
           x: -1,
           y: 1
         },
         {
-          type: SHOGI.MOVETYPE.POS,
+          type: MOVETYPE.POS,
           x: -1,
           y: 0
         },
         {
-          type: SHOGI.MOVETYPE.POS,
+          type: MOVETYPE.POS,
           x: 0,
           y: 1
         },
         {
-          type: SHOGI.MOVETYPE.POS,
+          type: MOVETYPE.POS,
           x: 0,
           y: -1
         },
         {
-          type: SHOGI.MOVETYPE.POS,
+          type: MOVETYPE.POS,
           x: 1,
           y: 1
         },
         {
-          type: SHOGI.MOVETYPE.POS,
+          type: MOVETYPE.POS,
           x: 1,
           y: 0
         }
       ],
       canPromote: false, // 成れるかどうか
       isPromote: true, // 成り駒かどうか
-      toPromote: SHOGI.KOMA.NONE, // 成り先
-      fromPromote: SHOGI.KOMA.GI // 成り元
+      toPromote: KOMA.NONE, // 成り先
+      fromPromote: KOMA.GI // 成り元
     },
     {
       // 馬
@@ -454,50 +454,50 @@ export default class KomaInfo {
       moves: [
         // 進行方向定義 (posなら進行位置、dirなら進行方向)
         {
-          type: SHOGI.MOVETYPE.DIR,
+          type: MOVETYPE.DIR,
           x: -1,
           y: 1
         },
         {
-          type: SHOGI.MOVETYPE.POS,
+          type: MOVETYPE.POS,
           x: -1,
           y: 0
         },
         {
-          type: SHOGI.MOVETYPE.POS,
+          type: MOVETYPE.POS,
           x: 0,
           y: 1
         },
         {
-          type: SHOGI.MOVETYPE.POS,
+          type: MOVETYPE.POS,
           x: 0,
           y: -1
         },
         {
-          type: SHOGI.MOVETYPE.DIR,
+          type: MOVETYPE.DIR,
           x: 1,
           y: 1
         },
         {
-          type: SHOGI.MOVETYPE.POS,
+          type: MOVETYPE.POS,
           x: 1,
           y: 0
         },
         {
-          type: SHOGI.MOVETYPE.DIR,
+          type: MOVETYPE.DIR,
           x: 1,
           y: -1
         },
         {
-          type: SHOGI.MOVETYPE.DIR,
+          type: MOVETYPE.DIR,
           x: -1,
           y: -1
         }
       ],
       canPromote: false, // 成れるかどうか
       isPromote: true, // 成り駒かどうか
-      toPromote: SHOGI.KOMA.NONE, // 成り先
-      fromPromote: SHOGI.KOMA.KA // 成り元
+      toPromote: KOMA.NONE, // 成り先
+      fromPromote: KOMA.KA // 成り元
     },
     {
       // 龍
@@ -507,70 +507,70 @@ export default class KomaInfo {
       moves: [
         // 進行方向定義 (posなら進行位置、dirなら進行方向)
         {
-          type: SHOGI.MOVETYPE.POS,
+          type: MOVETYPE.POS,
           x: -1,
           y: 1
         },
         {
-          type: SHOGI.MOVETYPE.POS,
+          type: MOVETYPE.POS,
           x: -1,
           y: 0
         },
         {
-          type: SHOGI.MOVETYPE.POS,
+          type: MOVETYPE.POS,
           x: 0,
           y: 1
         },
         {
-          type: SHOGI.MOVETYPE.POS,
+          type: MOVETYPE.POS,
           x: 0,
           y: -1
         },
         {
-          type: SHOGI.MOVETYPE.POS,
+          type: MOVETYPE.POS,
           x: 1,
           y: 1
         },
         {
-          type: SHOGI.MOVETYPE.POS,
+          type: MOVETYPE.POS,
           x: 1,
           y: 0
         },
         {
-          type: SHOGI.MOVETYPE.POS,
+          type: MOVETYPE.POS,
           x: 1,
           y: -1
         },
         {
-          type: SHOGI.MOVETYPE.POS,
+          type: MOVETYPE.POS,
           x: -1,
           y: -1
         },
         {
-          type: SHOGI.MOVETYPE.DIR,
+          type: MOVETYPE.DIR,
           x: 1,
           y: 0
         },
         {
-          type: SHOGI.MOVETYPE.DIR,
+          type: MOVETYPE.DIR,
           x: 0,
           y: 1
         },
         {
-          type: SHOGI.MOVETYPE.DIR,
+          type: MOVETYPE.DIR,
           x: -1,
           y: 0
         },
         {
-          type: SHOGI.MOVETYPE.DIR,
+          type: MOVETYPE.DIR,
           x: 0,
           y: -1
         }
       ],
       canPromote: false, // 成れるかどうか
       isPromote: true, // 成り駒かどうか
-      toPromote: SHOGI.KOMA.NONE, // 成り先
-      fromPromote: SHOGI.KOMA.HI // 成り元
+      toPromote: KOMA.NONE, // 成り先
+      fromPromote: KOMA.HI // 成り元
     }
   ]
 
@@ -1184,52 +1184,52 @@ export default class KomaInfo {
 
     switch (komaString) {
       case '*':
-        komaType = SHOGI.KOMA.NONE
+        komaType = KOMA.NONE
         break
       case 'FU':
-        komaType = SHOGI.KOMA.FU
+        komaType = KOMA.FU
         break
       case 'KY':
-        komaType = SHOGI.KOMA.KY
+        komaType = KOMA.KY
         break
       case 'KE':
-        komaType = SHOGI.KOMA.KE
+        komaType = KOMA.KE
         break
       case 'GI':
-        komaType = SHOGI.KOMA.GI
+        komaType = KOMA.GI
         break
       case 'KI':
-        komaType = SHOGI.KOMA.KI
+        komaType = KOMA.KI
         break
       case 'KA':
-        komaType = SHOGI.KOMA.KA
+        komaType = KOMA.KA
         break
       case 'HI':
-        komaType = SHOGI.KOMA.HI
+        komaType = KOMA.HI
         break
       case 'OU':
-        komaType = SHOGI.KOMA.OU
+        komaType = KOMA.OU
         break
       case 'TO':
-        komaType = SHOGI.KOMA.TO
+        komaType = KOMA.TO
         break
       case 'NY':
-        komaType = SHOGI.KOMA.NY
+        komaType = KOMA.NY
         break
       case 'NK':
-        komaType = SHOGI.KOMA.NK
+        komaType = KOMA.NK
         break
       case 'NG':
-        komaType = SHOGI.KOMA.NG
+        komaType = KOMA.NG
         break
       case 'UM':
-        komaType = SHOGI.KOMA.UM
+        komaType = KOMA.UM
         break
       case 'RY':
-        komaType = SHOGI.KOMA.RY
+        komaType = KOMA.RY
         break
       default:
-        komaType = SHOGI.KOMA.NONE
+        komaType = KOMA.NONE
         break
     }
     return komaType
@@ -1249,7 +1249,7 @@ export default class KomaInfo {
   }
 
   public static getPromote(komaNum: number): number | null {
-    if (this.komaData[komaNum].toPromote === SHOGI.KOMA.NONE) {
+    if (this.komaData[komaNum].toPromote === KOMA.NONE) {
       return null
     } else {
       return this.komaData[komaNum].toPromote
@@ -1257,7 +1257,7 @@ export default class KomaInfo {
   }
 
   public static getOrigin(komaNum: number): number {
-    if (this.komaData[komaNum].fromPromote === SHOGI.KOMA.NONE) {
+    if (this.komaData[komaNum].fromPromote === KOMA.NONE) {
       return komaNum
     } else {
       return this.komaData[komaNum].fromPromote
