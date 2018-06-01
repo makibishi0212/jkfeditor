@@ -62,7 +62,7 @@ export default class MoveList {
    * 指定指し手番号に指し手を追加する。moveNumが最新なら新規指し手の追加、そうでないなら分岐指し手の追加となる
    *
    * @param moveNum
-   * @param moveInfoObj
+   * @param moveObj
    */
   public addMove(moveNum: number, moveObj: moveObject) {
     // TODO:ここにmoveInfoObjが正しいかどうか判定する処理を入れる
@@ -247,6 +247,7 @@ export default class MoveList {
 
       if (isTheSame) {
         console.error('同一の指し手が含まれています。')
+        return
       }
     }
 

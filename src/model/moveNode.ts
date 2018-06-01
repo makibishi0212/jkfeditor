@@ -102,8 +102,8 @@ export default class MoveNode {
       if (nextNum === deleteNum) {
         this._next.splice(index, 1)
         if (this.select === index) {
-          // 現在の次の指し手が削除する指し手の場合はselectをひとつ下げる
-          this._select--
+          // 現在の次の指し手が削除する指し手の場合はselectを0か-1にする
+          _.size(this.next) >= 1 ? (this._select = 0) : (this._select = -1)
         }
         return true
       }

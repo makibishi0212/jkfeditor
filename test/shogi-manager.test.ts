@@ -229,6 +229,11 @@ describe('Shogi-manger test', () => {
     console.log(testManager.dispKifuMoves())
   })
 
+  it('重複した指し手の追加', () => {
+    testManager.addBoardMove(8, 3, 8, 4)
+    expect(spyLog.mock.calls[0][0]).toEqual('同一の指し手が含まれています。')
+  })
+
   it('指し手の分岐切り替え', () => {
     testManager = jkfLoadManager
     testManager.switchFork(1)
@@ -352,7 +357,7 @@ describe('Shogi-manger test', () => {
     testManager.addHandMove('KE', 5, 8)
     console.log(testManager.dispCurrentInfo())
     expect(console.error).toBeCalled()
-    expect(spyLog.mock.calls[0][0]).toEqual(
+    expect(spyLog.mock.calls[1][0]).toEqual(
       '打つ駒が手持ち駒の中にありません。'
     )
   })
@@ -366,5 +371,30 @@ describe('Shogi-manger test', () => {
 
   it('分岐指し手の削除', () => {
     testManager = newManager
+    testManager.addBoardMove(8, 2, 2, 2)
+    testManager.addBoardMove(2, 1, 3, 3)
+    expect(testManager.nextMoves).toEqual([
+      {
+        to: { x: 2, y: 2 },
+        color: 1,
+        piece: 'HI',
+        from: { x: 8, y: 2 }
+      },
+      {
+        to: { x: 3, y: 3 },
+        color: 1,
+        piece: 'KE',
+        from: { x: 2, y: 1 }
+      }
+    ])
+    testManager.deleteFork(0)
+    expect(testManager.nextMoves).toEqual([
+      {
+        to: { x: 3, y: 3 },
+        color: 1,
+        piece: 'KE',
+        from: { x: 2, y: 1 }
+      }
+    ])
   })
 })

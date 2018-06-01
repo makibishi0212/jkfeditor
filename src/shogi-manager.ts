@@ -30,23 +30,17 @@ export default class ShogiManager {
   /** 特定の指し手における盤面などの情報 */
 
   // 現在の盤面情報
-  private _field: Field
-
-  // 次の指し手の候補
-  private _forkList: Object
+  private _field: Field = new Field(KomaInfo.initBoards[BOARD.HIRATE])
 
   /** 現在操作中の棋譜に関する情報 */
   // readonlyかどうか
   private readonly: boolean
 
-  // 棋譜か定跡(分岐をもつ)か
-  private type: number
-
   // 棋譜の指し手を管理する要素
-  private moveData: MoveList
+  private moveData: MoveList = new MoveList([{}])
 
   // 棋譜の指し手以外の情報
-  private info: Object
+  private info: Object = {}
 
   // プリセット
   private preset: string = 'HIRATE'
@@ -83,6 +77,21 @@ export default class ShogiManager {
 
   public get hands(): Array<{ [index: string]: number }> {
     return this._field.hands
+  }
+
+  public get nextMoves(): Array<moveInfoObject> {
+    const nextMoveNodes = this.moveData.getNextMoves(this._currentNum)
+    const nextSelect = this.moveData.getNextSelect(this._currentNum)
+
+    return _.map(nextMoveNodes, (move: MoveNode, index: number) => {
+      return move.moveObj.move as moveInfoObject
+    })
+  }
+
+  public get kifuMoves(): Array<moveInfoObject> {
+    return _.map(this.moveData.currentMoves, (move: Move, index: number) => {
+      return move.moveObj.move as moveInfoObject
+    })
   }
 
   /**
@@ -232,6 +241,7 @@ export default class ShogiManager {
   }
 
   public dispKifuTree(): string {
+    // TODO: treeの見せ方を改善する
     return this.moveData.dispKifuTree()
   }
 
@@ -891,8 +901,6 @@ export default class ShogiManager {
 }
 
 // 次の実装
-// TODO: 分岐指し手の順番の入れ替えを追加
-// TODO: 重複指し手が分岐候補に登録されないことをテストする
 // TODO: disp〜()で提供されている情報相当のオブジェクトを返すAPIの作成
 // TODO: 成れない駒に対するpromoteなどありえない動作の検出をより厳密に行う
 // TODO: 相対位置判定のテスト・実装
