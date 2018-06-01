@@ -1,6 +1,5 @@
-import * as DEFINE from './interface'
 import { NONAME } from 'dns'
-import { komaMoveObject } from './interface'
+import { KomaMoveObject } from './interface'
 
 export const PLAYER = {
   SENTE: 0,

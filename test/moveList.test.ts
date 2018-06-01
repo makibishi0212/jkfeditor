@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import MoveList from '../src/moveList'
 import Move from '../src/model/move'
 import KomaInfo from '../src/const/komaInfo'
@@ -26,7 +25,7 @@ const move3 = {
   ]
 }
 
-const move4_1 = {
+const move41 = {
   move: {
     from: { x: 8, y: 8 },
     to: { x: 2, y: 2 },
@@ -37,7 +36,7 @@ const move4_1 = {
   }
 }
 
-const move4_2 = {
+const move42 = {
   move: {
     from: { x: 3, y: 1 },
     to: { x: 2, y: 2 },
@@ -48,7 +47,7 @@ const move4_2 = {
   }
 }
 
-const move4_3_1 = {
+const move431 = {
   move: {
     from: { x: 2, y: 7 },
     to: { x: 2, y: 6 },
@@ -57,7 +56,7 @@ const move4_3_1 = {
   }
 }
 
-const move4_3_2_1 = {
+const move4321 = {
   move: {
     from: { x: 1, y: 3 },
     to: { x: 1, y: 4 },
@@ -66,22 +65,22 @@ const move4_3_2_1 = {
   }
 }
 
-const move4_3_2 = {
+const move432 = {
   move: {
     from: { x: 9, y: 3 },
     to: { x: 9, y: 4 },
     color: 1,
     piece: 'FU'
   },
-  forks: [[move4_3_2_1]]
+  forks: [[move4321]]
 }
 
-const move4_3 = {
+const move43 = {
   move: { to: { x: 4, y: 5 }, color: 0, piece: 'KA' },
-  forks: [[move4_3_1, move4_3_2]]
+  forks: [[move431, move432]]
 }
 
-const move4_4 = {
+const move44 = {
   move: {
     from: { x: 9, y: 3 },
     to: { x: 9, y: 4 },
@@ -97,7 +96,7 @@ const move4 = {
     color: 0,
     piece: 'KE'
   },
-  forks: [[move4_1, move4_2, move4_3, move4_4]]
+  forks: [[move41, move42, move43, move44]]
 }
 
 const move5 = {
@@ -149,9 +148,7 @@ describe('MoveNode class test', () => {
     ])
 
     expect(loadMoveList.getMove(0)).toEqual(new Move(move1))
-    expect(loadMoveList.getNextMoves(0)[0].moveObj).toEqual(
-      new Move(move2).moveObj
-    )
+    expect(loadMoveList.getNextMoves(0)[0].moveObj).toEqual(new Move(move2).moveObj)
     expect(loadMoveList.getNextMoves(3).length).toBe(1)
     expect(loadMoveList.getNextMoves(2).length).toBe(2)
   })
@@ -166,10 +163,10 @@ describe('MoveNode class test', () => {
       new Move(move1),
       new Move(move2),
       new Move(move3),
-      new Move(move4_1),
-      new Move(move4_2),
-      new Move(move4_3),
-      new Move(move4_4)
+      new Move(move41),
+      new Move(move42),
+      new Move(move43),
+      new Move(move44)
     ])
   })
 

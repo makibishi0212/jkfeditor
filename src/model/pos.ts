@@ -28,6 +28,20 @@ export default class Pos {
   }
 
   /**
+   * その座標が盤面の範囲内か調べる
+   *
+   * @param ax
+   * @param ay
+   */
+  public static inRange(ax: number, ay: number): boolean {
+    if (ax > 0 && ax <= 9 && ay > 0 && ay <= 9) {
+      return true
+    } else {
+      return false
+    }
+  }
+
+  /**
    * 盤面を反転した場合の棋譜座標を返す
    */
   public reverse() {
@@ -60,19 +74,5 @@ export default class Pos {
    */
   public get y(): number {
     return this._ky
-  }
-
-  /**
-   * その座標が盤面の範囲内か調べる
-   *
-   * @param ax
-   * @param ay
-   */
-  public static inRange(ax: number, ay: number): boolean {
-    if (ax > 0 && ax <= 9 && ay > 0 && ay <= 9) {
-      return true
-    } else {
-      return false
-    }
   }
 }

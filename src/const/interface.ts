@@ -1,10 +1,10 @@
-export interface boardObject {
+export interface BoardObject {
   color?: number
   kind?: string
 }
 
 // 駒データの表現オブジェクト
-export interface komaDataObject {
+export interface KomaDataObject {
   // 指し手の駒指定で使う駒名の略称
   name: string
 
@@ -15,7 +15,7 @@ export interface komaDataObject {
   boardName: string
 
   // 駒の移動可能情報
-  moves: Array<komaMoveObject>
+  moves: Array<KomaMoveObject>
 
   // 成れるかどうか
   canPromote: boolean
@@ -31,23 +31,23 @@ export interface komaDataObject {
 }
 
 // 駒の移動タイプの表現オブジェクト
-export interface komaMoveObject {
+export interface KomaMoveObject {
   type: string
   x: number
   y: number
 }
 
 // json棋譜フォーマットで定義された指し手の定義オブジェクト
-export interface moveObject {
-  move?: moveInfoObject
+export interface MoveObject {
+  move?: MoveInfoObject
   comments?: Array<string>
-  forks?: Array<Array<moveObject>>
+  forks?: Array<Array<MoveObject>>
 }
 
 // json棋譜フォーマットで定義された駒の移動表現の定義オブジェクト
-export interface moveInfoObject {
-  to: posObject
-  from?: posObject
+export interface MoveInfoObject {
+  to: PosObject
+  from?: PosObject
   color: number
   piece: string
   same?: boolean
@@ -57,23 +57,23 @@ export interface moveInfoObject {
 }
 
 // 駒座標表現の定義オブジェクト
-export interface posObject {
+export interface PosObject {
   x: number
   y: number
 }
 
-export interface jkfObject {
+export interface JkfObject {
   moves?: Array<Object>
-  initial?: initObject
+  initial?: InitObject
   header?: Object
 }
 
-export interface initObject {
+export interface InitObject {
   preset: string
-  data?: initBoardObject
+  data?: InitBoardObject
 }
 
-export interface initBoardObject {
+export interface InitBoardObject {
   board?: Array<Array<Object>>
   color?: number
   hands?: Array<{ [index: string]: number }>

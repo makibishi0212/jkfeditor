@@ -1,7 +1,7 @@
 import _ from 'lodash'
 
 import Move from './move'
-import { moveObject } from '../const/interface'
+import { MoveObject } from '../const/interface'
 
 // 将棋用の指し手リストクラス
 
@@ -10,7 +10,7 @@ export default class MoveNode {
   private _info: Move
 
   // json棋譜フォーマットで定義されている元の指し手情報
-  private _moveObj: moveObject
+  private _moveObj: MoveObject
 
   // このリストセルのmoveNodeArray上のインデックス
   private _index: number
@@ -35,12 +35,7 @@ export default class MoveNode {
    * @param index  この指し手セルに対して割り当てられるインデックス
    * @param prevIndex この指し手セルの前の指し手を表す指し手セルのインデックス
    */
-  constructor(
-    moveObj: moveObject,
-    index: number,
-    prevIndex: number | null,
-    isBranch: boolean
-  ) {
+  constructor(moveObj: MoveObject, index: number, prevIndex: number | null, isBranch: boolean) {
     this._index = index
     this._prev = prevIndex
     this._moveObj = moveObj
@@ -61,7 +56,7 @@ export default class MoveNode {
     return this._info
   }
 
-  public get moveObj(): moveObject {
+  public get moveObj(): MoveObject {
     return this._moveObj
   }
 

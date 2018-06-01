@@ -29,7 +29,7 @@ describe('MoveNode class test', () => {
 
   it('範囲外の値による初期化', () => {
     expect(() => {
-      new Pos(10, 10)
+      const pos = new Pos(10, 10)
     }).toThrowError('盤面座標の値が範囲外です。')
   })
 })

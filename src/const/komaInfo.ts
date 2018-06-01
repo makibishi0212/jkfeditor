@@ -1,9 +1,497 @@
-import { komaDataObject, komaMoveObject } from './interface'
+import { KomaDataObject, KomaMoveObject } from './interface'
 import { KOMA, MOVETYPE } from './const'
 
 // 駒の情報を取得できるクラス
 export default class KomaInfo {
-  private static komaData: Array<komaDataObject> = [
+  public static komaochiTypes: Array<string> = [
+    '香落ち',
+    '角落ち',
+    '飛車落ち',
+    '飛香落ち',
+    '二枚落ち',
+    '四枚落ち',
+    '六枚落ち',
+    '八枚落ち'
+  ]
+
+  public static initBoards: { [index: string]: Array<Array<Object>> } = {
+    HIRATE: [
+      [
+        { color: 1, kind: 'KY' },
+        { color: 1, kind: 'KE' },
+        { color: 1, kind: 'GI' },
+        { color: 1, kind: 'KI' },
+        { color: 1, kind: 'OU' },
+        { color: 1, kind: 'KI' },
+        { color: 1, kind: 'GI' },
+        { color: 1, kind: 'KE' },
+        { color: 1, kind: 'KY' }
+      ],
+      [{}, { color: 1, kind: 'HI' }, {}, {}, {}, {}, {}, { color: 1, kind: 'KA' }, {}],
+      [
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' }
+      ],
+      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
+      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
+      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
+      [
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' }
+      ],
+      [{}, { color: 0, kind: 'KA' }, {}, {}, {}, {}, {}, { color: 0, kind: 'HI' }, {}],
+      [
+        { color: 0, kind: 'KY' },
+        { color: 0, kind: 'KE' },
+        { color: 0, kind: 'GI' },
+        { color: 0, kind: 'KI' },
+        { color: 0, kind: 'OU' },
+        { color: 0, kind: 'KI' },
+        { color: 0, kind: 'GI' },
+        { color: 0, kind: 'KE' },
+        { color: 0, kind: 'KY' }
+      ]
+    ],
+    // 香落ち
+    KY: [
+      [
+        { color: 1, kind: 'KY' },
+        { color: 1, kind: 'KE' },
+        { color: 1, kind: 'GI' },
+        { color: 1, kind: 'KI' },
+        { color: 1, kind: 'OU' },
+        { color: 1, kind: 'KI' },
+        { color: 1, kind: 'GI' },
+        { color: 1, kind: 'KE' },
+        { color: 1, kind: 'KY' }
+      ],
+      [{}, { color: 1, kind: 'HI' }, {}, {}, {}, {}, {}, { color: 1, kind: 'KA' }, {}],
+      [
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' }
+      ],
+      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
+      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
+      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
+      [
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' }
+      ],
+      [{}, { color: 0, kind: 'KA' }, {}, {}, {}, {}, {}, { color: 0, kind: 'HI' }, {}],
+      [
+        {},
+        { color: 0, kind: 'KE' },
+        { color: 0, kind: 'GI' },
+        { color: 0, kind: 'KI' },
+        { color: 0, kind: 'OU' },
+        { color: 0, kind: 'KI' },
+        { color: 0, kind: 'GI' },
+        { color: 0, kind: 'KE' },
+        { color: 0, kind: 'KY' }
+      ]
+    ],
+
+    // 角落ち
+    KA: [
+      [
+        { color: 1, kind: 'KY' },
+        { color: 1, kind: 'KE' },
+        { color: 1, kind: 'GI' },
+        { color: 1, kind: 'KI' },
+        { color: 1, kind: 'OU' },
+        { color: 1, kind: 'KI' },
+        { color: 1, kind: 'GI' },
+        { color: 1, kind: 'KE' },
+        { color: 1, kind: 'KY' }
+      ],
+      [{}, { color: 1, kind: 'HI' }, {}, {}, {}, {}, {}, { color: 1, kind: 'KA' }, {}],
+      [
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' }
+      ],
+      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
+      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
+      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
+      [
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' }
+      ],
+      [{}, {}, {}, {}, {}, {}, {}, { color: 0, kind: 'HI' }, {}],
+      [
+        { color: 0, kind: 'KY' },
+        { color: 0, kind: 'KE' },
+        { color: 0, kind: 'GI' },
+        { color: 0, kind: 'KI' },
+        { color: 0, kind: 'OU' },
+        { color: 0, kind: 'KI' },
+        { color: 0, kind: 'GI' },
+        { color: 0, kind: 'KE' },
+        { color: 0, kind: 'KY' }
+      ]
+    ],
+
+    // 飛車落ち
+    HI: [
+      [
+        { color: 1, kind: 'KY' },
+        { color: 1, kind: 'KE' },
+        { color: 1, kind: 'GI' },
+        { color: 1, kind: 'KI' },
+        { color: 1, kind: 'OU' },
+        { color: 1, kind: 'KI' },
+        { color: 1, kind: 'GI' },
+        { color: 1, kind: 'KE' },
+        { color: 1, kind: 'KY' }
+      ],
+      [{}, { color: 1, kind: 'HI' }, {}, {}, {}, {}, {}, { color: 1, kind: 'KA' }, {}],
+      [
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' }
+      ],
+      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
+      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
+      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
+      [
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' }
+      ],
+      [{}, { color: 0, kind: 'KA' }, {}, {}, {}, {}, {}, {}, {}],
+      [
+        { color: 0, kind: 'KY' },
+        { color: 0, kind: 'KE' },
+        { color: 0, kind: 'GI' },
+        { color: 0, kind: 'KI' },
+        { color: 0, kind: 'OU' },
+        { color: 0, kind: 'KI' },
+        { color: 0, kind: 'GI' },
+        { color: 0, kind: 'KE' },
+        { color: 0, kind: 'KY' }
+      ]
+    ],
+
+    // 飛香落ち
+    HIKY: [
+      [
+        { color: 1, kind: 'KY' },
+        { color: 1, kind: 'KE' },
+        { color: 1, kind: 'GI' },
+        { color: 1, kind: 'KI' },
+        { color: 1, kind: 'OU' },
+        { color: 1, kind: 'KI' },
+        { color: 1, kind: 'GI' },
+        { color: 1, kind: 'KE' },
+        { color: 1, kind: 'KY' }
+      ],
+      [{}, { color: 1, kind: 'HI' }, {}, {}, {}, {}, {}, { color: 1, kind: 'KA' }, {}],
+      [
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' }
+      ],
+      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
+      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
+      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
+      [
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' }
+      ],
+      [{}, { color: 0, kind: 'KA' }, {}, {}, {}, {}, {}, {}, {}],
+      [
+        {},
+        { color: 0, kind: 'KE' },
+        { color: 0, kind: 'GI' },
+        { color: 0, kind: 'KI' },
+        { color: 0, kind: 'OU' },
+        { color: 0, kind: 'KI' },
+        { color: 0, kind: 'GI' },
+        { color: 0, kind: 'KE' },
+        { color: 0, kind: 'KY' }
+      ]
+    ],
+
+    // 2枚落ち
+    '2': [
+      [
+        { color: 1, kind: 'KY' },
+        { color: 1, kind: 'KE' },
+        { color: 1, kind: 'GI' },
+        { color: 1, kind: 'KI' },
+        { color: 1, kind: 'OU' },
+        { color: 1, kind: 'KI' },
+        { color: 1, kind: 'GI' },
+        { color: 1, kind: 'KE' },
+        { color: 1, kind: 'KY' }
+      ],
+      [{}, { color: 1, kind: 'HI' }, {}, {}, {}, {}, {}, { color: 1, kind: 'KA' }, {}],
+      [
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' }
+      ],
+      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
+      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
+      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
+      [
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' }
+      ],
+      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
+      [
+        { color: 0, kind: 'KY' },
+        { color: 0, kind: 'KE' },
+        { color: 0, kind: 'GI' },
+        { color: 0, kind: 'KI' },
+        { color: 0, kind: 'OU' },
+        { color: 0, kind: 'KI' },
+        { color: 0, kind: 'GI' },
+        { color: 0, kind: 'KE' },
+        { color: 0, kind: 'KY' }
+      ]
+    ],
+
+    // 4枚落ち
+    '4': [
+      [
+        { color: 1, kind: 'KY' },
+        { color: 1, kind: 'KE' },
+        { color: 1, kind: 'GI' },
+        { color: 1, kind: 'KI' },
+        { color: 1, kind: 'OU' },
+        { color: 1, kind: 'KI' },
+        { color: 1, kind: 'GI' },
+        { color: 1, kind: 'KE' },
+        { color: 1, kind: 'KY' }
+      ],
+      [{}, { color: 1, kind: 'HI' }, {}, {}, {}, {}, {}, { color: 1, kind: 'KA' }, {}],
+      [
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' }
+      ],
+      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
+      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
+      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
+      [
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' }
+      ],
+      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
+      [
+        {},
+        { color: 0, kind: 'KE' },
+        { color: 0, kind: 'GI' },
+        { color: 0, kind: 'KI' },
+        { color: 0, kind: 'OU' },
+        { color: 0, kind: 'KI' },
+        { color: 0, kind: 'GI' },
+        { color: 0, kind: 'KE' },
+        {}
+      ]
+    ],
+
+    // 6枚落ち
+    '6': [
+      [
+        { color: 1, kind: 'KY' },
+        { color: 1, kind: 'KE' },
+        { color: 1, kind: 'GI' },
+        { color: 1, kind: 'KI' },
+        { color: 1, kind: 'OU' },
+        { color: 1, kind: 'KI' },
+        { color: 1, kind: 'GI' },
+        { color: 1, kind: 'KE' },
+        { color: 1, kind: 'KY' }
+      ],
+      [{}, { color: 1, kind: 'HI' }, {}, {}, {}, {}, {}, { color: 1, kind: 'KA' }, {}],
+      [
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' }
+      ],
+      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
+      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
+      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
+      [
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' }
+      ],
+      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
+      [
+        {},
+        {},
+        { color: 0, kind: 'GI' },
+        { color: 0, kind: 'KI' },
+        { color: 0, kind: 'OU' },
+        { color: 0, kind: 'KI' },
+        { color: 0, kind: 'GI' },
+        {},
+        {}
+      ]
+    ],
+
+    // 8枚落ち
+    '8': [
+      [
+        { color: 1, kind: 'KY' },
+        { color: 1, kind: 'KE' },
+        { color: 1, kind: 'GI' },
+        { color: 1, kind: 'KI' },
+        { color: 1, kind: 'OU' },
+        { color: 1, kind: 'KI' },
+        { color: 1, kind: 'GI' },
+        { color: 1, kind: 'KE' },
+        { color: 1, kind: 'KY' }
+      ],
+      [{}, { color: 1, kind: 'HI' }, {}, {}, {}, {}, {}, { color: 1, kind: 'KA' }, {}],
+      [
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' },
+        { color: 1, kind: 'FU' }
+      ],
+      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
+      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
+      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
+      [
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' },
+        { color: 0, kind: 'FU' }
+      ],
+      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
+      [
+        {},
+        {},
+        {},
+        { color: 0, kind: 'KI' },
+        { color: 0, kind: 'OU' },
+        { color: 0, kind: 'KI' },
+        {},
+        {},
+        {}
+      ]
+    ]
+  }
+
+  private static komaData: Array<KomaDataObject> = [
     {
       // 駒なし
       name: '無', // 略駒名
@@ -574,604 +1062,6 @@ export default class KomaInfo {
     }
   ]
 
-  public static komaochiTypes: Array<string> = [
-    '香落ち',
-    '角落ち',
-    '飛車落ち',
-    '飛香落ち',
-    '二枚落ち',
-    '四枚落ち',
-    '六枚落ち',
-    '八枚落ち'
-  ]
-
-  public static initBoards: { [index: string]: Array<Array<Object>> } = {
-    HIRATE: [
-      [
-        { color: 1, kind: 'KY' },
-        { color: 1, kind: 'KE' },
-        { color: 1, kind: 'GI' },
-        { color: 1, kind: 'KI' },
-        { color: 1, kind: 'OU' },
-        { color: 1, kind: 'KI' },
-        { color: 1, kind: 'GI' },
-        { color: 1, kind: 'KE' },
-        { color: 1, kind: 'KY' }
-      ],
-      [
-        {},
-        { color: 1, kind: 'HI' },
-        {},
-        {},
-        {},
-        {},
-        {},
-        { color: 1, kind: 'KA' },
-        {}
-      ],
-      [
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' }
-      ],
-      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
-      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
-      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
-      [
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' }
-      ],
-      [
-        {},
-        { color: 0, kind: 'KA' },
-        {},
-        {},
-        {},
-        {},
-        {},
-        { color: 0, kind: 'HI' },
-        {}
-      ],
-      [
-        { color: 0, kind: 'KY' },
-        { color: 0, kind: 'KE' },
-        { color: 0, kind: 'GI' },
-        { color: 0, kind: 'KI' },
-        { color: 0, kind: 'OU' },
-        { color: 0, kind: 'KI' },
-        { color: 0, kind: 'GI' },
-        { color: 0, kind: 'KE' },
-        { color: 0, kind: 'KY' }
-      ]
-    ],
-    // 香落ち
-    KY: [
-      [
-        { color: 1, kind: 'KY' },
-        { color: 1, kind: 'KE' },
-        { color: 1, kind: 'GI' },
-        { color: 1, kind: 'KI' },
-        { color: 1, kind: 'OU' },
-        { color: 1, kind: 'KI' },
-        { color: 1, kind: 'GI' },
-        { color: 1, kind: 'KE' },
-        { color: 1, kind: 'KY' }
-      ],
-      [
-        {},
-        { color: 1, kind: 'HI' },
-        {},
-        {},
-        {},
-        {},
-        {},
-        { color: 1, kind: 'KA' },
-        {}
-      ],
-      [
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' }
-      ],
-      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
-      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
-      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
-      [
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' }
-      ],
-      [
-        {},
-        { color: 0, kind: 'KA' },
-        {},
-        {},
-        {},
-        {},
-        {},
-        { color: 0, kind: 'HI' },
-        {}
-      ],
-      [
-        {},
-        { color: 0, kind: 'KE' },
-        { color: 0, kind: 'GI' },
-        { color: 0, kind: 'KI' },
-        { color: 0, kind: 'OU' },
-        { color: 0, kind: 'KI' },
-        { color: 0, kind: 'GI' },
-        { color: 0, kind: 'KE' },
-        { color: 0, kind: 'KY' }
-      ]
-    ],
-
-    // 角落ち
-    KA: [
-      [
-        { color: 1, kind: 'KY' },
-        { color: 1, kind: 'KE' },
-        { color: 1, kind: 'GI' },
-        { color: 1, kind: 'KI' },
-        { color: 1, kind: 'OU' },
-        { color: 1, kind: 'KI' },
-        { color: 1, kind: 'GI' },
-        { color: 1, kind: 'KE' },
-        { color: 1, kind: 'KY' }
-      ],
-      [
-        {},
-        { color: 1, kind: 'HI' },
-        {},
-        {},
-        {},
-        {},
-        {},
-        { color: 1, kind: 'KA' },
-        {}
-      ],
-      [
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' }
-      ],
-      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
-      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
-      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
-      [
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' }
-      ],
-      [{}, {}, {}, {}, {}, {}, {}, { color: 0, kind: 'HI' }, {}],
-      [
-        { color: 0, kind: 'KY' },
-        { color: 0, kind: 'KE' },
-        { color: 0, kind: 'GI' },
-        { color: 0, kind: 'KI' },
-        { color: 0, kind: 'OU' },
-        { color: 0, kind: 'KI' },
-        { color: 0, kind: 'GI' },
-        { color: 0, kind: 'KE' },
-        { color: 0, kind: 'KY' }
-      ]
-    ],
-
-    // 飛車落ち
-    HI: [
-      [
-        { color: 1, kind: 'KY' },
-        { color: 1, kind: 'KE' },
-        { color: 1, kind: 'GI' },
-        { color: 1, kind: 'KI' },
-        { color: 1, kind: 'OU' },
-        { color: 1, kind: 'KI' },
-        { color: 1, kind: 'GI' },
-        { color: 1, kind: 'KE' },
-        { color: 1, kind: 'KY' }
-      ],
-      [
-        {},
-        { color: 1, kind: 'HI' },
-        {},
-        {},
-        {},
-        {},
-        {},
-        { color: 1, kind: 'KA' },
-        {}
-      ],
-      [
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' }
-      ],
-      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
-      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
-      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
-      [
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' }
-      ],
-      [{}, { color: 0, kind: 'KA' }, {}, {}, {}, {}, {}, {}, {}],
-      [
-        { color: 0, kind: 'KY' },
-        { color: 0, kind: 'KE' },
-        { color: 0, kind: 'GI' },
-        { color: 0, kind: 'KI' },
-        { color: 0, kind: 'OU' },
-        { color: 0, kind: 'KI' },
-        { color: 0, kind: 'GI' },
-        { color: 0, kind: 'KE' },
-        { color: 0, kind: 'KY' }
-      ]
-    ],
-
-    // 飛香落ち
-    HIKY: [
-      [
-        { color: 1, kind: 'KY' },
-        { color: 1, kind: 'KE' },
-        { color: 1, kind: 'GI' },
-        { color: 1, kind: 'KI' },
-        { color: 1, kind: 'OU' },
-        { color: 1, kind: 'KI' },
-        { color: 1, kind: 'GI' },
-        { color: 1, kind: 'KE' },
-        { color: 1, kind: 'KY' }
-      ],
-      [
-        {},
-        { color: 1, kind: 'HI' },
-        {},
-        {},
-        {},
-        {},
-        {},
-        { color: 1, kind: 'KA' },
-        {}
-      ],
-      [
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' }
-      ],
-      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
-      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
-      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
-      [
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' }
-      ],
-      [{}, { color: 0, kind: 'KA' }, {}, {}, {}, {}, {}, {}, {}],
-      [
-        {},
-        { color: 0, kind: 'KE' },
-        { color: 0, kind: 'GI' },
-        { color: 0, kind: 'KI' },
-        { color: 0, kind: 'OU' },
-        { color: 0, kind: 'KI' },
-        { color: 0, kind: 'GI' },
-        { color: 0, kind: 'KE' },
-        { color: 0, kind: 'KY' }
-      ]
-    ],
-
-    // 2枚落ち
-    '2': [
-      [
-        { color: 1, kind: 'KY' },
-        { color: 1, kind: 'KE' },
-        { color: 1, kind: 'GI' },
-        { color: 1, kind: 'KI' },
-        { color: 1, kind: 'OU' },
-        { color: 1, kind: 'KI' },
-        { color: 1, kind: 'GI' },
-        { color: 1, kind: 'KE' },
-        { color: 1, kind: 'KY' }
-      ],
-      [
-        {},
-        { color: 1, kind: 'HI' },
-        {},
-        {},
-        {},
-        {},
-        {},
-        { color: 1, kind: 'KA' },
-        {}
-      ],
-      [
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' }
-      ],
-      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
-      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
-      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
-      [
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' }
-      ],
-      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
-      [
-        { color: 0, kind: 'KY' },
-        { color: 0, kind: 'KE' },
-        { color: 0, kind: 'GI' },
-        { color: 0, kind: 'KI' },
-        { color: 0, kind: 'OU' },
-        { color: 0, kind: 'KI' },
-        { color: 0, kind: 'GI' },
-        { color: 0, kind: 'KE' },
-        { color: 0, kind: 'KY' }
-      ]
-    ],
-
-    // 4枚落ち
-    '4': [
-      [
-        { color: 1, kind: 'KY' },
-        { color: 1, kind: 'KE' },
-        { color: 1, kind: 'GI' },
-        { color: 1, kind: 'KI' },
-        { color: 1, kind: 'OU' },
-        { color: 1, kind: 'KI' },
-        { color: 1, kind: 'GI' },
-        { color: 1, kind: 'KE' },
-        { color: 1, kind: 'KY' }
-      ],
-      [
-        {},
-        { color: 1, kind: 'HI' },
-        {},
-        {},
-        {},
-        {},
-        {},
-        { color: 1, kind: 'KA' },
-        {}
-      ],
-      [
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' }
-      ],
-      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
-      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
-      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
-      [
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' }
-      ],
-      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
-      [
-        {},
-        { color: 0, kind: 'KE' },
-        { color: 0, kind: 'GI' },
-        { color: 0, kind: 'KI' },
-        { color: 0, kind: 'OU' },
-        { color: 0, kind: 'KI' },
-        { color: 0, kind: 'GI' },
-        { color: 0, kind: 'KE' },
-        {}
-      ]
-    ],
-
-    // 6枚落ち
-    '6': [
-      [
-        { color: 1, kind: 'KY' },
-        { color: 1, kind: 'KE' },
-        { color: 1, kind: 'GI' },
-        { color: 1, kind: 'KI' },
-        { color: 1, kind: 'OU' },
-        { color: 1, kind: 'KI' },
-        { color: 1, kind: 'GI' },
-        { color: 1, kind: 'KE' },
-        { color: 1, kind: 'KY' }
-      ],
-      [
-        {},
-        { color: 1, kind: 'HI' },
-        {},
-        {},
-        {},
-        {},
-        {},
-        { color: 1, kind: 'KA' },
-        {}
-      ],
-      [
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' }
-      ],
-      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
-      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
-      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
-      [
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' }
-      ],
-      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
-      [
-        {},
-        {},
-        { color: 0, kind: 'GI' },
-        { color: 0, kind: 'KI' },
-        { color: 0, kind: 'OU' },
-        { color: 0, kind: 'KI' },
-        { color: 0, kind: 'GI' },
-        {},
-        {}
-      ]
-    ],
-
-    // 8枚落ち
-    '8': [
-      [
-        { color: 1, kind: 'KY' },
-        { color: 1, kind: 'KE' },
-        { color: 1, kind: 'GI' },
-        { color: 1, kind: 'KI' },
-        { color: 1, kind: 'OU' },
-        { color: 1, kind: 'KI' },
-        { color: 1, kind: 'GI' },
-        { color: 1, kind: 'KE' },
-        { color: 1, kind: 'KY' }
-      ],
-      [
-        {},
-        { color: 1, kind: 'HI' },
-        {},
-        {},
-        {},
-        {},
-        {},
-        { color: 1, kind: 'KA' },
-        {}
-      ],
-      [
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' }
-      ],
-      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
-      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
-      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
-      [
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' }
-      ],
-      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
-      [
-        {},
-        {},
-        {},
-        { color: 0, kind: 'KI' },
-        { color: 0, kind: 'OU' },
-        { color: 0, kind: 'KI' },
-        {},
-        {},
-        {}
-      ]
-    ]
-  }
-
   /**
    * 駒名の文字配列から駒番号を返す
    *
@@ -1264,7 +1154,7 @@ export default class KomaInfo {
     }
   }
 
-  public static getMoves(komaNum: number): Array<komaMoveObject> {
+  public static getMoves(komaNum: number): Array<KomaMoveObject> {
     return this.komaData[komaNum].moves
   }
 

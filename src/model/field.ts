@@ -1,11 +1,11 @@
 import _ from 'lodash'
 
 import {
-  moveInfoObject,
-  boardObject,
-  komaDataObject,
-  komaMoveObject,
-  initBoardObject
+  MoveInfoObject,
+  BoardObject,
+  KomaDataObject,
+  KomaMoveObject,
+  InitBoardObject
 } from '../const/interface'
 import Move from './move'
 import { PLAYER, MOVETYPE } from '../const/const'
@@ -16,7 +16,7 @@ import Pos from './pos'
 
 export default class Field {
   // 81マスの盤面
-  private _board: Array<Array<boardObject>>
+  private _board: Array<Array<BoardObject>>
 
   // 手駒
   private _hands: Array<{ [index: string]: number }>
@@ -25,7 +25,7 @@ export default class Field {
   private _color: number
 
   // 初期状態の盤面
-  private _initBoard: Array<Array<boardObject>>
+  private _initBoard: Array<Array<BoardObject>>
 
   // 手駒
   private _initHands: Array<{ [index: string]: number }>
@@ -158,7 +158,7 @@ export default class Field {
 
     const moves = KomaInfo.getMoves(komaNum)
 
-    return _.some(moves, (move: komaMoveObject) => {
+    return _.some(moves, (move: KomaMoveObject) => {
       let mx = move.x
       let my = move.y
 
@@ -212,12 +212,6 @@ export default class Field {
    * @param komaNum
    */
   public isInHand(player: number, komaNum: number): boolean {
-    if (player === PLAYER.SENTE) {
-      if (this._hands[PLAYER.SENTE]) {
-      }
-    } else {
-    }
-
     const komaString = KomaInfo.komaItoa(komaNum)
     if (this._hands[player] && _.has(this._hands[player], komaString)) {
       // 指定の駒が手持ちに存在すればtrueを返す
@@ -230,7 +224,7 @@ export default class Field {
   }
 
   public get initData() {
-    const initData: initBoardObject = {}
+    const initData: InitBoardObject = {}
 
     if (this._initBoard) {
       initData.board = this._initBoard
@@ -274,7 +268,7 @@ export default class Field {
    * @param pos
    * @param info
    */
-  private setBoardPiece(pos: Pos, info: boardObject) {
+  private setBoardPiece(pos: Pos, info: BoardObject) {
     if (pos) {
       this._board[pos.ay][pos.ax] = _.cloneDeep(info)
     }

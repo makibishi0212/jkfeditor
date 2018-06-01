@@ -7,12 +7,12 @@ import MoveList from './moveList'
 import Move from './model/move'
 import Pos from './model/pos'
 import {
-  jkfObject,
-  initObject,
-  initBoardObject,
-  boardObject,
-  moveObject,
-  moveInfoObject
+  JkfObject,
+  InitObject,
+  InitBoardObject,
+  BoardObject,
+  MoveObject,
+  MoveInfoObject
 } from './const/interface'
 import Field from './model/field'
 import { config } from 'shelljs'
@@ -50,7 +50,7 @@ export default class ShogiManager {
    * @param jkf
    * @param readonly
    */
-  constructor(jkf: jkfObject = {}, readonly: boolean = false) {
+  constructor(jkf: JkfObject = {}, readonly: boolean = false) {
     this.readonly = readonly
     this.load(jkf)
   }
@@ -62,16 +62,15 @@ export default class ShogiManager {
   /**
    * 最後に指された手の移動情報を表示する
    */
-  public get lastMove(): moveInfoObject {
-    return this.moveData.currentMoves[this.currentNum].moveObj
-      .move as moveInfoObject
+  public get lastMove(): MoveInfoObject {
+    return this.moveData.currentMoves[this.currentNum].moveObj.move as MoveInfoObject
   }
 
   public get comment(): any {
     return this.moveData.getMove(this.currentNum).comments
   }
 
-  public get board(): Array<Array<boardObject>> {
+  public get board(): Array<Array<BoardObject>> {
     return this._field.board
   }
 
@@ -79,18 +78,18 @@ export default class ShogiManager {
     return this._field.hands
   }
 
-  public get nextMoves(): Array<moveInfoObject> {
+  public get nextMoves(): Array<MoveInfoObject> {
     const nextMoveNodes = this.moveData.getNextMoves(this._currentNum)
     const nextSelect = this.moveData.getNextSelect(this._currentNum)
 
     return _.map(nextMoveNodes, (move: MoveNode, index: number) => {
-      return move.moveObj.move as moveInfoObject
+      return move.moveObj.move as MoveInfoObject
     })
   }
 
-  public get kifuMoves(): Array<moveInfoObject> {
+  public get kifuMoves(): Array<MoveInfoObject> {
     return _.map(this.moveData.currentMoves, (move: Move, index: number) => {
-      return move.moveObj.move as moveInfoObject
+      return move.moveObj.move as MoveInfoObject
     })
   }
 
@@ -139,15 +138,15 @@ export default class ShogiManager {
   /**
    * jkfをエクスポートする
    */
-  public export(): jkfObject {
+  public export(): JkfObject {
     // TODO:未実装
-    const jkfObj: jkfObject = {}
+    const jkfObj: JkfObject = {}
 
     if (_.isObject(this.info)) {
-      jkfObj.header = this.info as initObject
+      jkfObj.header = this.info as InitObject
     }
 
-    if (this.preset != BOARD.HIRATE) {
+    if (this.preset !== BOARD.HIRATE) {
       jkfObj.initial = { preset: this.preset }
 
       if (this.preset === BOARD.OTHER) {
@@ -166,7 +165,7 @@ export default class ShogiManager {
    * @param kx 盤面のX座標 7六歩の7
    * @param ky 盤面のY座標 7六歩の六
    */
-  public getBoardPiece(kx: number, ky: number): boardObject {
+  public getBoardPiece(kx: number, ky: number): BoardObject {
     const pos = new Pos(kx, ky)
 
     return this._field.board[pos.ay][pos.ax]
@@ -180,11 +179,7 @@ export default class ShogiManager {
   public go(newNum: number) {
     // 更新後の指し手が指し手配列の範囲内で、現在のものと異なる場合のみ指し手更新処理を行う
 
-    if (
-      this._currentNum !== newNum &&
-      newNum >= 0 &&
-      newNum < this.moveData.currentMoves.length
-    ) {
+    if (this._currentNum !== newNum && newNum >= 0 && newNum < this.moveData.currentMoves.length) {
       // 現在の盤面及び各プレイヤーの手持ち駒、次の指し手候補、指し手番号が更新対象
 
       if (this._currentNum > newNum) {
@@ -236,7 +231,7 @@ export default class ShogiManager {
     currentInfoString += this.dispGoteHand() + '\n'
     currentInfoString += this.dispBoard() + '\n'
     currentInfoString += this.dispSenteHand() + '\n\n'
-    //currentInfoString += this.dispKifuMoves()
+    // currentInfoString += this.dispKifuMoves()
     return currentInfoString
   }
 
@@ -255,11 +250,9 @@ export default class ShogiManager {
       banString += ' ＿＿＿＿＿＿＿＿＿' + '\n'
       _.each(this._field.board, boardRow => {
         banString += '|'
-        _.each(boardRow, (boardElm: boardObject) => {
+        _.each(boardRow, (boardElm: BoardObject) => {
           if (_.has(boardElm, 'kind')) {
-            banString += KomaInfo.getKanji(
-              KomaInfo.komaAtoi(boardElm.kind as string)
-            )
+            banString += KomaInfo.getKanji(KomaInfo.komaAtoi(boardElm.kind as string))
           } else {
             banString += '　'
           }
@@ -320,10 +313,7 @@ export default class ShogiManager {
     let senteHandString: string = '[先手持ち駒] '
     _.each(senteHand, (keepNum: number, komaType: string) => {
       senteHandString +=
-        KomaInfo.getKanji(KomaInfo.komaAtoi(komaType)) +
-        ':' +
-        keepNum.toString() +
-        ' \n'
+        KomaInfo.getKanji(KomaInfo.komaAtoi(komaType)) + ':' + keepNum.toString() + ' \n'
     })
     return senteHandString
   }
@@ -337,10 +327,7 @@ export default class ShogiManager {
     let goteHandString: string = '[後手持ち駒] '
     _.each(goteHand, (keepNum: number, komaType: string) => {
       goteHandString +=
-        KomaInfo.getKanji(KomaInfo.komaAtoi(komaType)) +
-        ':' +
-        keepNum.toString() +
-        ' \n'
+        KomaInfo.getKanji(KomaInfo.komaAtoi(komaType)) + ':' + keepNum.toString() + ' \n'
     })
     return goteHandString
   }
@@ -365,11 +352,11 @@ export default class ShogiManager {
    * @param comment コメント
    */
   public addMovefromObj(
-    moveInfoObj: moveInfoObject,
+    moveInfoObj: MoveInfoObject,
     comment: Array<string> | string | null = null
   ) {
     if (!this.readonly) {
-      let moveObj: moveObject
+      let moveObj: MoveObject
       if (_.isString(comment)) {
         moveObj = { move: moveInfoObj, comments: [comment] }
       } else if (_.isArray(comment)) {
@@ -391,9 +378,7 @@ export default class ShogiManager {
           return
         }
 
-        if (
-          !_.isEqual(this.getBoardPiece(moveInfoObj.to.x, moveInfoObj.to.y), {})
-        ) {
+        if (!_.isEqual(this.getBoardPiece(moveInfoObj.to.x, moveInfoObj.to.y), {})) {
           console.error(
             '持ち駒から配置する指し手の場合は空きマスを指定して下さい。',
             'TO:[x:' + moveInfoObj.to.x + ',' + 'y:' + moveInfoObj.to.y + ']',
@@ -439,20 +424,13 @@ export default class ShogiManager {
     comment: Array<string> | string | null = null
   ) {
     // TODO: 「同」が反映されない不具合を修正
-    const boardObj: boardObject = this.getBoardPiece(fromX, fromY)
-    let moveObj: boardObject | null = null
+    const boardObj: BoardObject = this.getBoardPiece(fromX, fromY)
+    let moveObj: BoardObject | null = null
     if (_.has(boardObj, 'color') && _.has(boardObj, 'kind')) {
-      moveObj = this.makeMoveData(
-        boardObj.kind as string,
-        fromX,
-        fromY,
-        toX,
-        toY,
-        promote
-      )
+      moveObj = this.makeMoveData(boardObj.kind as string, fromX, fromY, toX, toY, promote)
 
       if (moveObj) {
-        this.addMovefromObj(moveObj as moveInfoObject, comment)
+        this.addMovefromObj(moveObj as MoveInfoObject, comment)
       }
     } else {
       console.error('fromの座標に駒が存在しません。')
@@ -531,8 +509,8 @@ export default class ShogiManager {
    * jkfオブジェクトをロードする
    * @param jkf
    */
-  private load(jkf: jkfObject) {
-    let board: Array<Array<boardObject>>
+  private load(jkf: JkfObject) {
+    let board: Array<Array<BoardObject>>
     let hands: Array<{ [index: string]: number }> = [{}, {}]
 
     // 指し手情報のコピー
@@ -551,7 +529,7 @@ export default class ShogiManager {
       if (!_.has(jkf.initial as Object, 'preset')) {
         throw Error('初期状態のプリセットが未定義です。')
       } else {
-        switch ((jkf['initial'] as initObject)['preset']) {
+        switch ((jkf['initial'] as InitObject)['preset']) {
           case 'HIRATE':
             // 平手は代入済
             break
@@ -589,10 +567,12 @@ export default class ShogiManager {
             break
           case 'OTHER': // 上記以外
             this.preset = BOARD.OTHER
-            board = ((jkf.initial as initObject).data as initBoardObject)
-              .board as Array<Array<Object>>
-            hands = ((jkf.initial as initObject).data as initBoardObject)
-              .hands as Array<{ [index: string]: number }>
+            board = ((jkf.initial as InitObject).data as InitBoardObject).board as Array<
+              Array<Object>
+            >
+            hands = ((jkf.initial as InitObject).data as InitBoardObject).hands as Array<{
+              [index: string]: number
+            }>
             break
         }
       }
@@ -623,19 +603,21 @@ export default class ShogiManager {
     toX: number,
     toY: number,
     promote: boolean
-  ): moveInfoObject | null {
+  ): MoveInfoObject | null {
     // 前の指し手(現在の盤面になる前に最後に適用した指し手)を取得
     const prevMove = this.lastMove
 
     // 手番のプレイヤーを取得(未定義の場合初期盤面)
     const color = _.has(prevMove, 'color')
-      ? prevMove.color === PLAYER.SENTE ? PLAYER.GOTE : PLAYER.SENTE
+      ? prevMove.color === PLAYER.SENTE
+        ? PLAYER.GOTE
+        : PLAYER.SENTE
       : PLAYER.SENTE
 
     // komaStringの書式がただしいか判定
 
     // 指し手オブジェクトを作成
-    const moveInfoObj: moveInfoObject = {
+    const moveInfoObj: MoveInfoObject = {
       to: { x: toX, y: toY },
       color: color,
       piece: komaString
@@ -649,10 +631,10 @@ export default class ShogiManager {
         return null
       }
 
-      const fromPosObj: boardObject = this.getBoardPiece(fromX, fromY)
+      const fromPosObj: BoardObject = this.getBoardPiece(fromX, fromY)
       if (!_.isEmpty(fromPosObj)) {
         if (_.has(fromPosObj, 'kind')) {
-          if (fromPosObj.color != color) {
+          if (fromPosObj.color !== color) {
             console.error('相手の駒は移動できません。')
             return null
           }
@@ -677,7 +659,7 @@ export default class ShogiManager {
     }
 
     // 移動先に駒が存在する場合captureプロパティを追加
-    const toPosObj: boardObject = this.getBoardPiece(toX, toY)
+    const toPosObj: BoardObject = this.getBoardPiece(toX, toY)
     if (!_.isEmpty(toPosObj)) {
       if (_.has(toPosObj, 'kind')) {
         if (toPosObj.color === color) {
