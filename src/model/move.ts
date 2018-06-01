@@ -4,12 +4,7 @@ import { PLAYER, KOMA } from '../const/const'
 import KomaInfo from '../const/komaInfo'
 
 import Pos from './pos'
-import {
-  boardObject,
-  moveObject,
-  moveInfoObject,
-  posObject
-} from '../const/interface'
+import { BoardObject, MoveObject, MoveInfoObject, PosObject } from '../const/interface'
 
 // 将棋用の指し手情報クラス
 
@@ -42,9 +37,9 @@ export default class Move {
   private _isPut: boolean = false
 
   // jkf表現時のオブジェクト
-  private _moveObj: moveObject
+  private _moveObj: MoveObject
 
-  constructor(moveObj: moveObject) {
+  constructor(moveObj: MoveObject) {
     this._name = this.getMoveName(moveObj)
     this._moveObj = moveObj
 
@@ -61,16 +56,16 @@ export default class Move {
     // 指し手情報をもつか判定
     if (_.has(moveObj, 'move')) {
       // 持ち駒から置く手かどうか判定
-      const move = moveObj.move as moveInfoObject
+      const move = moveObj.move as MoveInfoObject
       if (_.has(move, 'from')) {
-        const from = move.from as posObject
+        const from = move.from as PosObject
         this._from = new Pos(from.x, from.y)
       } else {
         this._isPut = true
       }
 
       if (_.has(move, 'to')) {
-        const to = move.to as posObject
+        const to = move.to as PosObject
         this._to = new Pos(to.x, to.y)
       } else {
         throw new Error('指し手オブジェクトに"to"プロパティがありません。')
@@ -108,14 +103,14 @@ export default class Move {
   /**
    * 盤面に配置する際の盤面オブジェクトを返す。成る動きの場合は成り駒を返す
    */
-  public get boardObj(): boardObject {
+  public get boardObj(): BoardObject {
     const kind = this._isPromote
       ? KomaInfo.getJKFString(KomaInfo.getPromote(this._komaNum) as number)
       : KomaInfo.getJKFString(this._komaNum)
     return { color: this.color, kind: kind }
   }
 
-  public get moveObj(): moveObject {
+  public get moveObj(): MoveObject {
     return this._moveObj
   }
 
@@ -185,14 +180,10 @@ export default class Move {
    * 指し手オブジェクトから指し手の名前を返す
    * @param moveObj
    */
-  private getMoveName(moveObj: moveObject): string {
+  private getMoveName(moveObj: MoveObject): string {
     if (_.has(moveObj, 'move')) {
-      const moveInfo = moveObj.move as moveInfoObject
-      if (
-        _.has(moveInfo, 'to') &&
-        _.has(moveInfo, 'color') &&
-        _.has(moveInfo, 'piece')
-      ) {
+      const moveInfo = moveObj.move as MoveInfoObject
+      if (_.has(moveInfo, 'to') && _.has(moveInfo, 'color') && _.has(moveInfo, 'piece')) {
         // 駒番号を取得
         const komaNum = KomaInfo.komaAtoi(moveInfo.piece)
 
@@ -225,13 +216,10 @@ export default class Move {
 
         if (_.has(moveInfo, 'relative')) {
           // 相対情報を1文字ずつに分割
-          const relativeArray: Array<string> = _.split(
-            moveInfo.relative as string,
-            ''
-          )
+          const relativeArray: Array<string> = _.split(moveInfo.relative as string, '')
 
           // 相対情報配列の情報をもとに駒名に移動位置情報を追加
-          _.each(relativeArray, relativeChar => {
+          _.each(relativeArray, (relativeChar: string) => {
             switch (relativeChar) {
               case 'L':
                 komaString = komaString + '左'
@@ -265,9 +253,7 @@ export default class Move {
 
         return turnString + komaPosString + komaString
       } else {
-        throw new Error(
-          '指し手オブジェクトに必要なプロパティが定義されていません。'
-        )
+        throw new Error('指し手オブジェクトに必要なプロパティが定義されていません。')
       }
     } else {
       return '初期局面'
