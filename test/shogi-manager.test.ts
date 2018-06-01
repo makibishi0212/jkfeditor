@@ -369,7 +369,7 @@ describe('Shogi-manger test', () => {
     console.log(testManager.dispCurrentInfo())
   })
 
-  it('分岐指し手の削除', () => {
+  it('分岐指し手の入れ替え', () => {
     testManager = newManager
     testManager.addBoardMove(8, 2, 2, 2)
     testManager.addBoardMove(2, 1, 3, 3)
@@ -387,14 +387,16 @@ describe('Shogi-manger test', () => {
         from: { x: 2, y: 1 }
       }
     ])
+    console.log(testManager.dispNextMoves())
+    testManager.swapFork(0, 1)
+    console.log(testManager.dispNextMoves())
+  })
+
+  it('分岐指し手の削除', () => {
+    testManager = newManager
     testManager.deleteFork(0)
     expect(testManager.nextMoves).toEqual([
-      {
-        to: { x: 3, y: 3 },
-        color: 1,
-        piece: 'KE',
-        from: { x: 2, y: 1 }
-      }
+      { color: 1, from: { x: 8, y: 2 }, piece: 'HI', to: { x: 2, y: 2 } }
     ])
   })
 })

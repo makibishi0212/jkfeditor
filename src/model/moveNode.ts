@@ -119,8 +119,13 @@ export default class MoveNode {
    */
   public switchFork(forkIndex: number): boolean {
     if (_.size(this.next) > 1) {
-      this._select = forkIndex
-      return true
+      if (forkIndex < _.size(this.next)) {
+        this._select = forkIndex
+        return true
+      } else {
+        console.error('指定したインデックスがノードの分岐数を超えています。')
+        return false
+      }
     } else {
       console.error('この指し手は複数の分岐を持っていません。')
       return false

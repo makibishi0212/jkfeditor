@@ -40,11 +40,12 @@ describe('MoveNode class test', () => {
   })
 
   it('switchForkが正しく動作する', () => {
-    normalMoveNode.switchFork(2)
-    expect(normalMoveNode.select).toBe(2)
+    normalMoveNode.switchFork(1)
+    expect(normalMoveNode.select).toBe(1)
   })
 
   it('swapForkが正しく動作する', () => {
-    // TODO: テスト
+    normalMoveNode.swapFork(0, 1)
+    expect(normalMoveNode.select).toBe(0)
   })
 })
