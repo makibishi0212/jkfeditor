@@ -26,6 +26,7 @@ const editor = new JkfEditor();
 
 #### initialize
 **JkfEditor(jkf?, readonly?)**
+
 | Argument | Type | Required | Description |
 |:--:|:--:|:--:|:--:|
 | jkf | Object | No | 読み込むjkfオブジェクト。デフォルト値は指し手未登録の平手盤面です。 |
@@ -59,6 +60,7 @@ Jkfeditorは初期化時、入力されたjkfオブジェクトをもとに、�
 **JkfEditor.go(newNum):void**
 
 newNumで指定した指し手番号に移動する。
+
 | Argument | Type | Required | Description |
 |:--:|:--:|:--:|:--:|
 | newNum | number | Yes | 移動する指し手番号。 |
@@ -75,6 +77,7 @@ jkfeditor.currentNum = 2
 ```
 
 現在の盤面情報は以下のプロパティで取得できます。
+
 | Property | Type | Description |
 |:--:|:--:|:--:|:--:|
 | JkfEditor.currentNum | number | 現在の指し手番号。 |
@@ -86,6 +89,7 @@ jkfeditor.currentNum = 2
 | JkfEditor.nextMoves | Array<Move> | 現在の盤面における次の指し手候補の情報。MoveのAPIは後述します。 |
 
 指し手情報は以下のプロパティで取得できます。
+
 | Property | Type | Description |
 |:--:|:--:|:--:|:--:|
 | JkfEditor.nextMoves | Array<Move> | 現在の指し手配列における各指し手情報。MoveのAPIは後述します。 |
