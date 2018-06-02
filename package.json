@@ -1,18 +1,18 @@
 {
-  "name": "jkf-editor",
+  "name": "jkfeditor",
   "version": "0.1.0",
   "description": "",
   "keywords": [],
-  "main": "dist/shogi-manager.umd.js",
-  "module": "dist/shogi-manager.es5.js",
-  "typings": "dist/types/shogi-manager.d.ts",
+  "main": "dist/jkfeditor.umd.js",
+  "module": "dist/jkfeditor.es5.js",
+  "typings": "dist/types/jkfeditor.d.ts",
   "files": [
     "dist"
   ],
   "author": "makibishi <makibishi0212@gmail.com>",
   "repository": {
     "type": "git",
-    "url": "https://github.com/makibishi0212/jkf-editor.git"
+    "url": "https://github.com/makibishi0212/jkfeditor.git"
   },
   "license": "MIT",
   "engines": {

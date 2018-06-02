@@ -5,7 +5,7 @@ import camelCase from 'lodash.camelcase'
 
 const pkg = require('./package.json')
 
-const libraryName = 'shogi-manager'
+const libraryName = 'jkfeditor'
 
 export default {
   input: `compiled/${libraryName}.js`,

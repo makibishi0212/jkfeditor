@@ -149,7 +149,7 @@ const spyLog = jest.spyOn(console, 'error')
 spyLog.mockImplementation(x => x)
 
 /**
- * Shogi-manager test
+ * jkfeditor test
  */
 describe('Shogi-manger test', () => {
   let testManager: JkfEditor
