@@ -20,7 +20,7 @@ import { move } from 'fs-extra'
 import MoveNode from './model/moveNode'
 import { KOMA, PLAYER, BOARD } from './const/const'
 
-export default class ShogiManager {
+export default class JkfEditor {
   // 指し手番号
   private _currentNum: number = 0
 
@@ -881,6 +881,8 @@ export default class ShogiManager {
     return moveInfoObj
   }
 }
+
+module.exports = JkfEditor
 
 // 次の実装
 // TODO: disp〜()で提供されている情報相当のオブジェクトを返すAPIの作成

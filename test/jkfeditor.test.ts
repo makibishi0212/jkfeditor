@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import ShogiManager from '../src/shogi-manager'
+import JkfEditor from '../src/jkfeditor'
 import KomaInfo from '../src/const/komaInfo'
 import { BOARD } from '../src/const/const'
 
@@ -141,9 +141,9 @@ const jkfData = {
 }
 
 const hirateBoard = _.cloneDeep(KomaInfo.initBoards[BOARD.HIRATE])
-const jkfLoadManager = new ShogiManager(jkfData)
-const readOnlyLoadManger = new ShogiManager(jkfData, true)
-const newManager = new ShogiManager()
+const jkfLoadManager = new JkfEditor(jkfData)
+const readOnlyLoadManger = new JkfEditor(jkfData, true)
+const newManager = new JkfEditor()
 
 const spyLog = jest.spyOn(console, 'error')
 spyLog.mockImplementation(x => x)
@@ -152,7 +152,7 @@ spyLog.mockImplementation(x => x)
  * Shogi-manager test
  */
 describe('Shogi-manger test', () => {
-  let testManager: ShogiManager
+  let testManager: JkfEditor
 
   it('jkfLoadManagerが正常に初期化されている', () => {
     testManager = jkfLoadManager
@@ -303,17 +303,7 @@ describe('Shogi-manger test', () => {
         { color: 1, kind: 'FU' }
       ],
       [{}, {}, {}, {}, {}, {}, { color: 1, kind: 'FU' }, {}, {}],
-      [
-        {},
-        {},
-        { color: 0, kind: 'FU' },
-        {},
-        { color: 1, kind: 'KA' },
-        {},
-        {},
-        {},
-        {}
-      ],
+      [{}, {}, { color: 0, kind: 'FU' }, {}, { color: 1, kind: 'KA' }, {}, {}, {}, {}],
       [{}, {}, {}, {}, {}, {}, {}, {}, {}],
       [
         { color: 0, kind: 'FU' },
@@ -326,17 +316,7 @@ describe('Shogi-manger test', () => {
         { color: 0, kind: 'FU' },
         { color: 0, kind: 'FU' }
       ],
-      [
-        {},
-        { color: 0, kind: 'GI' },
-        {},
-        {},
-        {},
-        {},
-        {},
-        { color: 0, kind: 'HI' },
-        {}
-      ],
+      [{}, { color: 0, kind: 'GI' }, {}, {}, {}, {}, {}, { color: 0, kind: 'HI' }, {}],
       [
         { color: 0, kind: 'KY' },
         { color: 0, kind: 'KE' },
@@ -357,9 +337,7 @@ describe('Shogi-manger test', () => {
     testManager.addHandMove('KE', 5, 8)
     console.log(testManager.dispCurrentInfo())
     expect(console.error).toBeCalled()
-    expect(spyLog.mock.calls[1][0]).toEqual(
-      '打つ駒が手持ち駒の中にありません。'
-    )
+    expect(spyLog.mock.calls[1][0]).toEqual('打つ駒が手持ち駒の中にありません。')
   })
 
   it('指し手の削除', () => {
