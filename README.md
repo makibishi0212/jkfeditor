@@ -1,12 +1,12 @@
 # JkfEditor
 
-### What is JkfEditor ?
+## What is JkfEditor ?
 [JSON棋譜フォーマット](https://github.com/na2hiro/json-kifu-format)で提供される棋譜を編集・新規作成するためのライブラリです。
 
 ### Documentation
 [https://makibishi0212.github.io/jkfeditor/](https://makibishi0212.github.io/jkfeditor/)
 
-### Usage
+## Usage
 Use with Node.js
 
 ```
@@ -22,10 +22,12 @@ import JkfEditor from "jkfeditor";
 const editor = new JkfEditor();
 ```
 
-### API
+## API
 
-#### initialize
+### **initialize**
 **JkfEditor(jkf?, readonly?)**
+
+JkfEditorを初期化します。
 
 | Argument | Type | Required | Description |
 |:--:|:--:|:--:|:--:|
@@ -54,7 +56,9 @@ const neweditor = new JKfEditor(jkf)
 const neweditor = new JKfEditor(jkf, true)
 ```
 
-#### view property & method
+***
+
+### **view property & method**
 Jkfeditorは初期化時、入力されたjkfオブジェクトをもとに、各棋譜分岐で始めに登録されている分岐をたどって指し手の配列を作成します。また、特定の指し手番号における盤面情報を保持しており、この値を変更することでその指し手が適用された時点での盤面を取得できます。
 
 **JkfEditor.go(newNum):void**
@@ -79,20 +83,20 @@ jkfeditor.currentNum = 2
 現在の盤面情報は以下のプロパティで取得できます。
 
 | Property | Type | Description |
-|:--:|:--:|:--:|:--:|
+|:--:|:--:|:--:|
 | JkfEditor.currentNum | number | 現在の指し手番号。 |
-| JkfEditor.board | Array<Array<Object>> | 現在の盤面。jkfフォーマットで定められた表現で返します。 |
-| JkfEditor.hands | Array<Object> | 現在の各プレイヤーの持ち駒。jkfフォーマットで定められた表現で返します。 |
-| JkfEditor.comment | Array<string> | 現在の指し手におけるコメント。 |
+| JkfEditor.board | Object[][] | 現在の盤面。jkfフォーマットで定められた表現で返します。 |
+| JkfEditor.hands | Object[] | 現在の各プレイヤーの持ち駒。jkfフォーマットで定められた表現で返します。 |
+| JkfEditor.comment | string[] | 現在の指し手におけるコメント。 |
 | JkfEditor.isFork | boolean | 現在の盤面が指し手分岐をもつかどうか。 |
 | JkfEditor.lastMove | Move | 現在の盤面で最後に指されたの指し手の情報。MoveのAPIは後述します。 |
-| JkfEditor.nextMoves | Array<Move> | 現在の盤面における次の指し手候補の情報。MoveのAPIは後述します。 |
+| JkfEditor.nextMoves | Move[] | 現在の盤面における次の指し手候補の情報。MoveのAPIは後述します。 |
 
 指し手情報は以下のプロパティで取得できます。
 
 | Property | Type | Description |
-|:--:|:--:|:--:|:--:|
-| JkfEditor.nextMoves | Array<Move> | 現在の指し手配列における各指し手情報。MoveのAPIは後述します。 |
+|:--:|:--:|:--:|
+| JkfEditor.nextMoves | Move[] | 現在の指し手配列における各指し手情報。MoveのAPIは後述します。 |
 
 また、下記のメソッドで情報を文字列として出力できます。
 **JkfEditor.dispKifuMoves():string**
@@ -137,7 +141,9 @@ console.log(jkfeditor.dispNextMoves())
 |:--:|:--:|:--:|:--:|
 | forkIndex | number | Yes | 分岐候補のインデックスを指定します。インデックスの値はJkfEditor.nextMovesの配列のインデックスを使うか、JkfEditor.dispNextMoves()で調べることができます。 |
 
-#### edit method
+***
+
+### **edit method**
 現在指定している盤面に対して、指し手やコメントの追加を行うことができます。readonlyをtrueにした場合、これらのメソッドは利用できません。
 
 **JkfEditor.addBoardMove(fromX,fromY,toX,toY,promote?,comment?)**
@@ -151,7 +157,7 @@ console.log(jkfeditor.dispNextMoves())
 | toX | number | Yes | 移動先のX座標。 |
 | toY | number | Yes | 移動先のY座標。 |
 | promote | boolean | No | 成る場合はtrue。デフォルトではfalse。 |
-| comment | string or Array<string> | No | 指し手に付与するコメント。 |
+| comment | string or string[] | No | 指し手に付与するコメント。 |
 
 **JkfEditor.addHandMove(komaString,toX,toY,comment?)**
 
@@ -162,7 +168,7 @@ console.log(jkfeditor.dispNextMoves())
 | komaString | string | Yes | json棋譜フォーマットで定義された駒名。 |
 | toX | number | Yes | 移動先のX座標。 |
 | toY | number | Yes | 移動先のY座標。 |
-| comment | string or Array<string> | No | 指し手に対して付与するコメント。 |
+| comment | string or string[] | No | 指し手に対して付与するコメント。 |
 
 **JkfEditor.addComment(comment)**
 
@@ -176,7 +182,9 @@ console.log(jkfeditor.dispNextMoves())
 
 現在の指し手についたコメントをすべて削除する。
 
-#### export method
+***
+
+### **export method**
 
 編集した内容を、jkfフォーマットで出力するには、以下のメソッドを利用します。
 
@@ -184,8 +192,8 @@ console.log(jkfeditor.dispNextMoves())
 
 現在の状態をjkfフォーマットとして出力する。
 
-### API(Move)
+## API(Move)
 write later
 
-#### credit
+## credit
 このライブラリは[typescript-library-starter](https://github.com/alexjoverm/typescript-library-starter) を利用しています
