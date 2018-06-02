@@ -2,6 +2,7 @@ import _ from 'lodash'
 import JkfEditor from '../src/jkfeditor'
 import KomaInfo from '../src/const/komaInfo'
 import { BOARD } from '../src/const/const'
+import Move from '../src/model/move'
 
 // jsonフォーマットのjkf形式による棋譜データ
 const jkfData = {
@@ -179,41 +180,61 @@ describe('Shogi-manger test', () => {
     testManager = newManager
     testManager.addBoardMove(7, 7, 7, 6)
     testManager.currentNum++
-    expect(testManager.lastMove).toEqual({
-      to: { x: 7, y: 6 },
-      color: 0,
-      piece: 'FU',
-      from: { x: 7, y: 7 }
-    })
+    console.log(testManager.dispBoard())
+    console.log(testManager.dispKifuMoves())
+    expect(testManager.lastMove).toEqual(
+      new Move({
+        move: {
+          to: { x: 7, y: 6 },
+          color: 0,
+          piece: 'FU',
+          from: { x: 7, y: 7 }
+        }
+      })
+    )
 
     testManager.addBoardMove(3, 3, 3, 4)
     testManager.currentNum++
-    expect(testManager.lastMove).toEqual({
-      to: { x: 3, y: 4 },
-      color: 1,
-      piece: 'FU',
-      from: { x: 3, y: 3 }
-    })
+    console.log(testManager.dispBoard())
+    console.log(testManager.dispKifuMoves())
+    expect(testManager.lastMove).toEqual(
+      new Move({
+        move: {
+          to: { x: 3, y: 4 },
+          color: 1,
+          piece: 'FU',
+          from: { x: 3, y: 3 }
+        }
+      })
+    )
 
     testManager.addBoardMove(7, 6, 7, 5)
     testManager.currentNum++
-    expect(testManager.lastMove).toEqual({
-      to: { x: 7, y: 5 },
-      color: 0,
-      piece: 'FU',
-      from: { x: 7, y: 6 }
-    })
+    expect(testManager.lastMove).toEqual(
+      new Move({
+        move: {
+          to: { x: 7, y: 5 },
+          color: 0,
+          piece: 'FU',
+          from: { x: 7, y: 6 }
+        }
+      })
+    )
     console.log(testManager.dispCurrentInfo())
 
     testManager.addBoardMove(2, 2, 8, 8)
     testManager.currentNum++
-    expect(testManager.lastMove).toEqual({
-      to: { x: 8, y: 8 },
-      color: 1,
-      piece: 'KA',
-      capture: 'KA',
-      from: { x: 2, y: 2 }
-    })
+    expect(testManager.lastMove).toEqual(
+      new Move({
+        move: {
+          to: { x: 8, y: 8 },
+          color: 1,
+          piece: 'KA',
+          capture: 'KA',
+          from: { x: 2, y: 2 }
+        }
+      })
+    )
 
     testManager.currentNum--
     console.log(testManager.dispNextMoves())
@@ -238,12 +259,16 @@ describe('Shogi-manger test', () => {
     testManager = jkfLoadManager
     testManager.switchFork(1)
     testManager.currentNum++
-    expect(testManager.lastMove).toEqual({
-      to: { x: 8, y: 4 },
-      color: 1,
-      piece: 'FU',
-      from: { x: 8, y: 3 }
-    })
+    expect(testManager.lastMove).toEqual(
+      new Move({
+        move: {
+          to: { x: 8, y: 4 },
+          color: 1,
+          piece: 'FU',
+          from: { x: 8, y: 3 }
+        }
+      })
+    )
     console.log(testManager.dispKifuMoves())
   })
 
@@ -264,13 +289,15 @@ describe('Shogi-manger test', () => {
     testManager = newManager
     testManager.addBoardMove(7, 9, 8, 8)
     testManager.currentNum++
-    expect(testManager.lastMove).toEqual({
-      to: { x: 8, y: 8 },
-      color: 0,
-      piece: 'GI',
-      same: true,
-      capture: 'KA',
-      from: { x: 7, y: 9 }
+    expect(testManager.lastMove.moveObj).toEqual({
+      move: {
+        to: { x: 8, y: 8 },
+        color: 0,
+        piece: 'GI',
+        same: true,
+        capture: 'KA',
+        from: { x: 7, y: 9 }
+      }
     })
   })
 
@@ -352,18 +379,22 @@ describe('Shogi-manger test', () => {
     testManager.addBoardMove(8, 2, 2, 2)
     testManager.addBoardMove(2, 1, 3, 3)
     expect(testManager.nextMoves).toEqual([
-      {
-        to: { x: 2, y: 2 },
-        color: 1,
-        piece: 'HI',
-        from: { x: 8, y: 2 }
-      },
-      {
-        to: { x: 3, y: 3 },
-        color: 1,
-        piece: 'KE',
-        from: { x: 2, y: 1 }
-      }
+      new Move({
+        move: {
+          to: { x: 2, y: 2 },
+          color: 1,
+          piece: 'HI',
+          from: { x: 8, y: 2 }
+        }
+      }),
+      new Move({
+        move: {
+          to: { x: 3, y: 3 },
+          color: 1,
+          piece: 'KE',
+          from: { x: 2, y: 1 }
+        }
+      })
     ])
     console.log(testManager.dispNextMoves())
     testManager.swapFork(0, 1)
@@ -374,7 +405,7 @@ describe('Shogi-manger test', () => {
     testManager = newManager
     testManager.deleteFork(0)
     expect(testManager.nextMoves).toEqual([
-      { color: 1, from: { x: 8, y: 2 }, piece: 'HI', to: { x: 2, y: 2 } }
+      new Move({ move: { color: 1, from: { x: 8, y: 2 }, piece: 'HI', to: { x: 2, y: 2 } } })
     ])
   })
 })

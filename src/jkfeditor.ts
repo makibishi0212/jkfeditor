@@ -55,15 +55,15 @@ export default class JkfEditor {
     this.load(jkf)
   }
 
-  public get list(): Array<Move> {
+  public get moves(): Array<Move> {
     return this.moveData.currentMoves
   }
 
   /**
    * 最後に指された手の移動情報を表示する
    */
-  public get lastMove(): MoveInfoObject {
-    return this.moveData.currentMoves[this.currentNum].moveObj.move as MoveInfoObject
+  public get lastMove(): Move {
+    return this.moveData.currentMoves[this.currentNum]
   }
 
   public get comment(): any {
@@ -78,19 +78,8 @@ export default class JkfEditor {
     return this._field.hands
   }
 
-  public get nextMoves(): Array<MoveInfoObject> {
-    const nextMoveNodes = this.moveData.getNextMoves(this._currentNum)
-    const nextSelect = this.moveData.getNextSelect(this._currentNum)
-
-    return _.map(nextMoveNodes, (move: MoveNode, index: number) => {
-      return move.moveObj.move as MoveInfoObject
-    })
-  }
-
-  public get kifuMoves(): Array<MoveInfoObject> {
-    return _.map(this.moveData.currentMoves, (move: Move, index: number) => {
-      return move.moveObj.move as MoveInfoObject
-    })
+  public get nextMoves(): Array<Move> {
+    return this.moveData.getNextMoves(this._currentNum)
   }
 
   /**
@@ -225,6 +214,10 @@ export default class JkfEditor {
     }
   }
 
+  public get currentMove(): Move {
+    return this.moveData.currentMoves[this.currentNum]
+  }
+
   public dispCurrentInfo(): string {
     let currentInfoString = ''
     currentInfoString += this._currentNum + '手目\n\n'
@@ -293,13 +286,13 @@ export default class JkfEditor {
     const nextSelect = this.moveData.getNextSelect(this._currentNum)
 
     let nextMoveString = ''
-    _.each(nextMoveNodes, (move: MoveNode, index: number) => {
+    _.each(nextMoveNodes, (move: Move, index: number) => {
       if (index === nextSelect) {
         nextMoveString += '>'
       } else {
         nextMoveString += ' '
       }
-      nextMoveString += index + ': ' + move.info.name + '\n'
+      nextMoveString += index + ': ' + move.name + '\n'
     })
     return nextMoveString
   }
@@ -605,14 +598,9 @@ export default class JkfEditor {
     promote: boolean
   ): MoveInfoObject | null {
     // 前の指し手(現在の盤面になる前に最後に適用した指し手)を取得
-    const prevMove = this.lastMove
 
     // 手番のプレイヤーを取得(未定義の場合初期盤面)
-    const color = _.has(prevMove, 'color')
-      ? prevMove.color === PLAYER.SENTE
-        ? PLAYER.GOTE
-        : PLAYER.SENTE
-      : PLAYER.SENTE
+    const color = this.lastMove.color === PLAYER.SENTE ? PLAYER.GOTE : PLAYER.SENTE
 
     // komaStringの書式がただしいか判定
 
@@ -652,10 +640,8 @@ export default class JkfEditor {
     }
 
     // 前の指し手と同じ位置に移動する場合sameプロパティを追加
-    if (_.has(prevMove, 'to')) {
-      if (_.isEqual(prevMove.to, moveInfoObj.to)) {
-        moveInfoObj.same = true
-      }
+    if (_.isEqual(this.lastMove.to, new Pos(moveInfoObj.to.x, moveInfoObj.to.y))) {
+      moveInfoObj.same = true
     }
 
     // 移動先に駒が存在する場合captureプロパティを追加
@@ -885,6 +871,7 @@ export default class JkfEditor {
 module.exports = JkfEditor
 
 // 次の実装
+// TODO: 指し手の情報はMoveオブジェクトを返すように変更
 // TODO: disp〜()で提供されている情報相当のオブジェクトを返すAPIの作成
 // TODO: 成れない駒に対するpromoteなどありえない動作の検出をより厳密に行う
 // TODO: 相対位置判定のテスト・実装

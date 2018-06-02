@@ -31,10 +31,10 @@ export default class MoveList {
    *
    * @param moveNum
    */
-  public getNextMoves(moveNum: number) {
+  public getNextMoves(moveNum: number): Array<Move> {
     const next = this._currentMoveNodes[moveNum].next
     return _.map(next, index => {
-      return this._moveNodes[index]
+      return this._moveNodes[index].info
     })
   }
 
