@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import JkfEditor from '../src/editor'
+import JkfEditor from '../src/jkfeditor'
 import KomaInfo from '../src/const/komaInfo'
 import { BOARD } from '../src/const/const'
 import Move from '../src/model/move'

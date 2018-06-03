@@ -260,3 +260,5 @@ export default class Move {
     }
   }
 }
+
+module.exports = Move
