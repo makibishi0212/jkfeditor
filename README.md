@@ -99,6 +99,7 @@ jkfeditor.currentNum = 2
 | JkfEditor.nextMoves | Move[] | 現在の指し手配列における各指し手情報。MoveのAPIは後述します。 |
 
 また、下記のメソッドで情報を文字列として出力できます。
+
 **JkfEditor.dispKifuMoves():string**
 
 現在の指し手配列を表示する。
