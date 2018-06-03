@@ -1,9 +1,7 @@
 import JkfEditor from './editor'
 import Move from './model/move'
 
-const JKFE = { JkfEditor: JkfEditor, Move: Move }
-
-module.exports = JKFE
+module.exports = { JkfEditor, Move }
 
 // 次の実装
 // TODO: 指し手の情報はMoveオブジェクトを返すように変更
