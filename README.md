@@ -194,7 +194,17 @@ console.log(jkfeditor.dispNextMoves())
 現在の状態をjkfフォーマットとして出力する。
 
 ## API(Move)
-write later
+Moveは指し手情報のクラスで、以下のプロパティを持ちます。
+
+| Property | Type | Description |
+|:--:|:--:|:--:|
+| Move.moveObj | Object | この指し手の情報を、json棋譜フォーマットで定義された指し手オブジェクトとして返します。 |
+| Move.isPut | boolean | 持ち駒から置く手ならばtrueを返します。 |
+| Move.from | Pos | 移動前の盤面座標です。 |
+| Move.to | Pos | 移動後の盤面座標です。 |
+| Move.color | number | この手を指したプレイヤー情報を返します。0なら先手、1なら後手です。 |
+| Move.name | string | 「☗7六歩」のような、指し手の一般的な名前を返します。 |
+| Move.comments | string[] | 指し手についたコメントを返します。 |
 
 ## credit
 このライブラリは[typescript-library-starter](https://github.com/alexjoverm/typescript-library-starter) を利用しています

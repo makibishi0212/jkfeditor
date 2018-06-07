@@ -1,5 +1,3 @@
-import _ from 'lodash'
-
 import Move from './move'
 import { MoveObject } from '../const/interface'
 
@@ -89,16 +87,16 @@ export default class MoveNode {
    * @param deleteNum
    */
   public deleteNext(deleteNum: number): boolean {
-    if (!_.size(this._next)) {
+    if (!this._next.length) {
       console.error('このノードには次の指し手候補が登録されていません。')
       return false
     }
-    _.each(this._next, (nextNum, index) => {
+    this._next.forEach((nextNum, index) => {
       if (nextNum === deleteNum) {
         this._next.splice(index, 1)
         if (this.select === index) {
           // 現在の次の指し手が削除する指し手の場合はselectを0か-1にする
-          _.size(this.next) >= 1 ? (this._select = 0) : (this._select = -1)
+          this.next.length >= 1 ? (this._select = 0) : (this._select = -1)
         }
         return true
       }
@@ -113,8 +111,8 @@ export default class MoveNode {
    * @param forkIndex 分岐指し手のインデックス
    */
   public switchFork(forkIndex: number): boolean {
-    if (_.size(this.next) > 1) {
-      if (forkIndex < _.size(this.next)) {
+    if (this.next.length > 1) {
+      if (forkIndex < this.next.length) {
         this._select = forkIndex
         return true
       } else {

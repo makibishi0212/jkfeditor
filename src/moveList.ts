@@ -128,23 +128,6 @@ export default class MoveList {
     }
   }
 
-  /**
-   * 現在の棋譜の全ての分岐をツリーとして表示する
-   */
-  public dispKifuTree(): string {
-    // TODO: もっと分かりやすい表示にする
-    let kifuTreeString = ''
-
-    const startNode = this.startNode
-    if (!startNode) {
-      return 'empty\n'
-    }
-
-    kifuTreeString = this.makeTreeString(startNode, 0, 0)
-
-    return kifuTreeString
-  }
-
   public exportJkfMoves(startMoveNode: MoveNode = this._moveNodes[0]): Array<Object> {
     const moves: Array<Object> = []
 

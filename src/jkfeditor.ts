@@ -221,16 +221,11 @@ export default class JkfEditor {
   public dispCurrentInfo(): string {
     let currentInfoString = ''
     currentInfoString += this._currentNum + '手目\n\n'
-    currentInfoString += this.dispGoteHand() + '\n'
+    currentInfoString += this.dispHand(PLAYER.GOTE) + '\n'
     currentInfoString += this.dispBoard() + '\n'
-    currentInfoString += this.dispSenteHand() + '\n\n'
+    currentInfoString += this.dispHand(PLAYER.SENTE) + '\n\n'
     // currentInfoString += this.dispKifuMoves()
     return currentInfoString
-  }
-
-  public dispKifuTree(): string {
-    // TODO: treeの見せ方を改善する
-    return this.moveData.dispKifuTree()
   }
 
   /**
@@ -300,29 +295,15 @@ export default class JkfEditor {
   /**
    * 先手の持ち駒を返す
    */
-  public dispSenteHand(): string {
-    const senteHand = this._field.hands[PLAYER.SENTE]
+  public dispHand(player: number): string {
+    const hand = this._field.hands[player]
 
-    let senteHandString: string = '[先手持ち駒] '
-    _.each(senteHand, (keepNum: number, komaType: string) => {
-      senteHandString +=
+    let handString: string = player === PLAYER.SENTE ? '[先手持ち駒] ' : '[後手持ち駒] '
+    _.each(hand, (keepNum: number, komaType: string) => {
+      handString +=
         KomaInfo.getKanji(KomaInfo.komaAtoi(komaType)) + ':' + keepNum.toString() + ' \n'
     })
-    return senteHandString
-  }
-
-  /**
-   * 後手の持ち駒を返す
-   */
-  public dispGoteHand(): string {
-    const goteHand = this._field.hands[PLAYER.GOTE]
-
-    let goteHandString: string = '[後手持ち駒] '
-    _.each(goteHand, (keepNum: number, komaType: string) => {
-      goteHandString +=
-        KomaInfo.getKanji(KomaInfo.komaAtoi(komaType)) + ':' + keepNum.toString() + ' \n'
-    })
-    return goteHandString
+    return handString
   }
 
   /**
@@ -523,42 +504,42 @@ export default class JkfEditor {
         throw Error('初期状態のプリセットが未定義です。')
       } else {
         switch ((jkf['initial'] as InitObject)['preset']) {
-          case 'HIRATE':
+          case BOARD.HIRATE:
             // 平手は代入済
             break
-          case 'KY': // 香落ち
+          case BOARD.KYO: // 香落ち
             this.preset = BOARD.KYO
             board = _.cloneDeep(KomaInfo.initBoards[BOARD.KYO])
             break
-          case 'KA': // 角落ち
+          case BOARD.KAKU: // 角落ち
             this.preset = BOARD.KAKU
             board = _.cloneDeep(KomaInfo.initBoards[BOARD.KAKU])
             break
-          case 'HI': // 飛車落ち
+          case BOARD.HISHA: // 飛車落ち
             this.preset = BOARD.HISHA
             board = _.cloneDeep(KomaInfo.initBoards[BOARD.HISHA])
             break
-          case 'HIKY': // 飛香落ち
+          case BOARD.HIKYO: // 飛香落ち
             this.preset = BOARD.HIKYO
             board = _.cloneDeep(KomaInfo.initBoards[BOARD.HIKYO])
             break
-          case '2': // 2枚落ち
+          case BOARD.NI: // 2枚落ち
             this.preset = BOARD.NI
             board = _.cloneDeep(KomaInfo.initBoards[BOARD.NI])
             break
-          case '4': // 4枚落ち
+          case BOARD.YON: // 4枚落ち
             this.preset = BOARD.YON
             board = _.cloneDeep(KomaInfo.initBoards[BOARD.YON])
             break
-          case '6': // 6枚落ち
+          case BOARD.ROKU: // 6枚落ち
             this.preset = BOARD.ROKU
             board = _.cloneDeep(KomaInfo.initBoards[BOARD.ROKU])
             break
-          case '8': // 8枚落ち
+          case BOARD.HACHI: // 8枚落ち
             this.preset = BOARD.HACHI
             board = _.cloneDeep(KomaInfo.initBoards[BOARD.HACHI])
             break
-          case 'OTHER': // 上記以外
+          case BOARD.OTHER: // 上記以外
             this.preset = BOARD.OTHER
             board = ((jkf.initial as InitObject).data as InitBoardObject).board as Array<
               Array<Object>
@@ -871,12 +852,15 @@ export default class JkfEditor {
 module.exports = JkfEditor
 
 // 次の実装
-// TODO: 指し手の情報はMoveオブジェクトを返すように変更
+// TODO: lodash依存の削除
+// TODO: throw Errorを最低限しか利用しないようにする
+// TODO: 型定義ファイルに含まれるprivate変数を除去する
 // TODO: disp〜()で提供されている情報相当のオブジェクトを返すAPIの作成
 // TODO: 成れない駒に対するpromoteなどありえない動作の検出をより厳密に行う
 // TODO: 相対位置判定のテスト・実装
 // TODO: 各APIの入力をオブジェクトにする
-// TODO: throw Errorを最低限しか利用しないようにする
-// TODO: disptreeの強化
-// TODO: lodash依存の削除
+// TODO: 棋譜ツリーの表示機能をつける
+// TODO: ドキュメント整備
 // TODO: npm登録
+// TODO: npm経由でのimport時に不要なプロパティが表示されてしまう問題を解決
+// TODO: nextMoves, kifuMovesの返り値を再検討
