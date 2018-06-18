@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import JkfEditor from '../src/jkfeditor'
+import Editor from '../src/editor'
 import KomaInfo from '../src/const/komaInfo'
 import { BOARD } from '../src/const/const'
 import Move from '../src/model/move'
@@ -142,9 +142,9 @@ const jkfData = {
 }
 
 const hirateBoard = _.cloneDeep(KomaInfo.initBoards[BOARD.HIRATE])
-const jkfLoadManager = new JkfEditor(jkfData)
-const readOnlyLoadManger = new JkfEditor(jkfData, true)
-const newManager = new JkfEditor()
+const jkfLoadManager = new Editor(jkfData)
+const readOnlyLoadManger = new Editor(jkfData, true)
+const newManager = new Editor()
 
 const spyLog = jest.spyOn(console, 'error')
 spyLog.mockImplementation(x => x)
@@ -153,7 +153,7 @@ spyLog.mockImplementation(x => x)
  * jkfeditor test
  */
 describe('Shogi-manger test', () => {
-  let testManager: JkfEditor
+  let testManager: Editor
 
   it('jkfLoadManagerが正常に初期化されている', () => {
     testManager = jkfLoadManager

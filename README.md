@@ -89,13 +89,12 @@ jkfeditor.currentNum = 2
 | JkfEditor.hands | Object[] | 現在の各プレイヤーの持ち駒。jkfフォーマットで定められた表現で返します。 |
 | JkfEditor.comment | string[] | 現在の指し手におけるコメント。 |
 | JkfEditor.isFork | boolean | 現在の盤面が指し手分岐をもつかどうか。 |
-| JkfEditor.lastMove | Move | 現在の盤面で最後に指されたの指し手の情報。MoveのAPIは後述します。 |
-| JkfEditor.nextMoves | Move[] | 現在の盤面における次の指し手候補の情報。MoveのAPIは後述します。 |
 
 指し手情報は以下のプロパティで取得できます。
 
 | Property | Type | Description |
 |:--:|:--:|:--:|
+| JkfEditor.lastMove | Move | 現在の盤面で最後に指されたの指し手の情報。MoveのAPIは後述します。 |
 | JkfEditor.nextMoves | Move[] | 現在の指し手配列における各指し手情報。MoveのAPIは後述します。 |
 
 また、下記のメソッドで情報を文字列として出力できます。
@@ -200,8 +199,8 @@ Moveは指し手情報のクラスで、以下のプロパティを持ちます�
 |:--:|:--:|:--:|
 | Move.moveObj | Object | この指し手の情報を、json棋譜フォーマットで定義された指し手オブジェクトとして返します。 |
 | Move.isPut | boolean | 持ち駒から置く手ならばtrueを返します。 |
-| Move.from | Pos | 移動前の盤面座標です。 |
-| Move.to | Pos | 移動後の盤面座標です。 |
+| Move.from | Object | 移動前の盤面座標です。7六ならば{x:7,y:6}となります。 |
+| Move.to | Object | 移動後の盤面座標です。fromと同様です。 |
 | Move.color | number | この手を指したプレイヤー情報を返します。0なら先手、1なら後手です。 |
 | Move.name | string | 「☗7六歩」のような、指し手の一般的な名前を返します。 |
 | Move.comments | string[] | 指し手についたコメントを返します。 |
