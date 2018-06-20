@@ -15,8 +15,6 @@ import {
   MoveInfoObject
 } from './const/interface'
 import Field from './model/field'
-import { config } from 'shelljs'
-import { move } from 'fs-extra'
 import MoveNode from './model/moveNode'
 import { KOMA, PLAYER, BOARD } from './const/const'
 
@@ -66,7 +64,7 @@ export default class Editor {
     return this.moveData.currentMoves[this.currentNum]
   }
 
-  public get comment(): any {
+  public get comment(): string[] | null {
     return this.moveData.getMove(this.currentNum).comments
   }
 

@@ -1,8 +1,9 @@
 import _ from 'lodash'
-import Editor from '../src/editor'
+import JkfEditor from '../src/jkfeditor'
 import KomaInfo from '../src/const/komaInfo'
 import { BOARD } from '../src/const/const'
 import Move from '../src/model/move'
+import MoveData from '../src/moveData'
 
 // jsonフォーマットのjkf形式による棋譜データ
 const jkfData = {
@@ -142,9 +143,9 @@ const jkfData = {
 }
 
 const hirateBoard = _.cloneDeep(KomaInfo.initBoards[BOARD.HIRATE])
-const jkfLoadManager = new Editor(jkfData)
-const readOnlyLoadManger = new Editor(jkfData, true)
-const newManager = new Editor()
+const jkfLoadManager = new JkfEditor(jkfData)
+const readOnlyLoadManger = new JkfEditor(jkfData, true)
+const newManager = new JkfEditor()
 
 const spyLog = jest.spyOn(console, 'error')
 spyLog.mockImplementation(x => x)
@@ -152,8 +153,8 @@ spyLog.mockImplementation(x => x)
 /**
  * jkfeditor test
  */
-describe('Editor test', () => {
-  let testManager: Editor
+describe('Shogi-manger test', () => {
+  let testManager: JkfEditor
 
   it('jkfLoadManagerが正常に初期化されている', () => {
     testManager = jkfLoadManager
@@ -169,85 +170,73 @@ describe('Editor test', () => {
     expect(testManager.comment).toEqual(['分岐の例'])
   })
 
-  it('newMangerが正常に初期化されている', () => {
-    testManager = newManager
-    expect(testManager.currentNum).toBe(0)
-    expect(testManager.board).toEqual(hirateBoard)
-    expect(testManager.comment).toEqual(null)
-  })
-
   it('指し手の追加', () => {
     testManager = newManager
     testManager.addBoardMove(7, 7, 7, 6)
     testManager.currentNum++
-    console.log(testManager.dispBoard())
     console.log(testManager.dispKifuMoves())
     expect(testManager.lastMove).toEqual(
-      new Move({
-        move: {
-          to: { x: 7, y: 6 },
-          color: 0,
-          piece: 'FU',
-          from: { x: 7, y: 7 }
-        }
-      })
+      new MoveData(
+        new Move({
+          move: {
+            to: { x: 7, y: 6 },
+            color: 0,
+            piece: 'FU',
+            from: { x: 7, y: 7 }
+          }
+        })
+      )
     )
 
     testManager.addBoardMove(3, 3, 3, 4)
     testManager.currentNum++
-    console.log(testManager.dispBoard())
     console.log(testManager.dispKifuMoves())
     expect(testManager.lastMove).toEqual(
-      new Move({
-        move: {
-          to: { x: 3, y: 4 },
-          color: 1,
-          piece: 'FU',
-          from: { x: 3, y: 3 }
-        }
-      })
+      new MoveData(
+        new Move({
+          move: {
+            to: { x: 3, y: 4 },
+            color: 1,
+            piece: 'FU',
+            from: { x: 3, y: 3 }
+          }
+        })
+      )
     )
 
     testManager.addBoardMove(7, 6, 7, 5)
     testManager.currentNum++
-    expect(testManager.lastMove).toEqual(
-      new Move({
-        move: {
-          to: { x: 7, y: 5 },
-          color: 0,
-          piece: 'FU',
-          from: { x: 7, y: 6 }
-        }
-      })
-    )
-    console.log(testManager.dispCurrentInfo())
+
+    expect(testManager.lastMove.piece).toEqual('FU')
+    expect(testManager.lastMove.color).toEqual(0)
+    expect(testManager.lastMove.from).toEqual({ x: 7, y: 6 })
+    expect(testManager.lastMove.to).toEqual({ x: 7, y: 5 })
+    expect(testManager.lastMove.name).toEqual('☗7五歩')
+    expect(testManager.lastMove.isPut).toEqual(false)
 
     testManager.addBoardMove(2, 2, 8, 8)
     testManager.currentNum++
     expect(testManager.lastMove).toEqual(
-      new Move({
-        move: {
-          to: { x: 8, y: 8 },
-          color: 1,
-          piece: 'KA',
-          capture: 'KA',
-          from: { x: 2, y: 2 }
-        }
-      })
+      new MoveData(
+        new Move({
+          move: {
+            to: { x: 8, y: 8 },
+            color: 1,
+            piece: 'KA',
+            capture: 'KA',
+            from: { x: 2, y: 2 }
+          }
+        })
+      )
     )
 
     testManager.currentNum--
-    console.log(testManager.dispNextMoves())
   })
 
   it('分岐指し手の追加', () => {
     testManager = jkfLoadManager
     testManager.currentNum++
-    console.log(testManager.dispNextMoves())
     testManager.addBoardMove(8, 3, 8, 4)
-    console.log(testManager.dispNextMoves())
-    console.log(testManager.dispCurrentInfo())
-    console.log(testManager.dispKifuMoves())
   })
 
   it('重複した指し手の追加', () => {
@@ -260,16 +249,17 @@ describe('Editor test', () => {
     testManager.switchFork(1)
     testManager.currentNum++
     expect(testManager.lastMove).toEqual(
-      new Move({
-        move: {
-          to: { x: 8, y: 4 },
-          color: 1,
-          piece: 'FU',
-          from: { x: 8, y: 3 }
-        }
-      })
+      new MoveData(
+        new Move({
+          move: {
+            to: { x: 8, y: 4 },
+            color: 1,
+            piece: 'FU',
+            from: { x: 8, y: 3 }
+          }
+        })
+      )
     )
-    console.log(testManager.dispKifuMoves())
   })
 
   it('コメントの追加', () => {
@@ -282,130 +272,5 @@ describe('Editor test', () => {
     testManager.go(0)
     expect(testManager.comment).toEqual(null)
     testManager.go(4)
-    console.log(testManager.dispCurrentInfo())
-  })
-
-  it('同のつく指し手の追加', () => {
-    testManager = newManager
-    testManager.addBoardMove(7, 9, 8, 8)
-    testManager.currentNum++
-    expect(testManager.lastMove.moveObj).toEqual({
-      move: {
-        to: { x: 8, y: 8 },
-        color: 0,
-        piece: 'GI',
-        same: true,
-        capture: 'KA',
-        from: { x: 7, y: 9 }
-      }
-    })
-  })
-
-  it('持ち駒からの指し手追加', () => {
-    testManager = newManager
-    testManager.addHandMove('KA', 5, 5)
-    testManager.currentNum++
-    expect(testManager.board).toEqual([
-      [
-        { color: 1, kind: 'KY' },
-        { color: 1, kind: 'KE' },
-        { color: 1, kind: 'GI' },
-        { color: 1, kind: 'KI' },
-        { color: 1, kind: 'OU' },
-        { color: 1, kind: 'KI' },
-        { color: 1, kind: 'GI' },
-        { color: 1, kind: 'KE' },
-        { color: 1, kind: 'KY' }
-      ],
-      [{}, { color: 1, kind: 'HI' }, {}, {}, {}, {}, {}, {}, {}],
-      [
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' },
-        {},
-        { color: 1, kind: 'FU' },
-        { color: 1, kind: 'FU' }
-      ],
-      [{}, {}, {}, {}, {}, {}, { color: 1, kind: 'FU' }, {}, {}],
-      [{}, {}, { color: 0, kind: 'FU' }, {}, { color: 1, kind: 'KA' }, {}, {}, {}, {}],
-      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
-      [
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' },
-        {},
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' },
-        { color: 0, kind: 'FU' }
-      ],
-      [{}, { color: 0, kind: 'GI' }, {}, {}, {}, {}, {}, { color: 0, kind: 'HI' }, {}],
-      [
-        { color: 0, kind: 'KY' },
-        { color: 0, kind: 'KE' },
-        {},
-        { color: 0, kind: 'KI' },
-        { color: 0, kind: 'OU' },
-        { color: 0, kind: 'KI' },
-        { color: 0, kind: 'GI' },
-        { color: 0, kind: 'KE' },
-        { color: 0, kind: 'KY' }
-      ]
-    ])
-    console.log(testManager.dispCurrentInfo())
-  })
-
-  it('持ち駒からにない駒による指し手追加', () => {
-    testManager = newManager
-    testManager.addHandMove('KE', 5, 8)
-    console.log(testManager.dispCurrentInfo())
-    expect(console.error).toBeCalled()
-    expect(spyLog.mock.calls[1][0]).toEqual('打つ駒が手持ち駒の中にありません。')
-  })
-
-  it('指し手の削除', () => {
-    testManager = newManager
-    console.log(testManager.dispCurrentInfo())
-    testManager.deleteMove()
-    console.log(testManager.dispCurrentInfo())
-  })
-
-  it('分岐指し手の入れ替え', () => {
-    testManager = newManager
-    testManager.addBoardMove(8, 2, 2, 2)
-    testManager.addBoardMove(2, 1, 3, 3)
-    expect(testManager.nextMoves).toEqual([
-      new Move({
-        move: {
-          to: { x: 2, y: 2 },
-          color: 1,
-          piece: 'HI',
-          from: { x: 8, y: 2 }
-        }
-      }),
-      new Move({
-        move: {
-          to: { x: 3, y: 3 },
-          color: 1,
-          piece: 'KE',
-          from: { x: 2, y: 1 }
-        }
-      })
-    ])
-    console.log(testManager.dispNextMoves())
-    testManager.swapFork(0, 1)
-    console.log(testManager.dispNextMoves())
-  })
-
-  it('分岐指し手の削除', () => {
-    testManager = newManager
-    testManager.deleteFork(0)
-    expect(testManager.nextMoves).toEqual([
-      new Move({ move: { color: 1, from: { x: 8, y: 2 }, piece: 'HI', to: { x: 2, y: 2 } } })
-    ])
   })
 })

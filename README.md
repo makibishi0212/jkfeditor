@@ -198,6 +198,9 @@ Moveは指し手情報のクラスで、以下のプロパティを持ちます�
 | Property | Type | Description |
 |:--:|:--:|:--:|
 | Move.moveObj | Object | この指し手の情報を、json棋譜フォーマットで定義された指し手オブジェクトとして返します。 |
+| Move.piece | string | 移動対象駒をjkfで定められた名前で返します。 |
+| Move.capture | string | null | 取った駒がある場合、その駒名を返します。 |
+| Move.pureCapture | string | null | 取った駒がある場合、その駒名を返します。こちらは成り駒を取った場合も成った状態のものが返されます。 |
 | Move.isPut | boolean | 持ち駒から置く手ならばtrueを返します。 |
 | Move.from | Object | 移動前の盤面座標です。7六ならば{x:7,y:6}となります。 |
 | Move.to | Object | 移動後の盤面座標です。fromと同様です。 |

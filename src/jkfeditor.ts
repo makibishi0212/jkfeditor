@@ -2,61 +2,61 @@ import Editor from './editor'
 import MoveData from './moveData'
 import { JkfObject, BoardObject } from './const/interface'
 
-let editor: Editor
-
 export default class JkfEditor {
+  private editor: Editor
+
   constructor(jkf: JkfObject = {}, readonly: boolean = false) {
-    editor = new Editor(jkf, readonly)
+    this.editor = new Editor(jkf, readonly)
   }
 
   public get currentNum() {
-    return editor.currentNum
+    return this.editor.currentNum
   }
 
   public set currentNum(num: number) {
-    editor.go(num)
+    this.editor.go(num)
   }
 
   public get board(): Array<Array<BoardObject>> {
-    return editor.board
+    return this.editor.board
   }
 
   public get hands(): Array<{ [index: string]: number }> {
-    return editor.hands
+    return this.editor.hands
   }
 
-  public get comment(): any {
-    return editor.comment
+  public get comment(): string[] | null {
+    return this.editor.comment
   }
 
   public get isFork(): boolean {
-    return editor.isFork
+    return this.editor.isFork
   }
 
   public get lastMove(): MoveData {
-    return new MoveData(editor.lastMove)
+    return new MoveData(this.editor.lastMove)
   }
 
   public get nextMoves(): Array<MoveData> {
-    return editor.nextMoves.map(nextMove => {
+    return this.editor.nextMoves.map(nextMove => {
       return new MoveData(nextMove)
     })
   }
 
   public go(newNum: number) {
-    editor.go(newNum)
+    this.editor.go(newNum)
   }
 
   public dispKifuMoves(): string {
-    return editor.dispKifuMoves()
+    return this.editor.dispKifuMoves()
   }
 
   public dispNextMoves(): string {
-    return editor.dispNextMoves()
+    return this.editor.dispNextMoves()
   }
 
   public switchFork(forkIndex: number) {
-    editor.switchFork(forkIndex)
+    this.editor.switchFork(forkIndex)
   }
 
   public addBoardMove(
@@ -67,7 +67,7 @@ export default class JkfEditor {
     promote: boolean = false,
     comment: Array<string> | string | null = null
   ) {
-    editor.addBoardMove(fromX, fromY, toX, toY, promote, comment)
+    this.editor.addBoardMove(fromX, fromY, toX, toY, promote, comment)
   }
 
   public addHandMove(
@@ -76,17 +76,26 @@ export default class JkfEditor {
     toY: number,
     comment: Array<string> | string | null = null
   ) {
-    editor.addHandMove(komaString, toX, toY, comment)
+    this.editor.addHandMove(komaString, toX, toY, comment)
   }
 
   public addComment(comment: string) {
-    editor.addComment(comment)
+    this.editor.addComment(comment)
+  }
+
+  public resetComment() {
+    this.editor.resetComment()
+  }
+
+  public export(): JkfObject {
+    return this.editor.export()
   }
 }
 
 module.exports = JkfEditor
 
 // 次の実装
+// TODO: 削除・リセットのAPIを追加する
 // TODO: フォーマットを公式から取るようにする
 // TODO: lodash依存の削除
 // TODO: throw Errorを最低限しか利用しないようにする

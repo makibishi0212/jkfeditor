@@ -1,5 +1,3 @@
-import _ from 'lodash'
-
 import { PLAYER, KOMA } from '../const/const'
 import KomaInfo from '../const/komaInfo'
 
@@ -43,7 +41,7 @@ export default class Move {
     this._name = this.getMoveName(moveObj)
     this._moveObj = moveObj
 
-    if (_.has(moveObj, 'comments')) {
+    if (moveObj.hasOwnProperty('comments')) {
       this._comments = moveObj.comments as Array<string>
     }
 
@@ -54,17 +52,17 @@ export default class Move {
     this._color = PLAYER.GOTE
 
     // 指し手情報をもつか判定
-    if (_.has(moveObj, 'move')) {
+    if (moveObj.hasOwnProperty('move')) {
       // 持ち駒から置く手かどうか判定
       const move = moveObj.move as MoveInfoObject
-      if (_.has(move, 'from')) {
+      if (move.hasOwnProperty('from')) {
         const from = move.from as PosObject
         this._from = new Pos(from.x, from.y)
       } else {
         this._isPut = true
       }
 
-      if (_.has(move, 'to')) {
+      if (move.hasOwnProperty('to')) {
         const to = move.to as PosObject
         this._to = new Pos(to.x, to.y)
       } else {
@@ -72,26 +70,26 @@ export default class Move {
       }
 
       // 指し手情報をセット
-      if (_.has(move, 'color')) {
+      if (move.hasOwnProperty('color')) {
         this._color = move.color
       } else {
         throw new Error('指し手オブジェクトに"color"プロパティがありません。')
       }
 
       // 駒情報をセット
-      if (_.has(move, 'piece')) {
+      if (move.hasOwnProperty('piece')) {
         this._komaNum = KomaInfo.komaAtoi(move.piece)
       } else {
         throw new Error('指し手オブジェクトに"piece"プロパティがありません。')
       }
 
       // 成るかどうか判定
-      if (_.has(move, 'promote')) {
+      if (move.hasOwnProperty('promote')) {
         this._isPromote = move.promote as boolean
       }
 
       // 駒を取ったか判定
-      if (_.has(move, 'capture')) {
+      if (move.hasOwnProperty('capture')) {
         this._captureNum = KomaInfo.komaAtoi(move.capture as string) as number
       }
     } else {
@@ -162,7 +160,7 @@ export default class Move {
    * @param comment
    */
   public addComment(comment: string) {
-    if (_.isArray(this._comments)) {
+    if (Array.isArray(this._comments)) {
       ;(this._comments as Array<string>).push(comment)
     } else {
       this._comments = [comment]
@@ -181,9 +179,13 @@ export default class Move {
    * @param moveObj
    */
   private getMoveName(moveObj: MoveObject): string {
-    if (_.has(moveObj, 'move')) {
+    if (moveObj.hasOwnProperty('move')) {
       const moveInfo = moveObj.move as MoveInfoObject
-      if (_.has(moveInfo, 'to') && _.has(moveInfo, 'color') && _.has(moveInfo, 'piece')) {
+      if (
+        moveInfo.hasOwnProperty('to') &&
+        moveInfo.hasOwnProperty('color') &&
+        moveInfo.hasOwnProperty('piece')
+      ) {
         // 駒番号を取得
         const komaNum = KomaInfo.komaAtoi(moveInfo.piece)
 
@@ -194,7 +196,7 @@ export default class Move {
         const turnString = moveInfo.color === PLAYER.SENTE ? '☗' : '☖'
 
         let komaPosString = '同'
-        if (!_.has(moveInfo, 'same')) {
+        if (!moveInfo.hasOwnProperty('same')) {
           // 前の指し手と同一の移動先でない場合
           // 数字の漢字
           const kanjiNum: Array<string> = [
@@ -214,12 +216,12 @@ export default class Move {
           komaPosString = moveInfo.to.x + kanjiNum[moveInfo.to.y]
         }
 
-        if (_.has(moveInfo, 'relative')) {
+        if (moveInfo.hasOwnProperty('relative')) {
           // 相対情報を1文字ずつに分割
-          const relativeArray: Array<string> = _.split(moveInfo.relative as string, '')
+          const relativeArray: Array<string> = (moveInfo.relative as string).split('')
 
           // 相対情報配列の情報をもとに駒名に移動位置情報を追加
-          _.each(relativeArray, (relativeChar: string) => {
+          relativeArray.forEach((relativeChar: string) => {
             switch (relativeChar) {
               case 'L':
                 komaString = komaString + '左'
@@ -247,7 +249,7 @@ export default class Move {
         }
 
         // 成る場合「成」を駒名に追加
-        if (_.has(moveInfo, 'promote')) {
+        if (moveInfo.hasOwnProperty('promote')) {
           komaString = moveInfo.promote ? komaString + '成' : komaString
         }
 

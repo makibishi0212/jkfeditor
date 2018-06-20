@@ -2,6 +2,8 @@
 import Move from './model/move'
 import { MoveObject } from './const/interface'
 
+import KomaInfo from './const/komaInfo'
+
 let move: Move
 
 export default class MoveData {
@@ -39,6 +41,26 @@ export default class MoveData {
 
   public get name(): string {
     return move.name
+  }
+
+  public get piece(): string {
+    return KomaInfo.komaItoa(move.komaNum)
+  }
+
+  public get capture(): string | null {
+    if (move.captureNum) {
+      return KomaInfo.komaItoa(move.captureNum)
+    } else {
+      return null
+    }
+  }
+
+  public get pureCapture(): string | null {
+    if (move.pureCaptureNum) {
+      return KomaInfo.komaItoa(move.pureCaptureNum)
+    } else {
+      return null
+    }
   }
 
   public get comments(): Array<string> | null {
