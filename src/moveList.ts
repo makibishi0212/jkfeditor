@@ -1,5 +1,3 @@
-import _ from 'lodash'
-
 import MoveNode from './model/moveNode'
 import Move from './model/move'
 
@@ -33,7 +31,7 @@ export default class MoveList {
    */
   public getNextMoves(moveNum: number): Array<Move> {
     const next = this._currentMoveNodes[moveNum].next
-    return _.map(next, index => {
+    return next.map(index => {
       return this._moveNodes[index].info
     })
   }
@@ -68,7 +66,7 @@ export default class MoveList {
     // TODO:ここにmoveInfoObjが正しいかどうか判定する処理を入れる
     const newIndex = this.makeMoveNode(moveObj, this._currentMoveNodes[moveNum])
 
-    if (_.isNumber(newIndex)) {
+    if (typeof newIndex === 'number') {
       this.makeCurrentMoveArray()
     }
   }
@@ -86,10 +84,10 @@ export default class MoveList {
   }
 
   public deleteFork(moveNum: number, forkIndex: number) {
-    if (_.isNumber(this._currentMoveNodes[moveNum].index)) {
+    if (typeof this._currentMoveNodes[moveNum].index === 'number') {
       const deleteIndex = this._currentMoveNodes[moveNum].next[forkIndex]
 
-      if (_.isNumber(deleteIndex)) {
+      if (typeof deleteIndex === 'number') {
         this._moveNodes[this._currentMoveNodes[moveNum].index].deleteNext(deleteIndex)
       } else {
         throw new Error('削除対象の分岐が存在しません。')
@@ -108,7 +106,7 @@ export default class MoveList {
    * @param forkIndex 切り替える指し手のインデックス
    */
   public switchFork(moveNum: number, forkIndex: number) {
-    if (_.isNumber(this._currentMoveNodes[moveNum].index)) {
+    if (typeof this._currentMoveNodes[moveNum].index === 'number') {
       if (this._moveNodes[this._currentMoveNodes[moveNum].index as number].switchFork(forkIndex)) {
         // 現在の分岐を作成し直す
         this.makeCurrentMoveArray()
@@ -121,7 +119,7 @@ export default class MoveList {
   }
 
   public swapFork(moveNum: number, forkIndex1: number, forkIndex2: number) {
-    if (_.isNumber(this._currentMoveNodes[moveNum].index)) {
+    if (typeof this._currentMoveNodes[moveNum].index === 'number') {
       this._moveNodes[this._currentMoveNodes[moveNum].index].swapFork(forkIndex1, forkIndex2)
     } else {
       throw new Error('指し手が見つかりません。')
@@ -137,20 +135,22 @@ export default class MoveList {
 
     while (targetMoveNode) {
       // 前の指し手の選択肢が複数
-      const nodes = _.isNumber(targetMoveNode.prev)
-        ? _.size(this._moveNodes[targetMoveNode.prev].next)
-        : 1
+      const nodes =
+        typeof targetMoveNode.prev === 'number'
+          ? this._moveNodes[targetMoveNode.prev].next.length
+          : 1
 
       if (nodes > 1 && !isFirst) {
         const prevMoveNode = this._moveNodes[targetMoveNode.prev as number]
         const forks = []
-        const nextSize = _.size(prevMoveNode.next)
+        const nextSize = prevMoveNode.next.length
 
         for (let i = 1; i < nextSize; i++) {
           forks.push(this.exportJkfMoves(this._moveNodes[prevMoveNode.next[i]]))
         }
 
-        const forkedObj = _.cloneDeep(targetMoveNode.moveObj)
+        // オブジェクトの複製
+        const forkedObj = JSON.parse(JSON.stringify(targetMoveNode.moveObj))
         forkedObj.forks = forks
         moves.push(forkedObj)
       } else {
@@ -158,7 +158,7 @@ export default class MoveList {
       }
 
       targetMoveNode =
-        _.size(targetMoveNode.next) >= 0 ? this._moveNodes[targetMoveNode.next[0]] : null
+        targetMoveNode.next.length >= 0 ? this._moveNodes[targetMoveNode.next[0]] : null
 
       isFirst = false
     }
@@ -173,7 +173,7 @@ export default class MoveList {
     kifuTreeString += ' '.repeat(hierarchy)
     kifuTreeString += kifuNum + ': ' + tmpNode.info.name + '\n'
 
-    _.eachRight(tmpNode.next, (nextNum, index) => {
+    tmpNode.next.reverse().forEach((nextNum, index) => {
       kifuTreeString += this.makeTreeString(
         this._moveNodes[nextNum],
         hierarchy + index,
@@ -188,9 +188,9 @@ export default class MoveList {
   private makeMoveList(moves: Array<MoveObject>) {
     let prevIndex: number | void = -1
 
-    _.each(moves, move => {
+    moves.forEach(move => {
       // 前の指し手セルを取得
-      const prevMoveNode = !_.isUndefined(this._moveNodes[prevIndex as number])
+      const prevMoveNode = this._moveNodes[prevIndex as number]
         ? this._moveNodes[prevIndex as number]
         : null
 
@@ -203,9 +203,9 @@ export default class MoveList {
     let isTheSame: boolean = false
 
     // 一つ前の指し手の分岐に同一の指し手があれば破棄する
-    if (!_.isEmpty(prevMoveNode) && _.size((prevMoveNode as MoveNode).next) > 0) {
-      _.each((prevMoveNode as MoveNode).next, prevNum => {
-        if (_.isEqual(moveObj, this._moveNodes[prevNum].moveObj)) {
+    if (prevMoveNode && (prevMoveNode as MoveNode).next.length > 0) {
+      ;(prevMoveNode as MoveNode).next.forEach(prevNum => {
+        if (JSON.stringify(moveObj) === JSON.stringify(this._moveNodes[prevNum].moveObj)) {
           isTheSame = true
         }
       })
@@ -220,18 +220,16 @@ export default class MoveList {
     const newIndex = this.makePrimitiveMoveNode(moveObj, prevMoveNode)
 
     // インデックスが分岐指し手を持つ場合、その指し手に対しても同様に指し手セルを作成する
-    if (_.has(moveObj, 'forks')) {
+    if ((moveObj as Object).hasOwnProperty('forks')) {
       // newIndexとして作成したセルから派生する分岐のループ
-      _.each(moveObj['forks'], forkArray => {
+      ;(moveObj['forks'] as MoveObject[][]).forEach(forkArray => {
         // 大元の指し手セルのひとつ前のセル
         let tmpPrevMoveNode = prevMoveNode
 
-        _.each(forkArray, forkMoveObj => {
+        forkArray.forEach(forkMoveObj => {
           // ひとつ前のセルのインデックスが入る
           const subIndex = this.makeMoveNode(forkMoveObj, tmpPrevMoveNode) as number
-          tmpPrevMoveNode = !_.isUndefined(this._moveNodes[subIndex])
-            ? this._moveNodes[subIndex]
-            : null
+          tmpPrevMoveNode = this._moveNodes[subIndex] ? this._moveNodes[subIndex] : null
         })
 
         // tmpPrevMoveNodeをリセット
@@ -245,22 +243,22 @@ export default class MoveList {
   // json棋譜フォーマットの指し手情報から分岐情報を持たない一つの指し手セルを作成する
   private makePrimitiveMoveNode(moveObj: MoveObject, prevMoveNode: MoveNode | null): number {
     // 作成する指し手セルが複数の指し手候補のひとつであるかどうか
-    const isBranch = !_.isNull(prevMoveNode) && _.size(prevMoveNode.next) > 0 ? true : false
+    const isBranch = prevMoveNode && prevMoveNode.next.length > 0 ? true : false
 
     // 直前の指し手セルのインデックス
-    const prevIndex = !_.isNull(prevMoveNode) ? prevMoveNode.index : null
+    const prevIndex = prevMoveNode ? prevMoveNode.index : null
 
-    const moveNode = new MoveNode(moveObj, _.size(this._moveNodes), prevIndex, isBranch)
+    const moveNode = new MoveNode(moveObj, this._moveNodes.length, prevIndex, isBranch)
 
     this._moveNodes.push(moveNode)
 
-    if (!_.isNull(prevMoveNode)) {
+    if (prevMoveNode) {
       // 直前の指し手に対して、新規作成した指し手のインデックスを指し手候補として追加する
       prevMoveNode.addNext(moveNode.index)
 
       // 上の指し手追加処理で指し手候補が複数になる場合、直前の指し手から派生する全ての指し手セルのisBranchをtrueにする
       if (isBranch) {
-        _.each(prevMoveNode.next, nextIndex => {
+        prevMoveNode.next.forEach(nextIndex => {
           this._moveNodes[nextIndex].branchize()
         })
       }
@@ -275,7 +273,7 @@ export default class MoveList {
     this._currentMoveNodes = []
 
     // 指し手セルリストの先頭のセルを取り出し、指し手配列作成の始点とする
-    let node: MoveNode | null = !_.isUndefined(this._moveNodes[0]) ? this._moveNodes[0] : null
+    let node: MoveNode | null = this._moveNodes[0] ? this._moveNodes[0] : null
 
     // セルのnextをひとつずつ辿っていき、次の指し手が存在しないセルに到達したら終了
     while (node) {
