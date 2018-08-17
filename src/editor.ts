@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import isEqual from 'lodash.isequal'
 
 import KomaInfo from './const/komaInfo'
 import Util from './util'
@@ -15,8 +15,7 @@ import {
   MoveInfoObject
 } from './const/interface'
 import Field from './model/field'
-import MoveNode from './model/moveNode'
-import { KOMA, PLAYER, BOARD } from './const/const'
+import { PLAYER, BOARD } from './const/const'
 
 export default class Editor {
   // 指し手番号
@@ -129,7 +128,7 @@ export default class Editor {
     // TODO:未実装
     const jkfObj: JkfObject = {}
 
-    if (_.isObject(this.info)) {
+    if (typeof this.info === 'object') {
       jkfObj.header = this.info as InitObject
     }
 
@@ -234,10 +233,10 @@ export default class Editor {
       let banString = ''
 
       banString += ' ＿＿＿＿＿＿＿＿＿' + '\n'
-      _.each(this._field.board, boardRow => {
+      this._field.board.forEach(boardRow => {
         banString += '|'
-        _.each(boardRow, (boardElm: BoardObject) => {
-          if (_.has(boardElm, 'kind')) {
+        boardRow.forEach((boardElm: BoardObject) => {
+          if (boardElm.hasOwnProperty('kind')) {
             banString += KomaInfo.getKanji(KomaInfo.komaAtoi(boardElm.kind as string))
           } else {
             banString += '　'
@@ -259,7 +258,7 @@ export default class Editor {
   public dispKifuMoves(): string {
     let kifuMovesString = ''
 
-    _.each(this.moveData.currentMoves, (move, index) => {
+    this.moveData.currentMoves.forEach((move, index) => {
       if (index === this._currentNum) {
         kifuMovesString += '>'
       } else {
@@ -279,7 +278,7 @@ export default class Editor {
     const nextSelect = this.moveData.getNextSelect(this._currentNum)
 
     let nextMoveString = ''
-    _.each(nextMoveNodes, (move: Move, index: number) => {
+    nextMoveNodes.forEach((move: Move, index: number) => {
       if (index === nextSelect) {
         nextMoveString += '>'
       } else {
@@ -297,10 +296,11 @@ export default class Editor {
     const hand = this._field.hands[player]
 
     let handString: string = player === PLAYER.SENTE ? '[先手持ち駒] ' : '[後手持ち駒] '
-    _.each(hand, (keepNum: number, komaType: string) => {
+    for (let komaType in hand) {
+      let keepNum = hand[komaType]
       handString +=
         KomaInfo.getKanji(KomaInfo.komaAtoi(komaType)) + ':' + keepNum.toString() + ' \n'
-    })
+    }
     return handString
   }
 
@@ -329,9 +329,9 @@ export default class Editor {
   ) {
     if (!this.readonly) {
       let moveObj: MoveObject
-      if (_.isString(comment)) {
+      if (typeof comment === 'string') {
         moveObj = { move: moveInfoObj, comments: [comment] }
-      } else if (_.isArray(comment)) {
+      } else if (Array.isArray(comment)) {
         moveObj = { move: moveInfoObj, comments: comment }
       } else {
         moveObj = { move: moveInfoObj }
@@ -350,7 +350,7 @@ export default class Editor {
           return
         }
 
-        if (!_.isEqual(this.getBoardPiece(moveInfoObj.to.x, moveInfoObj.to.y), {})) {
+        if (!isEqual(this.getBoardPiece(moveInfoObj.to.x, moveInfoObj.to.y), {})) {
           console.error(
             '持ち駒から配置する指し手の場合は空きマスを指定して下さい。',
             'TO:[x:' + moveInfoObj.to.x + ',' + 'y:' + moveInfoObj.to.y + ']',
@@ -398,7 +398,7 @@ export default class Editor {
     // TODO: 「同」が反映されない不具合を修正
     const boardObj: BoardObject = this.getBoardPiece(fromX, fromY)
     let moveObj: BoardObject | null = null
-    if (_.has(boardObj, 'color') && _.has(boardObj, 'kind')) {
+    if (boardObj.hasOwnProperty('color') && boardObj.hasOwnProperty('kind')) {
       moveObj = this.makeMoveData(boardObj.kind as string, fromX, fromY, toX, toY, promote)
 
       if (moveObj) {
@@ -486,19 +486,19 @@ export default class Editor {
     let hands: Array<{ [index: string]: number }> = [{}, {}]
 
     // 指し手情報のコピー
-    if (_.has(jkf, 'moves')) {
+    if (jkf.hasOwnProperty('moves')) {
       this.moveData = new MoveList(jkf['moves'] as Object[])
     } else {
       this.moveData = new MoveList([{}])
     }
 
     // 平手状態を代入
-    board = _.cloneDeep(KomaInfo.initBoards[BOARD.HIRATE])
+    board = Util.deepCopy(KomaInfo.initBoards[BOARD.HIRATE])
 
     // 特殊な初期状態が登録されているか判定
-    if (_.has(jkf, 'initial')) {
+    if (jkf.hasOwnProperty('initial')) {
       // プリセットが未定義ならエラー
-      if (!_.has(jkf.initial as Object, 'preset')) {
+      if (!(jkf.initial as Object).hasOwnProperty('preset')) {
         throw Error('初期状態のプリセットが未定義です。')
       } else {
         switch ((jkf['initial'] as InitObject)['preset']) {
@@ -507,35 +507,35 @@ export default class Editor {
             break
           case BOARD.KYO: // 香落ち
             this.preset = BOARD.KYO
-            board = _.cloneDeep(KomaInfo.initBoards[BOARD.KYO])
+            board = Util.deepCopy(KomaInfo.initBoards[BOARD.KYO])
             break
           case BOARD.KAKU: // 角落ち
             this.preset = BOARD.KAKU
-            board = _.cloneDeep(KomaInfo.initBoards[BOARD.KAKU])
+            board = Util.deepCopy(KomaInfo.initBoards[BOARD.KAKU])
             break
           case BOARD.HISHA: // 飛車落ち
             this.preset = BOARD.HISHA
-            board = _.cloneDeep(KomaInfo.initBoards[BOARD.HISHA])
+            board = Util.deepCopy(KomaInfo.initBoards[BOARD.HISHA])
             break
           case BOARD.HIKYO: // 飛香落ち
             this.preset = BOARD.HIKYO
-            board = _.cloneDeep(KomaInfo.initBoards[BOARD.HIKYO])
+            board = Util.deepCopy(KomaInfo.initBoards[BOARD.HIKYO])
             break
           case BOARD.NI: // 2枚落ち
             this.preset = BOARD.NI
-            board = _.cloneDeep(KomaInfo.initBoards[BOARD.NI])
+            board = Util.deepCopy(KomaInfo.initBoards[BOARD.NI])
             break
           case BOARD.YON: // 4枚落ち
             this.preset = BOARD.YON
-            board = _.cloneDeep(KomaInfo.initBoards[BOARD.YON])
+            board = Util.deepCopy(KomaInfo.initBoards[BOARD.YON])
             break
           case BOARD.ROKU: // 6枚落ち
             this.preset = BOARD.ROKU
-            board = _.cloneDeep(KomaInfo.initBoards[BOARD.ROKU])
+            board = Util.deepCopy(KomaInfo.initBoards[BOARD.ROKU])
             break
           case BOARD.HACHI: // 8枚落ち
             this.preset = BOARD.HACHI
-            board = _.cloneDeep(KomaInfo.initBoards[BOARD.HACHI])
+            board = Util.deepCopy(KomaInfo.initBoards[BOARD.HACHI])
             break
           case BOARD.OTHER: // 上記以外
             this.preset = BOARD.OTHER
@@ -553,7 +553,7 @@ export default class Editor {
     this._field = new Field(board, hands)
 
     // 棋譜情報を代入
-    if (_.has(jkf, 'header')) {
+    if (jkf.hasOwnProperty('header')) {
       this.info = jkf['header'] as Object
     }
   }
@@ -591,7 +591,7 @@ export default class Editor {
     }
 
     // 持ち駒を置く場合fromはなし
-    if (_.isNumber(fromX) && _.isNumber(fromY)) {
+    if (typeof fromX === 'number' && typeof fromY === 'number') {
       moveInfoObj.from = { x: fromX, y: fromY }
       if (!Pos.inRange(fromX, fromY)) {
         console.error('fromの座標が盤面の範囲外です。')
@@ -599,8 +599,8 @@ export default class Editor {
       }
 
       const fromPosObj: BoardObject = this.getBoardPiece(fromX, fromY)
-      if (!_.isEmpty(fromPosObj)) {
-        if (_.has(fromPosObj, 'kind')) {
+      if (fromPosObj) {
+        if (fromPosObj.hasOwnProperty('kind')) {
           if (fromPosObj.color !== color) {
             console.error('相手の駒は移動できません。')
             return null
@@ -619,14 +619,14 @@ export default class Editor {
     }
 
     // 前の指し手と同じ位置に移動する場合sameプロパティを追加
-    if (_.isEqual(this.lastMove.to, new Pos(moveInfoObj.to.x, moveInfoObj.to.y))) {
+    if (isEqual(this.lastMove.to, new Pos(moveInfoObj.to.x, moveInfoObj.to.y))) {
       moveInfoObj.same = true
     }
 
     // 移動先に駒が存在する場合captureプロパティを追加
     const toPosObj: BoardObject = this.getBoardPiece(toX, toY)
-    if (!_.isEmpty(toPosObj)) {
-      if (_.has(toPosObj, 'kind')) {
+    if (toPosObj) {
+      if (toPosObj.hasOwnProperty('kind')) {
         if (toPosObj.color === color) {
           console.error('自分の駒を取る移動です。')
           return null
@@ -641,9 +641,9 @@ export default class Editor {
     // ベクトル移動可能かどうか
     let dirMovable = false
 
-    _.each(this.board, (boardRow, ay) => {
-      _.each(boardRow, (koma, ax) => {
-        if (_.has(koma, 'kind')) {
+    this.board.forEach((boardRow, ay) => {
+      boardRow.forEach((koma, ax) => {
+        if (koma.hasOwnProperty('kind')) {
           // 移動対象の駒と同一タイプ・同一プレイヤーの駒かどうか調べる
           if (
             koma.kind === moveInfoObj.piece &&
@@ -655,7 +655,7 @@ export default class Editor {
             const komaMoves = KomaInfo.getMoves(KomaInfo.komaAtoi(komaString))
 
             // 候補の駒がtoの位置に到達しうる場合trueを代入
-            const relative: boolean = _.some(komaMoves, move => {
+            const relative: boolean = komaMoves.some(move => {
               // 駒の動きをひとつずつ検討し、toPosの位置に到達する可能性を検討する
               let mx = move.x
               let my = move.y
@@ -687,7 +687,7 @@ export default class Editor {
                     nextX += mx
                     nextY += my
                     if (Pos.inRange(nextX, nextY)) {
-                      if (_.isEmpty(this._field.board[nextY][nextX])) {
+                      if (!this._field.board[nextY][nextX]) {
                         if (nextX === toX && nextY === toY) {
                           return true
                         }
@@ -718,7 +718,7 @@ export default class Editor {
       })
     })
 
-    if (!_.isEmpty(rivals)) {
+    if (rivals.length) {
       // toの位置に同じ種類の駒が移動できる場合相対情報を追加
       moveInfoObj.relative = ''
 
@@ -741,7 +741,7 @@ export default class Editor {
         // 一番下ならtrue
         let isDown = true
 
-        _.each(rivals, (pos: Pos) => {
+        rivals.forEach((pos: Pos) => {
           if (color === PLAYER.SENTE) {
             if (pos.x < fromX) {
               isLeft = false

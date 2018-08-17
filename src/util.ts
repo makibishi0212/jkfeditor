@@ -8,4 +8,8 @@ export default class Util {
       return PLAYER.SENTE
     }
   }
+
+  public static deepCopy<T extends Object>(origin: T): T {
+    return JSON.parse(JSON.stringify(origin))
+  }
 }

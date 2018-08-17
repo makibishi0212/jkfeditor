@@ -2,6 +2,7 @@ import MoveNode from './model/moveNode'
 import Move from './model/move'
 
 import { MoveObject, MoveInfoObject } from './const/interface'
+import Util from './util'
 
 // 将棋用の指し手を管理するリストクラス
 
@@ -149,8 +150,7 @@ export default class MoveList {
           forks.push(this.exportJkfMoves(this._moveNodes[prevMoveNode.next[i]]))
         }
 
-        // オブジェクトの複製
-        const forkedObj = JSON.parse(JSON.stringify(targetMoveNode.moveObj))
+        const forkedObj = Util.deepCopy(targetMoveNode.moveObj)
         forkedObj.forks = forks
         moves.push(forkedObj)
       } else {

@@ -109,6 +109,8 @@
     "travis-deploy-once": "^5.0.0"
   },
   "dependencies": {
-    "lodash": "^4.17.4"
+    "@types/lodash.isequal": "^4.5.3",
+    "lodash": "^4.17.4",
+    "lodash.isequal": "^4.5.0"
   }
 }

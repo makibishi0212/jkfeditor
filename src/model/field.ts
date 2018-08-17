@@ -1,12 +1,6 @@
 import _ from 'lodash'
 
-import {
-  MoveInfoObject,
-  BoardObject,
-  KomaDataObject,
-  KomaMoveObject,
-  InitBoardObject
-} from '../const/interface'
+import { BoardObject, KomaMoveObject, InitBoardObject } from '../const/interface'
 import Move from './move'
 import { PLAYER, MOVETYPE } from '../const/const'
 import KomaInfo from '../const/komaInfo'
