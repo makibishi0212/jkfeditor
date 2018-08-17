@@ -3,14 +3,15 @@ import Field from '../../src/model/field'
 import Move from '../../src/model/move'
 import KomaInfo from '../../src/const/komaInfo'
 import { BOARD, PLAYER } from '../../src/const/const'
+import Util from '../../src/util'
 
-const hirateBoard = _.cloneDeep(KomaInfo.initBoards[BOARD.HIRATE])
+const hirateBoard = Util.deepCopy(KomaInfo.initBoards[BOARD.HIRATE])
 const hirateField = new Field(hirateBoard)
 
-const komaochiBoard1 = _.cloneDeep(KomaInfo.initBoards[BOARD.HIKYO])
+const komaochiBoard1 = Util.deepCopy(KomaInfo.initBoards[BOARD.HIKYO])
 const komaochiField1 = new Field(komaochiBoard1)
 
-const komaochiBoard2 = _.cloneDeep(KomaInfo.initBoards[BOARD.ROKU])
+const komaochiBoard2 = Util.deepCopy(KomaInfo.initBoards[BOARD.ROKU])
 const komaochiField2 = new Field(komaochiBoard2)
 
 const customBoard1 = [
@@ -378,17 +379,7 @@ describe('Field class test', () => {
         { color: 1, kind: 'KE' },
         { color: 1, kind: 'KY' }
       ],
-      [
-        {},
-        { color: 1, kind: 'HI' },
-        {},
-        {},
-        {},
-        {},
-        {},
-        { color: 1, kind: 'KA' },
-        {}
-      ],
+      [{}, { color: 1, kind: 'HI' }, {}, {}, {}, {}, {}, { color: 1, kind: 'KA' }, {}],
       [
         { color: 1, kind: 'FU' },
         { color: 1, kind: 'FU' },
@@ -414,17 +405,7 @@ describe('Field class test', () => {
         { color: 0, kind: 'FU' },
         { color: 0, kind: 'FU' }
       ],
-      [
-        {},
-        { color: 0, kind: 'KA' },
-        {},
-        {},
-        {},
-        {},
-        {},
-        { color: 0, kind: 'HI' },
-        {}
-      ],
+      [{}, { color: 0, kind: 'KA' }, {}, {}, {}, {}, {}, { color: 0, kind: 'HI' }, {}],
       [
         { color: 0, kind: 'KY' },
         { color: 0, kind: 'KE' },
@@ -465,17 +446,7 @@ describe('Field class test', () => {
         { color: 1, kind: 'KE' },
         { color: 1, kind: 'KY' }
       ],
-      [
-        {},
-        { color: 1, kind: 'HI' },
-        {},
-        {},
-        {},
-        {},
-        {},
-        { color: 1, kind: 'KA' },
-        {}
-      ],
+      [{}, { color: 1, kind: 'HI' }, {}, {}, {}, {}, {}, { color: 1, kind: 'KA' }, {}],
       [
         {},
         { color: 1, kind: 'FU' },
@@ -501,17 +472,7 @@ describe('Field class test', () => {
         { color: 0, kind: 'FU' },
         { color: 0, kind: 'FU' }
       ],
-      [
-        {},
-        { color: 0, kind: 'KA' },
-        {},
-        {},
-        {},
-        {},
-        {},
-        { color: 0, kind: 'HI' },
-        {}
-      ],
+      [{}, { color: 0, kind: 'KA' }, {}, {}, {}, {}, {}, { color: 0, kind: 'HI' }, {}],
       [
         { color: 0, kind: 'KY' },
         { color: 0, kind: 'KE' },

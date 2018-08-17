@@ -1,8 +1,8 @@
-import _ from 'lodash'
 import Editor from '../src/editor'
 import KomaInfo from '../src/const/komaInfo'
 import { BOARD } from '../src/const/const'
 import Move from '../src/model/move'
+import Util from '../src/util'
 
 // jsonフォーマットのjkf形式による棋譜データ
 const jkfData = {
@@ -141,7 +141,7 @@ const jkfData = {
   ]
 }
 
-const hirateBoard = _.cloneDeep(KomaInfo.initBoards[BOARD.HIRATE])
+const hirateBoard = Util.deepCopy(KomaInfo.initBoards[BOARD.HIRATE])
 const jkfLoadManager = new Editor(jkfData)
 const readOnlyLoadManger = new Editor(jkfData, true)
 const newManager = new Editor()

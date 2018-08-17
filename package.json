@@ -77,7 +77,6 @@
     "mapCoverage": true
   },
   "devDependencies": {
-    "@types/lodash": "^4.14.109",
     "@types/jest": "^21.1.0",
     "@types/node": "^8.0.0",
     "colors": "^1.1.2",
@@ -98,6 +97,7 @@
     "rollup-plugin-node-resolve": "^3.0.0",
     "rollup-plugin-sourcemaps": "^0.4.2",
     "semantic-release": "^15.5.0",
+    "travis-deploy-once": "^5.0.0",
     "ts-jest": "^21.0.0",
     "ts-node": "^3.0.6",
     "tslint": "^5.4.3",
@@ -105,12 +105,10 @@
     "tslint-config-standard": "^7.0.0",
     "typedoc": "^0.9.0",
     "typescript": "^2.3.4",
-    "validate-commit-msg": "^2.12.2",
-    "travis-deploy-once": "^5.0.0"
+    "validate-commit-msg": "^2.12.2"
   },
   "dependencies": {
     "@types/lodash.isequal": "^4.5.3",
-    "lodash": "^4.17.4",
     "lodash.isequal": "^4.5.0"
   }
 }

@@ -1,10 +1,9 @@
-import _ from 'lodash'
-
 import { BoardObject, KomaMoveObject, InitBoardObject } from '../const/interface'
 import Move from './move'
 import { PLAYER, MOVETYPE } from '../const/const'
 import KomaInfo from '../const/komaInfo'
 import Pos from './pos'
+import Util from '../util'
 
 // 将棋の盤面と手駒を合わせた、ある手数における状況を表すクラス
 
@@ -36,8 +35,8 @@ export default class Field {
     this._hands = hands
     this._color = color
 
-    this._initBoard = _.cloneDeep(board)
-    this._initHands = _.cloneDeep(hands)
+    this._initBoard = Util.deepCopy(board)
+    this._initHands = Util.deepCopy(hands)
     this._initColor = color
   }
 
@@ -139,7 +138,7 @@ export default class Field {
    * @param toY
    */
   public isMovable(from: Pos, to: Pos): boolean {
-    const komaNum = _.has(this._board[from.ay][from.ax], 'kind')
+    const komaNum = this._board[from.ay][from.ax].hasOwnProperty('kind')
       ? KomaInfo.komaAtoi(this._board[from.ay][from.ax].kind as string)
       : null
 
@@ -152,7 +151,7 @@ export default class Field {
 
     const moves = KomaInfo.getMoves(komaNum)
 
-    return _.some(moves, (move: KomaMoveObject) => {
+    return moves.some((move: KomaMoveObject) => {
       let mx = move.x
       let my = move.y
 
@@ -182,7 +181,7 @@ export default class Field {
           const nextPos = new Pos(nextX, nextY)
 
           if (Pos.inRange(nextX, nextY)) {
-            if (!_.isEmpty(this._board[nextPos.ay][nextPos.ax])) {
+            if (!this._board[nextPos.ay][nextPos.ax]) {
               // 進行対象マスに駒が存在する場合は終了する
               stillMovable = false
             }
@@ -195,6 +194,7 @@ export default class Field {
             stillMovable = false
           }
         }
+        return false
       }
     })
   }
@@ -207,7 +207,7 @@ export default class Field {
    */
   public isInHand(player: number, komaNum: number): boolean {
     const komaString = KomaInfo.komaItoa(komaNum)
-    if (this._hands[player] && _.has(this._hands[player], komaString)) {
+    if (this._hands[player] && this._hands[player].hasOwnProperty(komaString)) {
       // 指定の駒が手持ちに存在すればtrueを返す
       if (this._hands[player][komaString] >= 1) {
         return true
@@ -264,7 +264,7 @@ export default class Field {
    */
   private setBoardPiece(pos: Pos, info: BoardObject) {
     if (pos) {
-      this._board[pos.ay][pos.ax] = _.cloneDeep(info)
+      this._board[pos.ay][pos.ax] = Util.deepCopy(info)
     }
   }
 
@@ -275,9 +275,9 @@ export default class Field {
    * @param komaNum
    */
   private addHand(player: number, komaNum: number) {
-    if (_.has(this._hands, player)) {
+    if (this._hands.hasOwnProperty(player)) {
       const komaString = KomaInfo.getJKFString(komaNum)
-      if (_.has(this._hands[player], komaString)) {
+      if (this._hands[player].hasOwnProperty(komaString)) {
         this._hands[player][komaString]++
       } else {
         this._hands[player][komaString] = 1
@@ -294,9 +294,9 @@ export default class Field {
    * @param komaNum
    */
   private deleteHand(player: number, komaNum: number) {
-    if (_.has(this._hands, player)) {
+    if (this._hands.hasOwnProperty(player)) {
       const komaString = KomaInfo.getJKFString(komaNum)
-      if (_.has(this._hands[player], komaString)) {
+      if (this._hands[player].hasOwnProperty(komaString)) {
         this._hands[player][komaString]--
       } else {
         throw new Error('指定された駒番号の駒が手駒にありません。')
