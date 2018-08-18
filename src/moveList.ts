@@ -1,7 +1,7 @@
 import MoveNode from './model/moveNode'
 import Move from './model/move'
 
-import { MoveObject, MoveInfoObject } from './const/interface'
+import { MoveObject } from './const/interface'
 import Util from './util'
 
 // 将棋用の指し手を管理するリストクラス

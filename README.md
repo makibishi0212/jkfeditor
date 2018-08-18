@@ -69,6 +69,21 @@ newNumで指定した指し手番号に移動する。
 |:--:|:--:|:--:|:--:|
 | newNum | number | Yes | 移動する指し手番号。 |
 
+**JkfEditor.getKomaMoves(fromX, fromY):Object[]**
+
+fromX,fromYで指定した位置の駒の移動可能座標の情報を返す。
+座標情報は
+```
+{ to: { x: 6, y: 6 },color: 1,piece: 'KA',from: { x: 5, y: 5 } }
+```
+の形式で返されます。
+
+
+| Argument | Type | Required | Description |
+|:--:|:--:|:--:|:--:|
+| fromX | number | Yes | 対象駒のX座標。☗7六歩における「7」の部分。 |
+| fromY | number | Yes | 対象駒のY座標。☗7六歩における「六」の部分。 |
+
 ```javascript
 // 現在の指し手番号を表示
 console.log(jkfeditor.currentNum)
@@ -89,6 +104,7 @@ jkfeditor.currentNum = 2
 | JkfEditor.hands | Object[] | 現在の各プレイヤーの持ち駒。jkfフォーマットで定められた表現で返します。 |
 | JkfEditor.comment | string[] | 現在の指し手におけるコメント。 |
 | JkfEditor.isFork | boolean | 現在の盤面が指し手分岐をもつかどうか。 |
+| JkfEditor.player | number | 最後に指したプレイヤーの番号。 |
 
 指し手情報は以下のプロパティで取得できます。
 

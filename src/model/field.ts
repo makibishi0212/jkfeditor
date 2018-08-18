@@ -178,16 +178,98 @@ export default class Field {
           nextX = nextX + mx
           nextY = nextY + my
 
+          if (!Pos.inRange(nextX, nextY)) {
+            return false
+          }
+
           const nextPos = new Pos(nextX, nextY)
 
+          if (this.isExists(nextPos.ax, nextPos.ay)) {
+            // 進行対象マスに駒が存在する場合は終了する
+            stillMovable = false
+          }
+
+          if (nextX === to.x && nextY === to.y) {
+            if (this.isExists(nextPos.ax, nextPos.ay)) {
+              if (this._board[nextPos.ay][nextPos.ax].color !== color) {
+                return true
+              } else {
+                return false
+              }
+            } else {
+              return true
+            }
+          }
+        }
+        return false
+      }
+    })
+  }
+
+  /**
+   * fromで与えられた駒が移動できる座標候補を返す
+   * @param from
+   */
+  public getMovables(from: Pos): Pos[] {
+    const movables: Pos[] = []
+    const komaNum = this._board[from.ay][from.ax].hasOwnProperty('kind')
+      ? KomaInfo.komaAtoi(this._board[from.ay][from.ax].kind as string)
+      : null
+
+    if (!komaNum) {
+      console.error('from指定座標に駒がありません。')
+      return movables
+    }
+
+    const color = this._board[from.ay][from.ax].color as number
+
+    const moves = KomaInfo.getMoves(komaNum)
+
+    moves.forEach((move: KomaMoveObject) => {
+      let mx = move.x
+      let my = move.y
+
+      if (color === PLAYER.SENTE) {
+        my *= -1
+      } else {
+        mx *= -1
+      }
+
+      if (move.type === MOVETYPE.POS) {
+        if (Pos.inRange(from.x + mx, from.y + my)) {
+          const tmpPos = new Pos(from.x + mx, from.y + my)
+          if (this.isExists(tmpPos.ax, tmpPos.ay)) {
+            const toColor = this._board[tmpPos.ay][tmpPos.ax].color
+            // 移動先に駒があっても、相手の駒の場合は移動可能
+            if (color !== toColor) {
+              movables.push(tmpPos)
+            }
+          } else {
+            movables.push(tmpPos)
+          }
+        }
+      } else {
+        // ベクトル移動の場合は移動不可能になるまでその方向への移動を行い、そのマスが移動先マスと一致する場合は終了する
+        // まだ指定方向に移動可能かどうか
+        let stillMovable = true
+        let nextX = from.x
+        let nextY = from.y
+
+        while (stillMovable) {
+          nextX = nextX + mx
+          nextY = nextY + my
+
           if (Pos.inRange(nextX, nextY)) {
-            if (!this._board[nextPos.ay][nextPos.ax]) {
+            const nextPos = new Pos(nextX, nextY)
+            if (this.isExists(nextPos.ax, nextPos.ay)) {
               // 進行対象マスに駒が存在する場合は終了する
               stillMovable = false
-            }
 
-            if (nextX === to.x && nextY === to.y) {
-              return true
+              if (this._board[nextPos.ay][nextPos.ax].color !== color) {
+                movables.push(nextPos)
+              }
+            } else {
+              movables.push(nextPos)
             }
           } else {
             // 移動先マスが盤面の範囲外となる場合も終了する
@@ -197,6 +279,8 @@ export default class Field {
         return false
       }
     })
+
+    return movables
   }
 
   /**
@@ -228,8 +312,8 @@ export default class Field {
       initData.hands = this._initHands
     }
 
-    if (this._color) {
-      initData.color = this._color
+    if (this._initColor) {
+      initData.color = this._initColor
     }
 
     return initData
@@ -303,6 +387,20 @@ export default class Field {
       }
     } else {
       throw new Error('指定されたプレイヤーの値が想定しない値です。')
+    }
+  }
+
+  /**
+   * 指定された座標のマスが空かどうか判定する
+   *
+   * @param boardObj
+   */
+  private isExists(ax: number, ay: number): boolean {
+    let boardObj = this._board[ay][ax]
+    if (Object.keys(boardObj).length) {
+      return true
+    } else {
+      return false
     }
   }
 }

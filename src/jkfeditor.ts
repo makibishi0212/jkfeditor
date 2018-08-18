@@ -1,6 +1,6 @@
 import Editor from './editor'
 import MoveData from './moveData'
-import { JkfObject, BoardObject } from './const/interface'
+import { JkfObject, BoardObject, MoveInfoObject } from './const/interface'
 
 export default class JkfEditor {
   private editor: Editor
@@ -85,6 +85,10 @@ export default class JkfEditor {
 
   public resetComment() {
     this.editor.resetComment()
+  }
+
+  public getKomaMoves(fromX: number, fromY: number): Array<MoveInfoObject | null> {
+    return this.editor.getKomaMoves(fromX, fromY)
   }
 
   public export(): JkfObject {

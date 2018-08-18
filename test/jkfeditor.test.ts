@@ -204,6 +204,46 @@ describe('Shogi-manger test', () => {
       )
     )
 
+    expect(testManager.getKomaMoves(8, 8)).toEqual([
+      {
+        to: { x: 7, y: 7 },
+        color: 0,
+        piece: 'KA',
+        from: { x: 8, y: 8 }
+      },
+      {
+        to: { x: 6, y: 6 },
+        color: 0,
+        piece: 'KA',
+        from: { x: 8, y: 8 }
+      },
+      {
+        to: { x: 5, y: 5 },
+        color: 0,
+        piece: 'KA',
+        from: { x: 8, y: 8 }
+      },
+      {
+        to: { x: 4, y: 4 },
+        color: 0,
+        piece: 'KA',
+        from: { x: 8, y: 8 }
+      },
+      {
+        to: { x: 3, y: 3 },
+        color: 0,
+        piece: 'KA',
+        from: { x: 8, y: 8 }
+      },
+      {
+        to: { x: 2, y: 2 },
+        color: 0,
+        piece: 'KA',
+        from: { x: 8, y: 8 },
+        capture: 'KA'
+      }
+    ])
+
     testManager.addBoardMove(7, 6, 7, 5)
     testManager.currentNum++
 

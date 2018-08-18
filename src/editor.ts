@@ -79,6 +79,10 @@ export default class Editor {
     return this.moveData.getNextMoves(this._currentNum)
   }
 
+  public get player(): number {
+    return this._player
+  }
+
   /**
    * 現在の盤面が棋譜の何番目の指し手のものか表示する
    */
@@ -365,6 +369,10 @@ export default class Editor {
         )
 
         if (!isMovable) {
+          console.log(
+            new Pos(moveInfoObj.from.x, moveInfoObj.from.y),
+            new Pos(moveInfoObj.to.x, moveInfoObj.to.y)
+          )
           console.error('指定された指し手は移動不可能です。')
           return
         }
@@ -427,6 +435,30 @@ export default class Editor {
     if (moveObj) {
       this.addMovefromObj(moveObj, comment)
     }
+  }
+
+  /**
+   * 指定された盤上駒の移動可能なMoveを返す
+   * @param fromX
+   * @param fromY
+   */
+  public getKomaMoves(fromX: number, fromY: number): Array<MoveInfoObject> {
+    const komaMoves: Array<MoveInfoObject> = []
+
+    this._field.getMovables(new Pos(fromX, fromY)).forEach(pos => {
+      const move = this.makeMoveData(
+        this.getBoardPiece(fromX, fromY).kind as string,
+        fromX,
+        fromY,
+        pos.x,
+        pos.y
+      )
+      if (move) {
+        komaMoves.push(move)
+      }
+    })
+
+    return komaMoves
   }
 
   /**
@@ -559,9 +591,9 @@ export default class Editor {
   }
 
   /**
-   * 指し手オブジェクトを作成する
+   * 指し手オブジェクトを作成する(持ち駒から配置される場合のためにkomaStringを入力する)
    *
-   * @param komaType
+   * @param komaString
    * @param fromX
    * @param fromY
    * @param toX
@@ -574,7 +606,7 @@ export default class Editor {
     fromY: number | null,
     toX: number,
     toY: number,
-    promote: boolean
+    promote: boolean = false
   ): MoveInfoObject | null {
     // 前の指し手(現在の盤面になる前に最後に適用した指し手)を取得
 
