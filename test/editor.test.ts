@@ -169,7 +169,7 @@ describe('Editor test', () => {
     expect(testManager.comment).toEqual(['分岐の例'])
   })
 
-  it('newMangerが正常に初期化されている', () => {
+  it('newManagerが正常に初期化されている', () => {
     testManager = newManager
     expect(testManager.currentNum).toBe(0)
     expect(testManager.board).toEqual(hirateBoard)

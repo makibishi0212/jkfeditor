@@ -3419,6 +3419,12 @@ json-buffer@3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/json-buffer/-/json-buffer-3.0.0.tgz#5b1f397afc75d677bde8bcfc0e47e1f9a3d9a898"
 
+json-kifu-format@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/json-kifu-format/-/json-kifu-format-1.2.1.tgz#f51644d9d262f07fbb840404376c51bd10c33f83"
+  dependencies:
+    shogi.js "^2.0.1"
+
 json-parse-better-errors@^1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/json-parse-better-errors/-/json-parse-better-errors-1.0.2.tgz#bb867cfb3450e69107c131d1c514bab3dc8bcaa9"
@@ -5071,6 +5077,10 @@ shelljs@0.7.6, shelljs@^0.7.0:
 shellwords@^0.1.1:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/shellwords/-/shellwords-0.1.1.tgz#d6b9181c1a48d397324c84871efbcfc73fc0654b"
+
+shogi.js@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/shogi.js/-/shogi.js-2.0.1.tgz#a65546a36589f86a6c6362c65e1093ea5c0831d3"
 
 signal-exit@^3.0.0, signal-exit@^3.0.2:
   version "3.0.2"

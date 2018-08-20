@@ -498,7 +498,6 @@ export default class KomaInfo {
       fullName: '駒無', // 駒名
       boardName: 'NO', // 盤面情報での駒名
       moves: [],
-      canPromote: true, // 成れるかどうか
       isPromote: false, // 成り駒かどうか
       toPromote: KOMA.NONE, // 成り先
       fromPromote: KOMA.NONE // 成り元
@@ -516,7 +515,6 @@ export default class KomaInfo {
           y: 1
         }
       ],
-      canPromote: true, // 成れるかどうか
       isPromote: false, // 成り駒かどうか
       toPromote: KOMA.TO, // 成り先
       fromPromote: KOMA.NONE // 成り元
@@ -534,7 +532,6 @@ export default class KomaInfo {
           y: 1
         }
       ],
-      canPromote: true, // 成れるかどうか
       isPromote: false, // 成り駒かどうか
       toPromote: KOMA.NY, // 成り先
       fromPromote: KOMA.NONE // 成り元
@@ -557,7 +554,6 @@ export default class KomaInfo {
           y: 2
         }
       ],
-      canPromote: true, // 成れるかどうか
       isPromote: false, // 成り駒かどうか
       toPromote: KOMA.NK, // 成り先
       fromPromote: KOMA.NONE // 成り元
@@ -595,7 +591,6 @@ export default class KomaInfo {
           y: -1
         }
       ],
-      canPromote: true, // 成れるかどうか
       isPromote: false, // 成り駒かどうか
       toPromote: KOMA.NG, // 成り先
       fromPromote: KOMA.NONE // 成り元
@@ -638,7 +633,6 @@ export default class KomaInfo {
           y: 0
         }
       ],
-      canPromote: false, // 成れるかどうか
       isPromote: false, // 成り駒かどうか
       toPromote: KOMA.NONE, // 成り先
       fromPromote: KOMA.NONE // 成り元
@@ -671,7 +665,6 @@ export default class KomaInfo {
           y: -1
         }
       ],
-      canPromote: true, // 成れるかどうか
       isPromote: false, // 成り駒かどうか
       toPromote: KOMA.UM, // 成り先
       fromPromote: KOMA.NONE // 成り元
@@ -704,7 +697,6 @@ export default class KomaInfo {
           y: -1
         }
       ],
-      canPromote: true, // 成れるかどうか
       isPromote: false, // 成り駒かどうか
       toPromote: KOMA.RY, // 成り先
       fromPromote: KOMA.NONE // 成り元
@@ -757,7 +749,6 @@ export default class KomaInfo {
           y: -1
         }
       ],
-      canPromote: false, // 成れるかどうか
       isPromote: false, // 成り駒かどうか
       toPromote: KOMA.NONE, // 成り先
       fromPromote: KOMA.NONE // 成り元
@@ -800,7 +791,6 @@ export default class KomaInfo {
           y: 0
         }
       ],
-      canPromote: false, // 成れるかどうか
       isPromote: true, // 成り駒かどうか
       toPromote: KOMA.NONE, // 成り先
       fromPromote: KOMA.FU // 成り元
@@ -843,7 +833,6 @@ export default class KomaInfo {
           y: 0
         }
       ],
-      canPromote: false, // 成れるかどうか
       isPromote: true, // 成り駒かどうか
       toPromote: KOMA.NONE, // 成り先
       fromPromote: KOMA.KY // 成り元
@@ -886,7 +875,6 @@ export default class KomaInfo {
           y: 0
         }
       ],
-      canPromote: false, // 成れるかどうか
       isPromote: true, // 成り駒かどうか
       toPromote: KOMA.NONE, // 成り先
       fromPromote: KOMA.KE // 成り元
@@ -929,7 +917,6 @@ export default class KomaInfo {
           y: 0
         }
       ],
-      canPromote: false, // 成れるかどうか
       isPromote: true, // 成り駒かどうか
       toPromote: KOMA.NONE, // 成り先
       fromPromote: KOMA.GI // 成り元
@@ -982,7 +969,6 @@ export default class KomaInfo {
           y: -1
         }
       ],
-      canPromote: false, // 成れるかどうか
       isPromote: true, // 成り駒かどうか
       toPromote: KOMA.NONE, // 成り先
       fromPromote: KOMA.KA // 成り元
@@ -1055,7 +1041,6 @@ export default class KomaInfo {
           y: -1
         }
       ],
-      canPromote: false, // 成れるかどうか
       isPromote: true, // 成り駒かどうか
       toPromote: KOMA.NONE, // 成り先
       fromPromote: KOMA.HI // 成り元

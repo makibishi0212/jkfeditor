@@ -1,8 +1,8 @@
 import MoveNode from './model/moveNode'
 import Move from './model/move'
 
-import { MoveObject } from './const/interface'
 import Util from './util'
+import { IMoveFormat } from 'json-kifu-format/src/Formats'
 
 // 将棋用の指し手を管理するリストクラス
 
@@ -63,7 +63,7 @@ export default class MoveList {
    * @param moveNum
    * @param moveObj
    */
-  public addMove(moveNum: number, moveObj: MoveObject) {
+  public addMove(moveNum: number, moveObj: IMoveFormat) {
     // TODO:ここにmoveInfoObjが正しいかどうか判定する処理を入れる
     const newIndex = this.makeMoveNode(moveObj, this._currentMoveNodes[moveNum])
 
@@ -185,7 +185,7 @@ export default class MoveList {
   }
 
   // json棋譜フォーマットの指し手情報配列から指し手セル配列を作成する
-  private makeMoveList(moves: Array<MoveObject>) {
+  private makeMoveList(moves: IMoveFormat[]) {
     let prevIndex: number | void = -1
 
     moves.forEach(move => {
@@ -199,7 +199,7 @@ export default class MoveList {
   }
 
   // json棋譜フォーマットの指し手情報から一つの指し手セルを作成する
-  private makeMoveNode(moveObj: MoveObject, prevMoveNode: MoveNode | null): number | void {
+  private makeMoveNode(moveObj: IMoveFormat, prevMoveNode: MoveNode | null): number | void {
     let isTheSame: boolean = false
 
     // 一つ前の指し手の分岐に同一の指し手があれば破棄する
@@ -222,7 +222,7 @@ export default class MoveList {
     // インデックスが分岐指し手を持つ場合、その指し手に対しても同様に指し手セルを作成する
     if ((moveObj as Object).hasOwnProperty('forks')) {
       // newIndexとして作成したセルから派生する分岐のループ
-      ;(moveObj['forks'] as MoveObject[][]).forEach(forkArray => {
+      ;(moveObj['forks'] as IMoveFormat[][]).forEach(forkArray => {
         // 大元の指し手セルのひとつ前のセル
         let tmpPrevMoveNode = prevMoveNode
 
@@ -241,7 +241,7 @@ export default class MoveList {
   }
 
   // json棋譜フォーマットの指し手情報から分岐情報を持たない一つの指し手セルを作成する
-  private makePrimitiveMoveNode(moveObj: MoveObject, prevMoveNode: MoveNode | null): number {
+  private makePrimitiveMoveNode(moveObj: IMoveFormat, prevMoveNode: MoveNode | null): number {
     // 作成する指し手セルが複数の指し手候補のひとつであるかどうか
     const isBranch = prevMoveNode && prevMoveNode.next.length > 0 ? true : false
 

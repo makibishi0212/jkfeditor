@@ -6,14 +6,14 @@ import Util from './util'
 import MoveList from './moveList'
 import Move from './model/move'
 import Pos from './model/pos'
+import { InitObject } from './const/interface'
 import {
-  JkfObject,
-  InitObject,
-  InitBoardObject,
-  BoardObject,
-  MoveObject,
-  MoveInfoObject
-} from './const/interface'
+  IPiece,
+  IJSONKifuFormat,
+  IMoveFormat,
+  IMoveMoveFormat,
+  IStateFormat
+} from 'json-kifu-format/src/Formats'
 import Field from './model/field'
 import { PLAYER, BOARD } from './const/const'
 
@@ -37,7 +37,10 @@ export default class Editor {
   private moveData: MoveList = new MoveList([{}])
 
   // 棋譜の指し手以外の情報
-  private info: Object = {}
+  private header: { [index: string]: string } = {}
+
+  //
+  private initial: InitObject | null = null
 
   // プリセット
   private preset: string = 'HIRATE'
@@ -47,7 +50,7 @@ export default class Editor {
    * @param jkf
    * @param readonly
    */
-  constructor(jkf: JkfObject = {}, readonly: boolean = false) {
+  constructor(jkf: IJSONKifuFormat = { header: {}, moves: [{}] }, readonly: boolean = false) {
     this.readonly = readonly
     this.load(jkf)
   }
@@ -67,7 +70,7 @@ export default class Editor {
     return this.moveData.getMove(this.currentNum).comments
   }
 
-  public get board(): Array<Array<BoardObject>> {
+  public get board(): IPiece[][] {
     return this._field.board
   }
 
@@ -128,12 +131,12 @@ export default class Editor {
   /**
    * jkfをエクスポートする
    */
-  public export(): JkfObject {
+  public export(): IJSONKifuFormat {
     // TODO:未実装
-    const jkfObj: JkfObject = {}
+    const jkfObj: IJSONKifuFormat = { header: {}, moves: [{}] }
 
-    if (typeof this.info === 'object') {
-      jkfObj.header = this.info as InitObject
+    if (typeof this.initial === 'object') {
+      jkfObj.initial = this.initial as InitObject
     }
 
     if (this.preset !== BOARD.HIRATE) {
@@ -155,7 +158,7 @@ export default class Editor {
    * @param kx 盤面のX座標 7六歩の7
    * @param ky 盤面のY座標 7六歩の六
    */
-  public getBoardPiece(kx: number, ky: number): BoardObject {
+  public getBoardPiece(kx: number, ky: number): IPiece {
     const pos = new Pos(kx, ky)
 
     return this._field.board[pos.ay][pos.ax]
@@ -239,7 +242,7 @@ export default class Editor {
       banString += ' ＿＿＿＿＿＿＿＿＿' + '\n'
       this._field.board.forEach(boardRow => {
         banString += '|'
-        boardRow.forEach((boardElm: BoardObject) => {
+        boardRow.forEach((boardElm: IPiece) => {
           if (boardElm.hasOwnProperty('kind')) {
             banString += KomaInfo.getKanji(KomaInfo.komaAtoi(boardElm.kind as string))
           } else {
@@ -328,11 +331,11 @@ export default class Editor {
    * @param comment コメント
    */
   public addMovefromObj(
-    moveInfoObj: MoveInfoObject,
+    moveInfoObj: IMoveMoveFormat,
     comment: Array<string> | string | null = null
   ) {
     if (!this.readonly) {
-      let moveObj: MoveObject
+      let moveObj: IMoveFormat
       if (typeof comment === 'string') {
         moveObj = { move: moveInfoObj, comments: [comment] }
       } else if (Array.isArray(comment)) {
@@ -341,40 +344,42 @@ export default class Editor {
         moveObj = { move: moveInfoObj }
       }
 
-      if (!moveInfoObj.from) {
-        // fromがない場合はtoの位置が空いているか確認
-        // TODO: 移動できない場所への配置かどうか判定
-        if (
-          !this._field.isInHand(
-            Util.oppoPlayer(this._field.color),
-            KomaInfo.komaAtoi(moveInfoObj.piece)
-          )
-        ) {
-          console.error('打つ駒が手持ち駒の中にありません。')
-          return
-        }
+      if (moveInfoObj.to) {
+        if (!moveInfoObj.from) {
+          // fromがない場合はtoの位置が空いているか確認
+          // TODO: 移動できない場所への配置かどうか判定
+          if (
+            !this._field.isInHand(
+              Util.oppoPlayer(this._field.color),
+              KomaInfo.komaAtoi(moveInfoObj.piece)
+            )
+          ) {
+            console.error('打つ駒が手持ち駒の中にありません。')
+            return
+          }
 
-        if (!isEqual(this.getBoardPiece(moveInfoObj.to.x, moveInfoObj.to.y), {})) {
-          console.error(
-            '持ち駒から配置する指し手の場合は空きマスを指定して下さい。',
-            'TO:[x:' + moveInfoObj.to.x + ',' + 'y:' + moveInfoObj.to.y + ']',
-            this.getBoardPiece(moveInfoObj.to.x, moveInfoObj.to.y)
-          )
-          return
-        }
-      } else {
-        const isMovable = this._field.isMovable(
-          new Pos(moveInfoObj.from.x, moveInfoObj.from.y),
-          new Pos(moveInfoObj.to.x, moveInfoObj.to.y)
-        )
-
-        if (!isMovable) {
-          console.log(
+          if (!isEqual(this.getBoardPiece(moveInfoObj.to.x, moveInfoObj.to.y), {})) {
+            console.error(
+              '持ち駒から配置する指し手の場合は空きマスを指定して下さい。',
+              'TO:[x:' + moveInfoObj.to.x + ',' + 'y:' + moveInfoObj.to.y + ']',
+              this.getBoardPiece(moveInfoObj.to.x, moveInfoObj.to.y)
+            )
+            return
+          }
+        } else {
+          const isMovable = this._field.isMovable(
             new Pos(moveInfoObj.from.x, moveInfoObj.from.y),
             new Pos(moveInfoObj.to.x, moveInfoObj.to.y)
           )
-          console.error('指定された指し手は移動不可能です。')
-          return
+
+          if (!isMovable) {
+            console.log(
+              new Pos(moveInfoObj.from.x, moveInfoObj.from.y),
+              new Pos(moveInfoObj.to.x, moveInfoObj.to.y)
+            )
+            console.error('指定された指し手は移動不可能です。')
+            return
+          }
         }
       }
 
@@ -404,13 +409,15 @@ export default class Editor {
     comment: Array<string> | string | null = null
   ) {
     // TODO: 「同」が反映されない不具合を修正
-    const boardObj: BoardObject = this.getBoardPiece(fromX, fromY)
-    let moveObj: BoardObject | null = null
+    const boardObj: IPiece = this.getBoardPiece(fromX, fromY)
+    let moveObj: IPiece | null = null
     if (boardObj.hasOwnProperty('color') && boardObj.hasOwnProperty('kind')) {
+      promote =
+        promote && KomaInfo.getPromote(KomaInfo.komaAtoi(boardObj.kind as string)) ? true : false
       moveObj = this.makeMoveData(boardObj.kind as string, fromX, fromY, toX, toY, promote)
 
       if (moveObj) {
-        this.addMovefromObj(moveObj as MoveInfoObject, comment)
+        this.addMovefromObj(moveObj as IMoveMoveFormat, comment)
       }
     } else {
       console.error('fromの座標に駒が存在しません。')
@@ -517,8 +524,8 @@ export default class Editor {
    * jkfオブジェクトをロードする
    * @param jkf
    */
-  private load(jkf: JkfObject) {
-    let board: Array<Array<BoardObject>>
+  private load(jkf: IJSONKifuFormat) {
+    let board: IPiece[][]
     let hands: Array<{ [index: string]: number }> = [{}, {}]
 
     // 指し手情報のコピー
@@ -575,12 +582,8 @@ export default class Editor {
             break
           case BOARD.OTHER: // 上記以外
             this.preset = BOARD.OTHER
-            board = ((jkf.initial as InitObject).data as InitBoardObject).board as Array<
-              Array<Object>
-            >
-            hands = ((jkf.initial as InitObject).data as InitBoardObject).hands as Array<{
-              [index: string]: number
-            }>
+            board = ((jkf.initial as InitObject).data as IStateFormat).board
+            hands = ((jkf.initial as InitObject).data as IStateFormat).hands
             break
         }
       }
@@ -589,8 +592,8 @@ export default class Editor {
     this._field = new Field(board, hands)
 
     // 棋譜情報を代入
-    if (jkf.hasOwnProperty('header')) {
-      this.info = jkf['header'] as Object
+    if (jkf.hasOwnProperty('initial')) {
+      this.initial = jkf['initial'] as InitObject
     }
   }
 
@@ -611,7 +614,7 @@ export default class Editor {
     toX: number,
     toY: number,
     promote: boolean = false
-  ): MoveInfoObject | null {
+  ): IMoveMoveFormat | null {
     // 前の指し手(現在の盤面になる前に最後に適用した指し手)を取得
 
     // 手番のプレイヤーを取得(未定義の場合初期盤面)
@@ -620,7 +623,7 @@ export default class Editor {
     // komaStringの書式がただしいか判定
 
     // 指し手オブジェクトを作成
-    const moveInfoObj: MoveInfoObject = {
+    const moveInfoObj: IMoveMoveFormat = {
       to: { x: toX, y: toY },
       color: color,
       piece: komaString
@@ -634,7 +637,7 @@ export default class Editor {
         return null
       }
 
-      const fromPosObj: BoardObject = this.getBoardPiece(fromX, fromY)
+      const fromPosObj: IPiece = this.getBoardPiece(fromX, fromY)
       if (fromPosObj) {
         if (fromPosObj.hasOwnProperty('kind')) {
           if (fromPosObj.color !== color) {
@@ -655,12 +658,14 @@ export default class Editor {
     }
 
     // 前の指し手と同じ位置に移動する場合sameプロパティを追加
-    if (isEqual(this.lastMove.to, new Pos(moveInfoObj.to.x, moveInfoObj.to.y))) {
-      moveInfoObj.same = true
+    if (moveInfoObj.to) {
+      if (isEqual(this.lastMove.to, new Pos(moveInfoObj.to.x, moveInfoObj.to.y))) {
+        moveInfoObj.same = true
+      }
     }
 
     // 移動先に駒が存在する場合captureプロパティを追加
-    const toPosObj: BoardObject = this.getBoardPiece(toX, toY)
+    const toPosObj: IPiece = this.getBoardPiece(toX, toY)
     if (toPosObj) {
       if (toPosObj.hasOwnProperty('kind')) {
         if (toPosObj.color === color) {
@@ -864,7 +869,7 @@ export default class Editor {
           // !sideBySide && !tandemの場合
 
           if (onlyX && onlyY) {
-            moveInfoObj.relative = XrelStr
+            moveInfoObj.relative = YrelStr
           } else if (onlyX && !onlyY) {
             moveInfoObj.relative = XrelStr
           } else if (!onlyX && onlyY) {

@@ -1,15 +1,16 @@
-import { BoardObject, KomaMoveObject, InitBoardObject } from '../const/interface'
+import { KomaMoveObject } from '../const/interface'
 import Move from './move'
 import { PLAYER, MOVETYPE } from '../const/const'
 import KomaInfo from '../const/komaInfo'
 import Pos from './pos'
 import Util from '../util'
+import { IPiece, IStateFormat } from 'json-kifu-format/src/Formats'
 
 // 将棋の盤面と手駒を合わせた、ある手数における状況を表すクラス
 
 export default class Field {
   // 81マスの盤面
-  private _board: Array<Array<BoardObject>>
+  private _board: IPiece[][]
 
   // 手駒
   private _hands: Array<{ [index: string]: number }>
@@ -18,7 +19,7 @@ export default class Field {
   private _color: number
 
   // 初期状態の盤面
-  private _initBoard: Array<Array<BoardObject>>
+  private _initBoard: IPiece[][]
 
   // 手駒
   private _initHands: Array<{ [index: string]: number }>
@@ -301,7 +302,7 @@ export default class Field {
   }
 
   public get initData() {
-    const initData: InitBoardObject = {}
+    const initData: IStateFormat = { color: PLAYER.SENTE, board: [], hands: [] }
 
     if (this._initBoard) {
       initData.board = this._initBoard
@@ -345,7 +346,7 @@ export default class Field {
    * @param pos
    * @param info
    */
-  private setBoardPiece(pos: Pos, info: BoardObject) {
+  private setBoardPiece(pos: Pos, info: IPiece) {
     if (pos) {
       this._board[pos.ay][pos.ax] = Util.deepCopy(info)
     }

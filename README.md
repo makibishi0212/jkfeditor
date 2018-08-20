@@ -69,10 +69,26 @@ newNumで指定した指し手番号に移動する。
 |:--:|:--:|:--:|:--:|
 | newNum | number | Yes | 移動する指し手番号。 |
 
+```javascript
+// 現在の指し手番号を表示
+console.log(jkfeditor.currentNum)
+
+// 指し手番号を変更
+jkfeditor.go(2)
+
+//指し手番号を変更2
+jkfeditor.currentNum = 2
+```
+
 **JkfEditor.getKomaMoves(fromX, fromY):number[][]**
 
+| Argument | Type | Required | Description |
+|:--:|:--:|:--:|:--:|
+| fromX | number | Yes | 対象駒のX座標。☗7六歩における「7」の部分。 |
+| fromY | number | Yes | 対象駒のY座標。☗7六歩における「六」の部分。 |
+
 fromX,fromYで指定した位置の駒の移動可能座標の情報を返す。
-座標情報は
+座標情報は移動可能座標を1,、他を0とした
 ```
 [0, 0, 0, 0, 0, 0, 0, 0, 0],
 [0, 0, 0, 0, 0, 0, 0, 1, 0],
@@ -90,21 +106,6 @@ fromX,fromYで指定した位置の駒の移動可能座標の情報を返す。
 
 現在の盤面で移動可能な駒の座標情報を返す。
 
-| Argument | Type | Required | Description |
-|:--:|:--:|:--:|:--:|
-| fromX | number | Yes | 対象駒のX座標。☗7六歩における「7」の部分。 |
-| fromY | number | Yes | 対象駒のY座標。☗7六歩における「六」の部分。 |
-
-```javascript
-// 現在の指し手番号を表示
-console.log(jkfeditor.currentNum)
-
-// 指し手番号を変更
-jkfeditor.go(2)
-
-//指し手番号を変更2
-jkfeditor.currentNum = 2
-```
 
 現在の盤面情報は以下のプロパティで取得できます。
 
@@ -226,8 +227,8 @@ Moveは指し手情報のクラスで、以下のプロパティを持ちます�
 |:--:|:--:|:--:|
 | Move.moveObj | Object | この指し手の情報を、json棋譜フォーマットで定義された指し手オブジェクトとして返します。 |
 | Move.piece | string | 移動対象駒をjkfで定められた名前で返します。 |
-| Move.capture | string | null | 取った駒がある場合、その駒名を返します。 |
-| Move.pureCapture | string | null | 取った駒がある場合、その駒名を返します。こちらは成り駒を取った場合も成った状態のものが返されます。 |
+| Move.capture | string | 取った駒がある場合、その駒名を返します。 |
+| Move.pureCapture | string | 取った駒がある場合、その駒名を返します。こちらは成り駒を取った場合も成った状態のものが返されます。 |
 | Move.isPut | boolean | 持ち駒から置く手ならばtrueを返します。 |
 | Move.from | Object | 移動前の盤面座標です。7六ならば{x:7,y:6}となります。 |
 | Move.to | Object | 移動後の盤面座標です。fromと同様です。 |

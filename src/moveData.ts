@@ -1,8 +1,8 @@
 // APIが返す読み取り専用指し手情報
 import Move from './model/move'
-import { MoveObject } from './const/interface'
 
 import KomaInfo from './const/komaInfo'
+import { IMoveFormat } from 'json-kifu-format/src/Formats'
 
 let move: Move
 
@@ -11,7 +11,7 @@ export default class MoveData {
     move = origin
   }
 
-  public get moveObj(): MoveObject {
+  public get moveObj(): IMoveFormat {
     return move.moveObj
   }
 

@@ -1,7 +1,4 @@
-export interface BoardObject {
-  color?: number
-  kind?: string
-}
+import { IStateFormat } from 'json-kifu-format/src/Formats'
 
 // 駒データの表現オブジェクト
 export interface KomaDataObject {
@@ -16,9 +13,6 @@ export interface KomaDataObject {
 
   // 駒の移動可能情報
   moves: Array<KomaMoveObject>
-
-  // 成れるかどうか
-  canPromote: boolean
 
   // 成り駒かどうか
   isPromote: boolean
@@ -37,44 +31,7 @@ export interface KomaMoveObject {
   y: number
 }
 
-// json棋譜フォーマットで定義された指し手の定義オブジェクト
-export interface MoveObject {
-  move?: MoveInfoObject
-  comments?: Array<string>
-  forks?: Array<Array<MoveObject>>
-}
-
-// json棋譜フォーマットで定義された駒の移動表現の定義オブジェクト
-export interface MoveInfoObject {
-  to: PosObject
-  from?: PosObject
-  color: number
-  piece: string
-  same?: boolean
-  relative?: string
-  promote?: boolean
-  capture?: string
-}
-
-// 駒座標表現の定義オブジェクト
-export interface PosObject {
-  x: number
-  y: number
-}
-
-export interface JkfObject {
-  moves?: Array<Object>
-  initial?: InitObject
-  header?: Object
-}
-
 export interface InitObject {
   preset: string
-  data?: InitBoardObject
-}
-
-export interface InitBoardObject {
-  board?: Array<Array<Object>>
-  color?: number
-  hands?: Array<{ [index: string]: number }>
+  data?: IStateFormat
 }
