@@ -161,6 +161,16 @@ describe('Shogi-manger test', () => {
     expect(testManager.currentNum).toBe(0)
     expect(testManager.board).toEqual(hirateBoard)
     expect(testManager.comment).toEqual(['分岐の例'])
+    expect(testManager.header).toEqual({
+      proponent_name: '先手善治',
+      opponent_name: '後手魔太郎',
+      title: 'テスト棋譜',
+      place: '畳',
+      start_time: '2003/05/03 10:30:00',
+      end_time: '2003/05/03 10:30:00',
+      limit_time: '00:25+00',
+      style: 'YAGURA'
+    })
   })
 
   it('readOnlyLoadMangerが正常に初期化されている', () => {
@@ -168,6 +178,23 @@ describe('Shogi-manger test', () => {
     expect(testManager.currentNum).toBe(0)
     expect(testManager.board).toEqual(hirateBoard)
     expect(testManager.comment).toEqual(['分岐の例'])
+  })
+
+  it('ヘッダー情報の追加', () => {
+    testManager = jkfLoadManager
+    testManager.addInfo('dragon', 'ball')
+    testManager.addInfo('style', 'USOYAGURA')
+    expect(testManager.header).toEqual({
+      proponent_name: '先手善治',
+      opponent_name: '後手魔太郎',
+      title: 'テスト棋譜',
+      place: '畳',
+      start_time: '2003/05/03 10:30:00',
+      end_time: '2003/05/03 10:30:00',
+      limit_time: '00:25+00',
+      style: 'USOYAGURA',
+      dragon: 'ball'
+    })
   })
 
   it('指し手の追加', () => {
@@ -237,8 +264,10 @@ describe('Shogi-manger test', () => {
     expect(testManager.lastMove.to).toEqual({ x: 7, y: 5 })
     expect(testManager.lastMove.name).toEqual('☗7五歩')
     expect(testManager.lastMove.isPut).toEqual(false)
+    expect(testManager.lastMove.capture).toEqual(null)
+    expect(testManager.lastMove.pureCapture).toEqual(null)
 
-    testManager.addBoardMove(2, 2, 8, 8)
+    testManager.addBoardMove(2, 2, 8, 8, true)
     testManager.currentNum++
     expect(testManager.lastMove).toEqual(
       new MoveData(
@@ -253,6 +282,18 @@ describe('Shogi-manger test', () => {
         })
       )
     )
+
+    testManager.addBoardMove(7, 9, 8, 8)
+    testManager.currentNum++
+    expect(testManager.lastMove.piece).toEqual('GI')
+    expect(testManager.lastMove.capture).toEqual('KA')
+    expect(testManager.lastMove.pureCapture).toEqual('UM')
+    testManager.addHandMove('KA', 5, 5)
+    testManager.currentNum++
+    expect(testManager.lastMove.from).toEqual(null)
+    expect(testManager.lastMove.moveObj).toEqual({
+      move: { to: { x: 5, y: 5 }, color: 1, piece: 'KA' }
+    })
 
     testManager.currentNum--
   })
@@ -293,6 +334,7 @@ describe('Shogi-manger test', () => {
     expect(testManager.comment).toEqual(['テストコメント1'])
     testManager.addComment('テストコメント2')
     expect(testManager.comment).toEqual(['テストコメント1', 'テストコメント2'])
+    expect(testManager.lastMove.comments).toEqual(['テストコメント1', 'テストコメント2'])
     testManager.go(0)
     expect(testManager.comment).toEqual(null)
     testManager.go(4)

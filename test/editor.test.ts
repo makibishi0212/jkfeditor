@@ -438,6 +438,7 @@ describe('Editor test', () => {
         { color: 0, kind: 'KY' }
       ]
     ])
+    expect(testManager.lastMove.from).toEqual(null)
     console.log(testManager.dispCurrentInfo())
   })
 

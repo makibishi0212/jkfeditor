@@ -33,6 +33,10 @@ export default class JkfEditor {
     return this.editor.isFork
   }
 
+  public get header(): { [index: string]: string } {
+    return this.editor.header
+  }
+
   public get lastMove(): MoveData {
     return new MoveData(this.editor.lastMove)
   }
@@ -98,18 +102,17 @@ export default class JkfEditor {
   public export(): IJSONKifuFormat {
     return this.editor.export()
   }
+
+  public addInfo(key: string, value: string) {
+    this.editor.addInfo(key, value)
+  }
 }
 
 module.exports = JkfEditor
 
 // 次の実装
 // TODO: 削除・リセットのAPIを追加する
-// TODO: フォーマットを公式から取るようにする
-// TODO: throw Errorを最低限しか利用しないようにする
 // TODO: 型定義ファイルに含まれるprivate変数を除去する
 // TODO: disp〜()で提供されている情報相当のオブジェクトを返すAPIの作成
-// TODO: 相対位置判定のテスト・実装
 // TODO: 各APIの入力をオブジェクトにする
-// TODO: npm経由でのimport時に不要なプロパティが表示されてしまう問題を解決
-// TODO: nextMoves, kifuMovesの返り値を再検討
-// TODO: komainfo.tsを削って容量削減
+// TODO: headerの値を追加するメソッドを追加

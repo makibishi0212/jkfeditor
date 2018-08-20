@@ -37,7 +37,7 @@ export default class Editor {
   private moveData: MoveList = new MoveList([{}])
 
   // 棋譜の指し手以外の情報
-  private header: { [index: string]: string } = {}
+  private _header: { [index: string]: string } = {}
 
   //
   private initial: InitObject | null = null
@@ -114,6 +114,13 @@ export default class Editor {
   }
 
   /**
+   * jkfのヘッダー情報を返す
+   */
+  public get header(): { [index: string]: string } {
+    return this._header
+  }
+
+  /**
    * 現在の指し手にコメントを追加する
    * @param comment
    */
@@ -145,6 +152,10 @@ export default class Editor {
       if (this.preset === BOARD.OTHER) {
         jkfObj.initial.data = this._field.initData
       }
+    }
+
+    if (typeof this.header === 'object') {
+      jkfObj.header = this.header
     }
 
     jkfObj.moves = this.moveData.exportJkfMoves()
@@ -373,10 +384,6 @@ export default class Editor {
           )
 
           if (!isMovable) {
-            console.log(
-              new Pos(moveInfoObj.from.x, moveInfoObj.from.y),
-              new Pos(moveInfoObj.to.x, moveInfoObj.to.y)
-            )
             console.error('指定された指し手は移動不可能です。')
             return
           }
@@ -521,6 +528,16 @@ export default class Editor {
   }
 
   /**
+   * jkfヘッダーに指定のパラメータを追加する
+   *
+   * @param key
+   * @param value
+   */
+  public addInfo(key: string, value: string) {
+    this._header[key] = value
+  }
+
+  /**
    * jkfオブジェクトをロードする
    * @param jkf
    */
@@ -594,6 +611,10 @@ export default class Editor {
     // 棋譜情報を代入
     if (jkf.hasOwnProperty('initial')) {
       this.initial = jkf['initial'] as InitObject
+    }
+
+    if (jkf.hasOwnProperty('header')) {
+      this._header = jkf['header']
     }
   }
 
@@ -707,7 +728,6 @@ export default class Editor {
     })
 
     if (rivals.length) {
-      console.log(rivals, fromX, fromY)
       // toの位置に同じ種類の駒が移動できる場合相対情報を追加
       moveInfoObj.relative = ''
 

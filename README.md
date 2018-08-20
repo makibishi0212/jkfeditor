@@ -117,6 +117,7 @@ fromX,fromYで指定した位置の駒の移動可能座標の情報を返す。
 | JkfEditor.comment | string[] | 現在の指し手におけるコメント。 |
 | JkfEditor.isFork | boolean | 現在の盤面が指し手分岐をもつかどうか。 |
 | JkfEditor.player | number | 最後に指したプレイヤーの番号。 |
+| JkfEditor.header | object | 棋譜のヘッダー情報。 |
 
 指し手情報は以下のプロパティで取得できます。
 
@@ -209,6 +210,15 @@ console.log(jkfeditor.dispNextMoves())
 **JkfEditor.resetComment()**
 
 現在の指し手についたコメントをすべて削除する。
+
+**JkfEditor.addInfo(key, value)**
+
+現在編集中の棋譜にヘッダー情報を追加する。
+
+| Argument | Type | Required | Description |
+|:--:|:--:|:--:|:--:|
+| key | string | Yes | キーの文字列。 |
+| value | string | Yes | 値の文字列。 |
 
 ***
 
