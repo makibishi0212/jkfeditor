@@ -130,20 +130,19 @@ export default class Field {
   }
 
   /**
-   * from座標の駒がto座標の位置に移動できるか判定する
+   * from座標の駒がto座標の位置に移動できるか判定する(toがnullの場合はfrom座標の駒が移動可能なマスがひとつでもあるかどうかを判定)
    *
    * @param fromX
    * @param fromY
    * @param toX
    * @param toY
    */
-  public isMovable(from: Pos, to: Pos): boolean {
+  public isMovable(from: Pos, to: Pos | null = null): boolean {
     const komaNum = this._board[from.ay][from.ax].hasOwnProperty('kind')
       ? KomaInfo.komaAtoi(this._board[from.ay][from.ax].kind as string)
       : null
 
     if (!komaNum) {
-      console.error('from指定座標に駒がありません。')
       return false
     }
 
@@ -162,10 +161,14 @@ export default class Field {
       }
 
       if (move.type === MOVETYPE.POS) {
-        if (from.x + mx === to.x && from.y + my === to.y) {
-          return true
+        if (to) {
+          if (from.x + mx === to.x && from.y + my === to.y) {
+            return this.isEnterable(to.x, to.y, color) ? true : false
+          } else {
+            return false
+          }
         } else {
-          return false
+          return this.isEnterable(from.x + mx, from.y + my, color) ? true : false
         }
       } else {
         // ベクトル移動の場合は移動不可能になるまでその方向への移動を行い、そのマスが移動先マスと一致する場合は終了する
@@ -178,27 +181,20 @@ export default class Field {
           nextX = nextX + mx
           nextY = nextY + my
 
-          if (!Pos.inRange(nextX, nextY)) {
-            return false
-          }
-
-          const nextPos = new Pos(nextX, nextY)
-
-          if (this.isExists(nextPos.ax, nextPos.ay)) {
-            // 進行対象マスに駒が存在する場合は終了する
-            stillMovable = false
-          }
-
-          if (nextX === to.x && nextY === to.y) {
+          const nextPos = this.isEnterable(nextX, nextY, color)
+          if (nextPos) {
             if (this.isExists(nextPos.ax, nextPos.ay)) {
-              if (this._board[nextPos.ay][nextPos.ax].color !== color) {
+              stillMovable = false
+            }
+            if (to) {
+              if (nextPos.x === to.x && nextPos.y === to.y) {
                 return true
-              } else {
-                return false
               }
             } else {
               return true
             }
+          } else {
+            return false
           }
         }
         return false
@@ -210,14 +206,14 @@ export default class Field {
    * fromで与えられた駒が移動できる座標候補を返す
    * @param from
    */
-  public getMovables(from: Pos): Pos[] {
+  public getKomaMoves(from: Pos): Pos[] {
     const movables: Pos[] = []
     const komaNum = this._board[from.ay][from.ax].hasOwnProperty('kind')
       ? KomaInfo.komaAtoi(this._board[from.ay][from.ax].kind as string)
       : null
 
     if (!komaNum) {
-      console.error('from指定座標に駒がありません。')
+      // from指定座標に駒がない場合は空配列を返す
       return movables
     }
 
@@ -236,17 +232,9 @@ export default class Field {
       }
 
       if (move.type === MOVETYPE.POS) {
-        if (Pos.inRange(from.x + mx, from.y + my)) {
-          const tmpPos = new Pos(from.x + mx, from.y + my)
-          if (this.isExists(tmpPos.ax, tmpPos.ay)) {
-            const toColor = this._board[tmpPos.ay][tmpPos.ax].color
-            // 移動先に駒があっても、相手の駒の場合は移動可能
-            if (color !== toColor) {
-              movables.push(tmpPos)
-            }
-          } else {
-            movables.push(tmpPos)
-          }
+        const tmpPos = this.isEnterable(from.x + mx, from.y + my, color)
+        if (tmpPos) {
+          movables.push(tmpPos)
         }
       } else {
         // ベクトル移動の場合は移動不可能になるまでその方向への移動を行い、そのマスが移動先マスと一致する場合は終了する
@@ -259,26 +247,37 @@ export default class Field {
           nextX = nextX + mx
           nextY = nextY + my
 
-          if (Pos.inRange(nextX, nextY)) {
-            const nextPos = new Pos(nextX, nextY)
+          const nextPos = this.isEnterable(nextX, nextY, color)
+          if (nextPos) {
             if (this.isExists(nextPos.ax, nextPos.ay)) {
-              // 進行対象マスに駒が存在する場合は終了する
               stillMovable = false
-
-              if (this._board[nextPos.ay][nextPos.ax].color !== color) {
-                movables.push(nextPos)
-              }
-            } else {
-              movables.push(nextPos)
             }
+            movables.push(nextPos)
           } else {
-            // 移動先マスが盤面の範囲外となる場合も終了する
             stillMovable = false
           }
         }
         return false
       }
     })
+
+    return movables
+  }
+
+  /**
+   * 次の指し手として動かすことのできる駒の座標を返す
+   */
+  public getMovables() {
+    const movables: Pos[] = []
+    for (let ky = 1; ky < 10; ky++) {
+      for (let kx = 1; kx < 10; kx++) {
+        const pos = new Pos(kx, ky)
+        if (this.isMovable(pos) && this._board[pos.ay][pos.ax].color !== this._color) {
+          // TODO: 対象駒が移動できるマスが存在するかどうか判定する
+          movables.push(pos)
+        }
+      }
+    }
 
     return movables
   }
@@ -388,6 +387,28 @@ export default class Field {
     } else {
       throw new Error('指定されたプレイヤーの値が想定しない値です。')
     }
+  }
+
+  /**
+   * 指定プレイヤーが指定のマスに駒を動かすことができるかどうかを判定
+   *
+   * @param to
+   * @param color
+   */
+  private isEnterable(toX: number, toY: number, color: number): Pos | false {
+    if (Pos.inRange(toX, toY)) {
+      const pos = new Pos(toX, toY)
+      if (this.isExists(pos.ax, pos.ay)) {
+        if (this._board[pos.ay][pos.ax].color !== color) {
+          return pos
+        } else {
+          return false
+        }
+      } else {
+        return pos
+      }
+    }
+    return false
   }
 
   /**

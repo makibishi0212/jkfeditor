@@ -1,4 +1,4 @@
-import isEqual from 'lodash.isequal'
+import isEqual from 'deep-equal'
 
 import KomaInfo from './const/komaInfo'
 import Util from './util'
@@ -442,23 +442,27 @@ export default class Editor {
    * @param fromX
    * @param fromY
    */
-  public getKomaMoves(fromX: number, fromY: number): Array<MoveInfoObject> {
-    const komaMoves: Array<MoveInfoObject> = []
+  public getKomaMoves(fromX: number, fromY: number): Array<Array<number>> {
+    const boardArray = Util.makeEmptyBoard()
 
-    this._field.getMovables(new Pos(fromX, fromY)).forEach(pos => {
-      const move = this.makeMoveData(
-        this.getBoardPiece(fromX, fromY).kind as string,
-        fromX,
-        fromY,
-        pos.x,
-        pos.y
-      )
-      if (move) {
-        komaMoves.push(move)
-      }
+    this._field.getKomaMoves(new Pos(fromX, fromY)).forEach(pos => {
+      boardArray[pos.ay][pos.ax] = 1
     })
 
-    return komaMoves
+    return boardArray
+  }
+
+  /**
+   * 移動可能な駒の座標を返す
+   */
+  public getMovables() {
+    const boardArray = Util.makeEmptyBoard()
+
+    this._field.getMovables().forEach(pos => {
+      boardArray[pos.ay][pos.ax] = 1
+    })
+
+    return boardArray
   }
 
   /**

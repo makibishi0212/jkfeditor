@@ -1,7 +1,4 @@
-import _ from 'lodash'
 import Pos from '../../src/model/pos'
-import KomaInfo from '../../src/const/komaInfo'
-import { BOARD, PLAYER } from '../../src/const/const'
 
 const pos = new Pos(7, 9)
 

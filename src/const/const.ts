@@ -1,6 +1,3 @@
-import { NONAME } from 'dns'
-import { KomaMoveObject } from './interface'
-
 export const PLAYER = {
   SENTE: 0,
   GOTE: 1

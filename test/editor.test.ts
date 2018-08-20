@@ -364,58 +364,15 @@ describe('Editor test', () => {
     testManager.addBoardMove(8, 8, 7, 7)
     testManager.currentNum++
     expect(testManager.getKomaMoves(5, 5)).toEqual([
-      {
-        to: { x: 6, y: 6 },
-        color: 1,
-        piece: 'KA',
-        from: { x: 5, y: 5 }
-      },
-      {
-        to: { x: 7, y: 7 },
-        color: 1,
-        piece: 'KA',
-        from: { x: 5, y: 5 },
-        same: true,
-        capture: 'GI'
-      },
-      {
-        to: { x: 4, y: 6 },
-        color: 1,
-        piece: 'KA',
-        from: { x: 5, y: 5 }
-      },
-      {
-        to: { x: 3, y: 7 },
-        color: 1,
-        piece: 'KA',
-        from: { x: 5, y: 5 },
-        capture: 'FU'
-      },
-      {
-        to: { x: 6, y: 4 },
-        color: 1,
-        piece: 'KA',
-        from: { x: 5, y: 5 }
-      },
-      {
-        to: { x: 4, y: 4 },
-        color: 1,
-        piece: 'KA',
-        from: { x: 5, y: 5 }
-      },
-      {
-        to: { x: 3, y: 3 },
-        color: 1,
-        piece: 'KA',
-        from: { x: 5, y: 5 },
-        relative: 'L'
-      },
-      {
-        to: { x: 2, y: 2 },
-        color: 1,
-        piece: 'KA',
-        from: { x: 5, y: 5 }
-      }
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 1, 0],
+      [0, 0, 0, 0, 0, 0, 1, 0, 0],
+      [0, 0, 0, 1, 0, 1, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 1, 0, 1, 0, 0, 0],
+      [0, 0, 1, 0, 0, 0, 1, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0]
     ])
     testManager.currentNum--
   })

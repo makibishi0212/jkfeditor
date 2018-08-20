@@ -87,8 +87,12 @@ export default class JkfEditor {
     this.editor.resetComment()
   }
 
-  public getKomaMoves(fromX: number, fromY: number): Array<MoveInfoObject | null> {
+  public getKomaMoves(fromX: number, fromY: number): Array<Array<number>> {
     return this.editor.getKomaMoves(fromX, fromY)
+  }
+
+  public getMovables() {
+    return this.editor.getMovables()
   }
 
   public export(): JkfObject {
@@ -101,7 +105,6 @@ module.exports = JkfEditor
 // 次の実装
 // TODO: 削除・リセットのAPIを追加する
 // TODO: フォーマットを公式から取るようにする
-// TODO: lodash依存の削除
 // TODO: throw Errorを最低限しか利用しないようにする
 // TODO: 型定義ファイルに含まれるprivate変数を除去する
 // TODO: disp〜()で提供されている情報相当のオブジェクトを返すAPIの作成
@@ -109,7 +112,6 @@ module.exports = JkfEditor
 // TODO: 相対位置判定のテスト・実装
 // TODO: 各APIの入力をオブジェクトにする
 // TODO: 棋譜ツリーの表示機能をつける
-// TODO: ドキュメント整備
-// TODO: npm登録
 // TODO: npm経由でのimport時に不要なプロパティが表示されてしまう問題を解決
 // TODO: nextMoves, kifuMovesの返り値を再検討
+// TODO: komainfo.tsを削って容量削減

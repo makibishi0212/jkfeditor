@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import Field from '../../src/model/field'
 import Move from '../../src/model/move'
 import KomaInfo from '../../src/const/komaInfo'

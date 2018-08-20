@@ -1,9 +1,6 @@
-import _ from 'lodash'
 import Move from '../../src/model/move'
 import KomaInfo from '../../src/const/komaInfo'
-import { BOARD, PLAYER, KOMA } from '../../src/const/const'
-import { normalize, relative } from 'path'
-import { test } from 'shelljs'
+import { PLAYER, KOMA } from '../../src/const/const'
 
 const normalMoveObj = {
   move: {

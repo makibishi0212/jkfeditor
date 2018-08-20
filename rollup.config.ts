@@ -2,6 +2,8 @@ import resolve from 'rollup-plugin-node-resolve'
 import commonjs from 'rollup-plugin-commonjs'
 import sourceMaps from 'rollup-plugin-sourcemaps'
 import camelCase from 'lodash.camelcase'
+import {uglify} from 'rollup-plugin-uglify'
+import { minify } from 'uglify-es'
 
 const pkg = require('./package.json')
 
@@ -29,5 +31,6 @@ export default {
 
     // Resolve source maps to the original source
     sourceMaps(),
+    uglify({}, minify)
   ],
 }

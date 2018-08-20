@@ -1,7 +1,4 @@
-import _ from 'lodash'
 import MoveNode from '../../src/model/moveNode'
-import KomaInfo from '../../src/const/komaInfo'
-import { BOARD, PLAYER } from '../../src/const/const'
 
 const normalMoveObj = {
   move: {
