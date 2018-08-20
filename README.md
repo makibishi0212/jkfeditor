@@ -69,15 +69,26 @@ newNumで指定した指し手番号に移動する。
 |:--:|:--:|:--:|:--:|
 | newNum | number | Yes | 移動する指し手番号。 |
 
-**JkfEditor.getKomaMoves(fromX, fromY):Object[]**
+**JkfEditor.getKomaMoves(fromX, fromY):number[][]**
 
 fromX,fromYで指定した位置の駒の移動可能座標の情報を返す。
 座標情報は
 ```
-{ to: { x: 6, y: 6 },color: 1,piece: 'KA',from: { x: 5, y: 5 } }
+[0, 0, 0, 0, 0, 0, 0, 0, 0],
+[0, 0, 0, 0, 0, 0, 0, 1, 0],
+[0, 0, 0, 0, 0, 0, 1, 0, 0],
+[0, 0, 0, 1, 0, 1, 0, 0, 0],
+[0, 0, 0, 0, 0, 0, 0, 0, 0],
+[0, 0, 0, 1, 0, 1, 0, 0, 0],
+[0, 0, 1, 0, 0, 0, 1, 0, 0],
+[0, 0, 0, 0, 0, 0, 0, 0, 0],
+[0, 0, 0, 0, 0, 0, 0, 0, 0]
 ```
 の形式で返されます。
 
+**JkfEditor.getMovables():number[][]**
+
+現在の盤面で移動可能な駒の座標情報を返す。
 
 | Argument | Type | Required | Description |
 |:--:|:--:|:--:|:--:|
