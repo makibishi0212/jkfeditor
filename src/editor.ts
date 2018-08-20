@@ -629,6 +629,8 @@ export default class Editor {
       piece: komaString
     }
 
+    const toPos = new Pos(toX, toY)
+
     // 持ち駒を置く場合fromはなし
     if (typeof fromX === 'number' && typeof fromY === 'number') {
       moveInfoObj.from = { x: fromX, y: fromY }
@@ -684,75 +686,20 @@ export default class Editor {
 
     this.board.forEach((boardRow, ay) => {
       boardRow.forEach((koma, ax) => {
+        const rivalPos = Pos.makePosFromIndex(ax, ay)
         if (koma.hasOwnProperty('kind')) {
           // 移動対象の駒と同一タイプ・同一プレイヤーの駒かどうか調べる
           if (
             koma.kind === moveInfoObj.piece &&
             koma.color === moveInfoObj.color &&
-            (ax !== fromX || ay !== fromY)
+            (rivalPos.x !== fromX || rivalPos.y !== fromY)
           ) {
-            // 上記if条件を満たす駒の場合は、その駒がtoの位置に移動できるか確認する
-
-            const komaMoves = KomaInfo.getMoves(KomaInfo.komaAtoi(komaString))
-
             // 候補の駒がtoの位置に到達しうる場合trueを代入
-            const relative: boolean = komaMoves.some(move => {
-              // 駒の動きをひとつずつ検討し、toPosの位置に到達する可能性を検討する
-              let mx = move.x
-              let my = move.y
-
-              if (!color) {
-                // 先手の場合
-                my *= -1
-              } else {
-                // 後手の場合
-                mx *= -1
-              }
-
-              switch (move.type) {
-                case 'pos':
-                  if (Pos.inRange(ay + my, ax + mx)) {
-                    if (ax + mx === toX && ay + my === toY) {
-                      return true
-                    }
-                  }
-                  break
-                case 'dir':
-                  dirMovable = true
-
-                  let movable = true
-                  let nextX = ax
-                  let nextY = ay
-
-                  while (movable) {
-                    nextX += mx
-                    nextY += my
-                    if (Pos.inRange(nextX, nextY)) {
-                      if (!this._field.board[nextY][nextX]) {
-                        if (nextX === toX && nextY === toY) {
-                          return true
-                        }
-                      } else {
-                        movable = false
-                        if (nextX === toX && nextY === toY) {
-                          return true
-                        }
-                      }
-                    } else {
-                      movable = false
-                    }
-                  }
-                  break
-                default:
-                  throw new Error('未知の移動タイプです。')
-              }
-
-              return false
-            })
+            const relative: boolean = this._field.isMovable(rivalPos, toPos)
 
             // toの位置に到達できる駒の情報は相対情報を作成する時に利用する
             if (relative) {
-              rivals.push(new Pos(ax, ay))
+              rivals.push(rivalPos)
             }
           }
         }
@@ -760,6 +707,7 @@ export default class Editor {
     })
 
     if (rivals.length) {
+      console.log(rivals, fromX, fromY)
       // toの位置に同じ種類の駒が移動できる場合相対情報を追加
       moveInfoObj.relative = ''
 
@@ -782,36 +730,38 @@ export default class Editor {
         // 一番下ならtrue
         let isDown = true
 
+        const fromPos = new Pos(fromX, fromY)
+
         rivals.forEach((pos: Pos) => {
           if (color === PLAYER.SENTE) {
-            if (pos.x < fromX) {
-              isLeft = false
-            } else if (pos.x > fromX) {
+            if (pos.x < fromPos.x) {
               isRight = false
+            } else if (pos.x > fromPos.x) {
+              isLeft = false
             } else {
               onlyX = false
             }
 
-            if (pos.y < fromY) {
+            if (pos.y < fromPos.y) {
               isDown = false
-            } else if (pos.y > fromY) {
+            } else if (pos.y > fromPos.y) {
               isUp = false
             } else {
               onlyY = false
             }
           } else {
             // 後手の場合
-            if (pos.x < fromX) {
-              isRight = false
-            } else if (pos.x > fromX) {
+            if (pos.x < fromPos.x) {
               isLeft = false
+            } else if (pos.x > fromPos.x) {
+              isRight = false
             } else {
               onlyX = false
             }
 
-            if (pos.y < fromY) {
+            if (pos.y < fromPos.y) {
               isUp = false
-            } else if (pos.y > fromY) {
+            } else if (pos.y > fromPos.y) {
               isDown = false
             } else {
               onlyY = false

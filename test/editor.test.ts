@@ -141,10 +141,55 @@ const jkfData = {
   ]
 }
 
+const relativeData = {
+  initial: {
+    preset: 'OTHER',
+    mode: 0,
+    data: {
+      board: [
+        [{}, {}, {}, {}, {}, {}, {}, {}, {}],
+        [{}, {}, {}, {}, { kind: 'RY', color: 0 }, {}, {}, {}, {}],
+        [{}, {}, {}, { kind: 'UM', color: 0 }, {}, {}, {}, { kind: 'RY', color: 0 }, {}],
+        [{}, {}, {}, {}, {}, {}, {}, {}, {}],
+        [{ kind: 'UM', color: 0 }, {}, {}, {}, {}, {}, {}, {}, {}],
+        [{}, {}, {}, {}, {}, {}, {}, {}, {}],
+        [
+          {},
+          { kind: 'TO', color: 0 },
+          {},
+          {},
+          {},
+          {},
+          { kind: 'GI', color: 0 },
+          {},
+          { kind: 'GI', color: 0 }
+        ],
+        [{ kind: 'TO', color: 0 }, {}, {}, {}, {}, {}, {}, {}, {}],
+        [
+          { kind: 'TO', color: 0 },
+          { kind: 'TO', color: 0 },
+          { kind: 'TO', color: 0 },
+          {},
+          {},
+          {},
+          { kind: 'GI', color: 0 },
+          { kind: 'GI', color: 0 },
+          {}
+        ]
+      ],
+      color: 0,
+      hands: [{}, {}]
+    }
+  },
+  header: { title: '\u76f8\u5bfe\u60c5\u5831', detail: '\u76f8\u5bfe\u60c5\u5831' },
+  moves: [{}]
+}
+
 const hirateBoard = Util.deepCopy(KomaInfo.initBoards[BOARD.HIRATE])
 const jkfLoadManager = new Editor(jkfData)
 const readOnlyLoadManger = new Editor(jkfData, true)
 const newManager = new Editor()
+const relativeManager = new Editor(relativeData)
 
 const spyLog = jest.spyOn(console, 'error')
 spyLog.mockImplementation(x => x)
@@ -173,6 +218,43 @@ describe('Editor test', () => {
     testManager = newManager
     expect(testManager.currentNum).toBe(0)
     expect(testManager.board).toEqual(hirateBoard)
+    expect(testManager.comment).toEqual(null)
+  })
+
+  it('relativeManagerが正常に初期化されている', () => {
+    testManager = relativeManager
+    expect(testManager.currentNum).toBe(0)
+    expect(testManager.board).toEqual([
+      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
+      [{}, {}, {}, {}, { kind: 'RY', color: 0 }, {}, {}, {}, {}],
+      [{}, {}, {}, { kind: 'UM', color: 0 }, {}, {}, {}, { kind: 'RY', color: 0 }, {}],
+      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
+      [{ kind: 'UM', color: 0 }, {}, {}, {}, {}, {}, {}, {}, {}],
+      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
+      [
+        {},
+        { kind: 'TO', color: 0 },
+        {},
+        {},
+        {},
+        {},
+        { kind: 'GI', color: 0 },
+        {},
+        { kind: 'GI', color: 0 }
+      ],
+      [{ kind: 'TO', color: 0 }, {}, {}, {}, {}, {}, {}, {}, {}],
+      [
+        { kind: 'TO', color: 0 },
+        { kind: 'TO', color: 0 },
+        { kind: 'TO', color: 0 },
+        {},
+        {},
+        {},
+        { kind: 'GI', color: 0 },
+        { kind: 'GI', color: 0 },
+        {}
+      ]
+    ])
     expect(testManager.comment).toEqual(null)
   })
 
@@ -425,5 +507,62 @@ describe('Editor test', () => {
     expect(testManager.nextMoves).toEqual([
       new Move({ move: { color: 1, from: { x: 8, y: 2 }, piece: 'HI', to: { x: 2, y: 2 } } })
     ])
+  })
+
+  it('相対情報の付与', () => {
+    testManager = relativeManager
+    relativeManager.addBoardMove(9, 9, 8, 8)
+    testManager.currentNum++
+    expect(testManager.lastMove.name).toBe('☗8八と左上')
+
+    relativeManager.deleteMove()
+    relativeManager.addBoardMove(8, 9, 8, 8)
+    testManager.currentNum++
+    expect(testManager.lastMove.name).toBe('☗8八と直')
+
+    relativeManager.deleteMove()
+    relativeManager.addBoardMove(7, 9, 8, 8)
+    testManager.currentNum++
+    expect(testManager.lastMove.name).toBe('☗8八と右')
+
+    relativeManager.deleteMove()
+    relativeManager.addBoardMove(9, 8, 8, 8)
+    testManager.currentNum++
+    expect(testManager.lastMove.name).toBe('☗8八と寄')
+
+    relativeManager.deleteMove()
+    relativeManager.addBoardMove(8, 7, 8, 8)
+    testManager.currentNum++
+    expect(testManager.lastMove.name).toBe('☗8八と引')
+
+    relativeManager.deleteMove()
+    relativeManager.addBoardMove(2, 9, 2, 8)
+    testManager.currentNum++
+    expect(testManager.lastMove.name).toBe('☗2八銀直')
+
+    relativeManager.deleteMove()
+    relativeManager.addBoardMove(1, 7, 2, 8)
+    testManager.currentNum++
+    expect(testManager.lastMove.name).toBe('☗2八銀右')
+
+    relativeManager.deleteMove()
+    relativeManager.addBoardMove(3, 9, 2, 8)
+    testManager.currentNum++
+    expect(testManager.lastMove.name).toBe('☗2八銀左上')
+
+    relativeManager.deleteMove()
+    relativeManager.addBoardMove(3, 7, 2, 8)
+    testManager.currentNum++
+    expect(testManager.lastMove.name).toBe('☗2八銀左引')
+
+    relativeManager.deleteMove()
+    relativeManager.addBoardMove(9, 5, 8, 5)
+    testManager.currentNum++
+    expect(testManager.lastMove.name).toBe('☗8五馬寄')
+
+    relativeManager.deleteMove()
+    relativeManager.addBoardMove(6, 3, 8, 5)
+    testManager.currentNum++
+    expect(testManager.lastMove.name).toBe('☗8五馬引')
   })
 })

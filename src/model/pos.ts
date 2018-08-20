@@ -42,6 +42,16 @@ export default class Pos {
   }
 
   /**
+   * 配列のインデックスからPosオブジェクトを作成する
+   *
+   * @param ax
+   * @param ay
+   */
+  public static makePosFromIndex(ax: number, ay: number) {
+    return new Pos(9 - ax, ay + 1)
+  }
+
+  /**
    * 盤面を反転した場合の棋譜座標を返す
    */
   public reverse() {
