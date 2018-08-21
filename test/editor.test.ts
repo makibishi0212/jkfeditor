@@ -361,6 +361,8 @@ describe('Editor test', () => {
     expect(testManager.comment).toEqual(['テストコメント1'])
     testManager.addComment('テストコメント2')
     expect(testManager.comment).toEqual(['テストコメント1', 'テストコメント2'])
+    testManager.resetComment()
+    expect(testManager.comment).toEqual(null)
     testManager.go(0)
     expect(testManager.comment).toEqual(null)
     testManager.go(4)

@@ -154,7 +154,7 @@ export default class Editor {
       }
     }
 
-    if (typeof this.header === 'object') {
+    if (typeof this.header === 'object' && Object.keys(this.header).length) {
       jkfObj.header = this.header
     }
 
@@ -534,14 +534,18 @@ export default class Editor {
    * @param value
    */
   public addInfo(key: string, value: string) {
-    this._header[key] = value
+    if (!this.readonly) {
+      this._header[key] = value
+    } else {
+      console.error('この棋譜は読み取り専用です。')
+    }
   }
 
   /**
    * jkfオブジェクトをロードする
    * @param jkf
    */
-  private load(jkf: IJSONKifuFormat) {
+  public load(jkf: IJSONKifuFormat) {
     let board: IPiece[][]
     let hands: Array<{ [index: string]: number }> = [{}, {}]
 

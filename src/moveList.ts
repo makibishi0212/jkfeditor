@@ -64,7 +64,6 @@ export default class MoveList {
    * @param moveObj
    */
   public addMove(moveNum: number, moveObj: IMoveFormat) {
-    // TODO:ここにmoveInfoObjが正しいかどうか判定する処理を入れる
     const newIndex = this.makeMoveNode(moveObj, this._currentMoveNodes[moveNum])
 
     if (typeof newIndex === 'number') {

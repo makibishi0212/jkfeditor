@@ -103,6 +103,10 @@ export default class JkfEditor {
     return this.editor.export()
   }
 
+  public load(jkf: IJSONKifuFormat) {
+    this.editor.load(jkf)
+  }
+
   public addInfo(key: string, value: string) {
     this.editor.addInfo(key, value)
   }

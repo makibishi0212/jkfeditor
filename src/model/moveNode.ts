@@ -37,6 +37,7 @@ export default class MoveNode {
     this._index = index
     this._prev = prevIndex
     this._moveObj = moveObj
+    this._isBranch = isBranch
 
     // 指し手情報を作成
     this._info = new Move(moveObj)
@@ -64,6 +65,10 @@ export default class MoveNode {
 
   public get select(): number {
     return this._select
+  }
+
+  public get isBranch(): boolean {
+    return this._isBranch
   }
 
   /**

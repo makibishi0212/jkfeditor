@@ -173,6 +173,24 @@ describe('Shogi-manger test', () => {
     })
   })
 
+  it('jkfを再ロードしても正常に初期化されている', () => {
+    testManager = jkfLoadManager
+    jkfLoadManager.load(jkfData)
+    expect(testManager.currentNum).toBe(0)
+    expect(testManager.board).toEqual(hirateBoard)
+    expect(testManager.comment).toEqual(['分岐の例'])
+    expect(testManager.header).toEqual({
+      proponent_name: '先手善治',
+      opponent_name: '後手魔太郎',
+      title: 'テスト棋譜',
+      place: '畳',
+      start_time: '2003/05/03 10:30:00',
+      end_time: '2003/05/03 10:30:00',
+      limit_time: '00:25+00',
+      style: 'YAGURA'
+    })
+  })
+
   it('readOnlyLoadMangerが正常に初期化されている', () => {
     testManager = readOnlyLoadManger
     expect(testManager.currentNum).toBe(0)

@@ -171,7 +171,7 @@ export default class Move {
    * コメントを全削除する
    */
   public removeComment() {
-    this._comments = []
+    this._comments = null
   }
 
   /**
