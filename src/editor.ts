@@ -74,6 +74,10 @@ export default class Editor {
     return this._field.board
   }
 
+  public get reverseBoard(): IPiece[][] {
+    return this._field.reverseBoard
+  }
+
   public get hands(): Array<{ [index: string]: number }> {
     return this._field.hands
   }
@@ -456,27 +460,39 @@ export default class Editor {
    * @param fromX
    * @param fromY
    */
-  public getKomaMoves(fromX: number, fromY: number): Array<Array<number>> {
+  public getKomaMoves(
+    fromX: number,
+    fromY: number,
+    reverse: boolean = false
+  ): Array<Array<number>> {
     const boardArray = Util.makeEmptyBoard()
 
     this._field.getKomaMoves(new Pos(fromX, fromY)).forEach(pos => {
       boardArray[pos.ay][pos.ax] = 1
     })
 
-    return boardArray
+    return reverse
+      ? boardArray.reverse().map(boardRow => {
+          return boardRow.reverse()
+        })
+      : boardArray
   }
 
   /**
    * 移動可能な駒の座標を返す
    */
-  public getMovables() {
+  public getMovables(reverse: boolean = false) {
     const boardArray = Util.makeEmptyBoard()
 
     this._field.getMovables().forEach(pos => {
       boardArray[pos.ay][pos.ax] = 1
     })
 
-    return boardArray
+    return reverse
+      ? boardArray.reverse().map(boardRow => {
+          return boardRow.reverse()
+        })
+      : boardArray
   }
 
   /**

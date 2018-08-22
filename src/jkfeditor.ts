@@ -21,6 +21,10 @@ export default class JkfEditor {
     return this.editor.board
   }
 
+  public get reverseBoard(): IPiece[][] {
+    return this.editor.reverseBoard
+  }
+
   public get hands(): Array<{ [index: string]: number }> {
     return this.editor.hands
   }
@@ -91,12 +95,16 @@ export default class JkfEditor {
     this.editor.resetComment()
   }
 
-  public getKomaMoves(fromX: number, fromY: number): Array<Array<number>> {
-    return this.editor.getKomaMoves(fromX, fromY)
+  public getKomaMoves(
+    fromX: number,
+    fromY: number,
+    reverse: boolean = false
+  ): Array<Array<number>> {
+    return this.editor.getKomaMoves(fromX, fromY, reverse)
   }
 
-  public getMovables() {
-    return this.editor.getMovables()
+  public getMovables(reverse: boolean = false) {
+    return this.editor.getMovables(reverse)
   }
 
   public export(): IJSONKifuFormat {

@@ -80,12 +80,13 @@ jkfeditor.go(2)
 jkfeditor.currentNum = 2
 ```
 
-**JkfEditor.getKomaMoves(fromX, fromY):number[][]**
+**JkfEditor.getKomaMoves(fromX, fromY, reverse?):number[][]**
 
 | Argument | Type | Required | Description |
 |:--:|:--:|:--:|:--:|
 | fromX | number | Yes | 対象駒のX座標。☗7六歩における「7」の部分。 |
 | fromY | number | Yes | 対象駒のY座標。☗7六歩における「六」の部分。 |
+| reverse | boolean | No | trueの場合、盤面を反転した状態で情報を返す。 |
 
 fromX,fromYで指定した位置の駒の移動可能座標の情報を返す。
 座標情報は移動可能座標を1,、他を0とした
@@ -102,7 +103,12 @@ fromX,fromYで指定した位置の駒の移動可能座標の情報を返す。
 ```
 の形式で返されます。
 
-**JkfEditor.getMovables():number[][]**
+**JkfEditor.getMovables(reverse?):number[][]**
+
+| Argument | Type | Required | Description |
+|:--:|:--:|:--:|:--:|
+| reverse | boolean | No | trueの場合、盤面を反転した状態で情報を返す。 |
+
 
 現在の盤面で移動可能な駒の座標情報を返す。
 
@@ -113,6 +119,7 @@ fromX,fromYで指定した位置の駒の移動可能座標の情報を返す。
 |:--:|:--:|:--:|
 | JkfEditor.currentNum | number | 現在の指し手番号。 |
 | JkfEditor.board | Object[][] | 現在の盤面。jkfフォーマットで定められた表現で返します。 |
+| JkfEditor.reverseBoard | Object[][] | 先後逆の状態の盤面。 |
 | JkfEditor.hands | Object[] | 現在の各プレイヤーの持ち駒。jkfフォーマットで定められた表現で返します。 |
 | JkfEditor.comment | string[] | 現在の指し手におけるコメント。 |
 | JkfEditor.isFork | boolean | 現在の盤面が指し手分岐をもつかどうか。 |

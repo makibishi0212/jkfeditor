@@ -12,6 +12,9 @@ export default class Field {
   // 81マスの盤面
   private _board: IPiece[][]
 
+  // 反転盤面
+  private _reverseBoard: IPiece[][]
+
   // 手駒
   private _hands: Array<{ [index: string]: number }>
 
@@ -33,6 +36,12 @@ export default class Field {
     color: number = PLAYER.SENTE
   ) {
     this._board = board
+    this._reverseBoard = board
+      .slice()
+      .reverse()
+      .map(boardRow => {
+        return boardRow.slice().reverse()
+      })
     this._hands = hands
     this._color = color
 
@@ -331,6 +340,13 @@ export default class Field {
    */
   public get board() {
     return this._board
+  }
+
+  /**
+   * 反転盤面を返す
+   */
+  public get reverseBoard() {
+    return this._reverseBoard
   }
 
   /**

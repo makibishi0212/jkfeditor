@@ -512,6 +512,41 @@ describe('Editor test', () => {
     ])
   })
 
+  it('反転盤面', () => {
+    testManager = relativeManager
+    expect(testManager.reverseBoard).toEqual([
+      [
+        {},
+        { kind: 'GI', color: 0 },
+        { kind: 'GI', color: 0 },
+        {},
+        {},
+        {},
+        { kind: 'TO', color: 0 },
+        { kind: 'TO', color: 0 },
+        { kind: 'TO', color: 0 }
+      ],
+      [{}, {}, {}, {}, {}, {}, {}, {}, { kind: 'TO', color: 0 }],
+      [
+        { kind: 'GI', color: 0 },
+        {},
+        { kind: 'GI', color: 0 },
+        {},
+        {},
+        {},
+        {},
+        { kind: 'TO', color: 0 },
+        {}
+      ],
+      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
+      [{}, {}, {}, {}, {}, {}, {}, {}, { kind: 'UM', color: 0 }],
+      [{}, {}, {}, {}, {}, {}, {}, {}, {}],
+      [{}, { kind: 'RY', color: 0 }, {}, {}, {}, { kind: 'UM', color: 0 }, {}, {}, {}],
+      [{}, {}, {}, {}, { kind: 'RY', color: 0 }, {}, {}, {}, {}],
+      [{}, {}, {}, {}, {}, {}, {}, {}, {}]
+    ])
+  })
+
   it('相対情報の付与', () => {
     testManager = relativeManager
     relativeManager.addBoardMove(9, 9, 8, 8)
