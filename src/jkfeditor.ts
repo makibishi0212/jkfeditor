@@ -41,6 +41,12 @@ export default class JkfEditor {
     return this.editor.header
   }
 
+  public get moves(): Array<MoveData> {
+    return this.editor.moves.map(move => {
+      return new MoveData(move)
+    })
+  }
+
   public get lastMove(): MoveData {
     return new MoveData(this.editor.lastMove)
   }

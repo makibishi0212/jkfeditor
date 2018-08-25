@@ -130,8 +130,9 @@ fromX,fromYで指定した位置の駒の移動可能座標の情報を返す。
 
 | Property | Type | Description |
 |:--:|:--:|:--:|
-| JkfEditor.lastMove | Move | 現在の盤面で最後に指されたの指し手の情報。MoveのAPIは後述します。 |
-| JkfEditor.nextMoves | Move[] | 現在の指し手配列における各指し手情報。MoveのAPIは後述します。 |
+| JkfEditor.lastMove | Move | 現在の盤面で最後に指された指し手の情報。MoveのAPIは後述します。 |
+| JkfEditor.moves | Move[] | 現在の最初から最後までの全ての指し手の配列。 |
+| JkfEditor.nextMoves | Move[] | 現在の盤面における次の指し手候補の配列。|
 
 また、下記のメソッドで情報を文字列として出力できます。
 
