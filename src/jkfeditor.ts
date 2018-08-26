@@ -117,6 +117,10 @@ export default class JkfEditor {
     return this.editor.getMovables(reverse)
   }
 
+  public getPutables(putFU: boolean = false, reverse: boolean = false) {
+    return this.editor.getPutables(putFU, reverse)
+  }
+
   public export(): IJSONKifuFormat {
     return this.editor.export()
   }
@@ -138,3 +142,4 @@ module.exports = JkfEditor
 // TODO: disp〜()で提供されている情報相当のオブジェクトを返すAPIの作成
 // TODO: 各APIの入力をオブジェクトにする
 // TODO: headerの値を追加するメソッドを追加
+// TODO: 手持ち駒を配置可能な位置の情報を返すメソッドを作成

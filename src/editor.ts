@@ -187,7 +187,7 @@ export default class Editor {
   public go(newNum: number) {
     // 更新後の指し手が指し手配列の範囲内で、現在のものと異なる場合のみ指し手更新処理を行う
 
-    if (this._currentNum !== newNum && newNum >= 0 && newNum < this.moveData.currentMoves.length) {
+    if (newNum >= 0 && newNum < this.moveData.currentMoves.length) {
       // 現在の盤面及び各プレイヤーの手持ち駒、次の指し手候補、指し手番号が更新対象
 
       if (this._currentNum > newNum) {
@@ -495,6 +495,20 @@ export default class Editor {
       : boardArray
   }
 
+  public getPutables(putFU: boolean = false, reverse: boolean = false) {
+    const boardArray = Util.makeEmptyBoard()
+
+    this._field.getPutables(putFU).forEach(pos => {
+      boardArray[pos.ay][pos.ax] = 1
+    })
+
+    return reverse
+      ? boardArray.reverse().map(boardRow => {
+          return boardRow.reverse()
+        })
+      : boardArray
+  }
+
   /**
    * 指定番号の移動が分岐をもつかどうか
    *
@@ -646,6 +660,7 @@ export default class Editor {
     }
 
     this._field = new Field(board, hands)
+    this.go(0)
 
     // 棋譜情報を代入
     if (jkf.hasOwnProperty('initial')) {
@@ -678,7 +693,11 @@ export default class Editor {
     // 前の指し手(現在の盤面になる前に最後に適用した指し手)を取得
 
     // 手番のプレイヤーを取得(未定義の場合初期盤面)
-    const color = this.lastMove.color === PLAYER.SENTE ? PLAYER.GOTE : PLAYER.SENTE
+    const color = this.lastMove.noMove
+      ? this.lastMove.color
+      : this.lastMove.color === PLAYER.SENTE
+        ? PLAYER.GOTE
+        : PLAYER.SENTE
 
     // komaStringの書式がただしいか判定
 

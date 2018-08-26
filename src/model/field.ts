@@ -1,6 +1,6 @@
 import { KomaMoveObject } from '../const/interface'
 import Move from './move'
-import { PLAYER, MOVETYPE } from '../const/const'
+import { PLAYER, MOVETYPE, KOMA } from '../const/const'
 import KomaInfo from '../const/komaInfo'
 import Pos from './pos'
 import Util from '../util'
@@ -20,6 +20,9 @@ export default class Field {
 
   // 最後に手を指したプレイヤー
   private _color: number
+
+  // 最後に適用した移動がnomoveかどうか
+  private _nomove: boolean = true
 
   // 初期状態の盤面
   private _initBoard: IPiece[][]
@@ -89,7 +92,11 @@ export default class Field {
       }
     }
 
-    this._color = move.color
+    this._nomove = move.noMove
+
+    if (move.color) {
+      this._color = move.color
+    }
   }
 
   // 現在の盤面に対して直前に適用されていた指し手情報を元に、適用前の状態に巻き戻す
@@ -136,7 +143,11 @@ export default class Field {
       }
     }
 
-    this._color = move.color
+    this._nomove = move.noMove
+
+    if (move.color) {
+      this._color = move.color
+    }
   }
 
   /**
@@ -282,14 +293,60 @@ export default class Field {
     for (let ky = 1; ky < 10; ky++) {
       for (let kx = 1; kx < 10; kx++) {
         const pos = new Pos(kx, ky)
-        if (this.isMovable(pos) && this._board[pos.ay][pos.ax].color !== this._color) {
-          // TODO: 対象駒が移動できるマスが存在するかどうか判定する
-          movables.push(pos)
+        if (this._nomove) {
+          if (this.isMovable(pos) && this._board[pos.ay][pos.ax].color === this._color) {
+            movables.push(pos)
+          }
+        } else {
+          if (this.isMovable(pos) && this._board[pos.ay][pos.ax].color !== this._color) {
+            movables.push(pos)
+          }
         }
       }
     }
 
     return movables
+  }
+
+  /**
+   * 持ち駒から駒を置ける座標情報を返す
+   *
+   * @param putFU
+   */
+  public getPutables(putFU: boolean = false) {
+    const putables: Pos[] = []
+    const existCache: { [index: number]: boolean } = {}
+
+    const isFuExists = (ax: number): boolean => {
+      let exists = false
+
+      if (existCache.hasOwnProperty(ax)) {
+        return existCache[ax]
+      }
+
+      for (let ay = 0; ay < 9; ay++) {
+        if (this.isExists(ay, ax) && this._board[ay][ax].kind === KomaInfo.komaItoa(KOMA.FU)) {
+          exists = true
+          ay = 9
+        }
+      }
+      existCache[ax] = exists
+      return exists
+    }
+
+    for (let ay = 0; ay < 9; ay++) {
+      for (let ax = 0; ax < 9; ax++) {
+        if (!this.isExists(ax, ay)) {
+          if (putFU) {
+            if (!isFuExists(ax)) putables.push(Pos.makePosFromIndex(ax, ay))
+          } else {
+            putables.push(Pos.makePosFromIndex(ax, ay))
+          }
+        }
+      }
+    }
+
+    return putables
   }
 
   /**

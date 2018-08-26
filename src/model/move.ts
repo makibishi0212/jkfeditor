@@ -19,6 +19,9 @@ export default class Move {
   // 駒の移動先座標情報
   private _to: Pos | null = null
 
+  // 指し手情報が移動を含むかどうか
+  private _noMove: boolean = false
+
   // 手番のプレイヤー番号
   private _color: number = PLAYER.SENTE
 
@@ -47,9 +50,6 @@ export default class Move {
 
     // 暫定でfalseを入れておく
     this._isPut = false
-
-    // 初期盤面の場合、次の手が先手の手番となるので、最初は後手の手としておく
-    this._color = PLAYER.GOTE
 
     // 指し手情報をもつか判定
     if (moveObj.hasOwnProperty('move')) {
@@ -96,6 +96,10 @@ export default class Move {
       this._from = null
       this._to = null
     }
+
+    if (!this.from && !this.to) {
+      this._noMove = true
+    }
   }
 
   /**
@@ -122,6 +126,10 @@ export default class Move {
 
   public get to(): Pos | null {
     return this._to
+  }
+
+  public get noMove(): boolean {
+    return this._noMove
   }
 
   public get color(): number {

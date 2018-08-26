@@ -109,8 +109,15 @@ fromX,fromYで指定した位置の駒の移動可能座標の情報を返す。
 |:--:|:--:|:--:|:--:|
 | reverse | boolean | No | trueの場合、盤面を反転した状態で情報を返す。 |
 
+**JkfEditor.getPutables(putFU,reverse?):number[][]**
 
-現在の盤面で移動可能な駒の座標情報を返す。
+| Argument | Type | Required | Description |
+|:--:|:--:|:--:|:--:|
+| putFU | boolean | No | 2歩の判定を含める場合はtrueにする。 |
+| reverse | boolean | No | trueの場合、盤面を反転した状態で情報を返す。 |
+
+
+現在の盤面で持ち駒からの配置が可能な座標の情報を返す。
 
 **JkfEditor.haveFork(num):boolean**
 
