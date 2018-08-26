@@ -496,6 +496,25 @@ export default class Editor {
   }
 
   /**
+   * 指定番号の移動が分岐をもつかどうか
+   *
+   * @param num
+   */
+  public haveFork(num: number): boolean {
+    if (num < this.moves.length) {
+      const nextMoveNodes = this.moveData.getNextMoves(num)
+      if (nextMoveNodes.length > 1) {
+        return true
+      } else {
+        return false
+      }
+    } else {
+      console.log('現在の手数を超える番号が指定されています。')
+      return false
+    }
+  }
+
+  /**
    * 指し手の分岐を切り替える
    *
    * @param forkIndex

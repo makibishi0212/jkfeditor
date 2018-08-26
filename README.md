@@ -112,6 +112,14 @@ fromX,fromYで指定した位置の駒の移動可能座標の情報を返す。
 
 現在の盤面で移動可能な駒の座標情報を返す。
 
+**JkfEditor.haveFork(num):boolean**
+
+| Argument | Type | Required | Description |
+|:--:|:--:|:--:|:--:|
+| num | number | No | 調べたい指し手の番号。 |
+
+その指し手番号が次の指し手候補を複数もつ場合はtrue, そうでない場合はfalseを返す。
+
 
 現在の盤面情報は以下のプロパティで取得できます。
 

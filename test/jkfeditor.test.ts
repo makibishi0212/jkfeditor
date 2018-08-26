@@ -319,7 +319,8 @@ describe('Shogi-manger test', () => {
             color: 1,
             piece: 'KA',
             capture: 'KA',
-            from: { x: 2, y: 2 }
+            from: { x: 2, y: 2 },
+            promote: true
           }
         })
       )
@@ -344,11 +345,33 @@ describe('Shogi-manger test', () => {
     testManager = jkfLoadManager
     testManager.currentNum++
     testManager.addBoardMove(8, 3, 8, 4)
+    testManager.addBoardMove(9, 3, 9, 4)
+    expect(testManager.haveFork(testManager.currentNum)).toBe(true)
+    expect(testManager.haveFork(testManager.currentNum - 1)).toBe(false)
+    expect(testManager.isFork).toBe(true)
   })
 
   it('重複した指し手の追加', () => {
+    testManager = jkfLoadManager
     testManager.addBoardMove(8, 3, 8, 4)
     expect(spyLog.mock.calls[0][0]).toEqual('同一の指し手が含まれています。')
+  })
+
+  it('nextMoves配列の確認', () => {
+    expect(
+      testManager.nextMoves.map(move => {
+        return move.name
+      })
+    ).toEqual(['☖3四歩', '☖8四歩', '☖9四歩'])
+  })
+
+  it('moves配列の確認', () => {
+    testManager = jkfLoadManager
+    expect(
+      testManager.moves.map(move => {
+        return move.name
+      })
+    ).toEqual(['初期局面', '☗7六歩', '☖3四歩', '☗7七桂', '☖同角成', '☗同角', '☖3三桂打'])
   })
 
   it('指し手の分岐切り替え', () => {
@@ -367,6 +390,15 @@ describe('Shogi-manger test', () => {
         })
       )
     )
+  })
+
+  it('moves配列の確認', () => {
+    testManager = jkfLoadManager
+    expect(
+      testManager.moves.map(move => {
+        return move.name
+      })
+    ).toEqual(['初期局面', '☗7六歩', '☖8四歩'])
   })
 
   it('コメントの追加', () => {

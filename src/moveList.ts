@@ -13,7 +13,7 @@ export default class MoveList {
   // 現在の分岐を反映した指し手セルの配列
   private _currentMoveNodes: Array<MoveNode> = []
 
-  // 現在の分岐を反映した指し手の配列(もしかしたらいらない？)
+  // 現在の分岐を反映した指し手の配列
   private _currentMoves: Array<Move> = []
 
   constructor(moves: Array<Object>) {

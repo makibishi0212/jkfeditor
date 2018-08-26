@@ -322,6 +322,15 @@ describe('Editor test', () => {
     console.log(testManager.dispNextMoves())
   })
 
+  it('moves配列の確認', () => {
+    testManager = jkfLoadManager
+    expect(
+      testManager.moves.map(move => {
+        return move.name
+      })
+    ).toEqual(['初期局面', '☗7六歩', '☖3四歩', '☗7七桂', '☖同角成', '☗同角', '☖3三桂打'])
+  })
+
   it('分岐指し手の追加', () => {
     testManager = jkfLoadManager
     testManager.currentNum++

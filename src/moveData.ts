@@ -4,66 +4,65 @@ import Move from './model/move'
 import KomaInfo from './const/komaInfo'
 import { IMoveFormat } from 'json-kifu-format/src/Formats'
 
-let move: Move
-
 export default class MoveData {
+  private move: Move
   constructor(origin: Move) {
-    move = origin
+    this.move = origin
   }
 
   public get moveObj(): IMoveFormat {
-    return move.moveObj
+    return this.move.moveObj
   }
 
   public get isPut(): boolean {
-    return move.isPut
+    return this.move.isPut
   }
 
   public get from(): Object | null {
-    if (move.from) {
-      return { x: move.from.x, y: move.from.y }
+    if (this.move.from) {
+      return { x: this.move.from.x, y: this.move.from.y }
     } else {
       return null
     }
   }
 
   public get to(): Object | null {
-    if (move.to) {
-      return { x: move.to.x, y: move.to.y }
+    if (this.move.to) {
+      return { x: this.move.to.x, y: this.move.to.y }
     } else {
       return null
     }
   }
 
   public get color(): number {
-    return move.color
+    return this.move.color
   }
 
   public get name(): string {
-    return move.name
+    return this.move.name
   }
 
   public get piece(): string {
-    return KomaInfo.komaItoa(move.komaNum)
+    return KomaInfo.komaItoa(this.move.komaNum)
   }
 
   public get capture(): string | null {
-    if (move.captureNum) {
-      return KomaInfo.komaItoa(move.captureNum)
+    if (this.move.captureNum) {
+      return KomaInfo.komaItoa(this.move.captureNum)
     } else {
       return null
     }
   }
 
   public get pureCapture(): string | null {
-    if (move.pureCaptureNum) {
-      return KomaInfo.komaItoa(move.pureCaptureNum)
+    if (this.move.pureCaptureNum) {
+      return KomaInfo.komaItoa(this.move.pureCaptureNum)
     } else {
       return null
     }
   }
 
   public get comments(): Array<string> | null {
-    return move.comments
+    return this.move.comments
   }
 }

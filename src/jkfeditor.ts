@@ -69,6 +69,10 @@ export default class JkfEditor {
     return this.editor.dispNextMoves()
   }
 
+  public haveFork(num: number) {
+    return this.editor.haveFork(num)
+  }
+
   public switchFork(forkIndex: number) {
     this.editor.switchFork(forkIndex)
   }
