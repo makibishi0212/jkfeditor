@@ -511,7 +511,7 @@ export default class Field {
         } else {
           // 歩の場合二歩判定
           for (let ay = 0; ay < 9; ay++) {
-            if (ay != pos.ay && this._board[ay][pos.ax].kind === KomaInfo.komaItoa(KOMA.FU)) {
+            if (ay !== pos.ay && this._board[ay][pos.ax].kind === KomaInfo.komaItoa(KOMA.FU)) {
               return false
             }
           }
