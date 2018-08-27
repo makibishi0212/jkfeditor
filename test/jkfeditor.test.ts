@@ -247,7 +247,6 @@ describe('Shogi-manger test', () => {
     testManager = newManager
     testManager.addBoardMove(7, 7, 7, 6)
     testManager.currentNum++
-    console.log(testManager.dispKifuMoves())
     expect(testManager.lastMove).toEqual(
       new MoveData(
         new Move({
@@ -263,7 +262,6 @@ describe('Shogi-manger test', () => {
 
     testManager.addBoardMove(3, 3, 3, 4)
     testManager.currentNum++
-    console.log(testManager.dispKifuMoves())
     expect(testManager.lastMove).toEqual(
       new MoveData(
         new Move({
@@ -325,7 +323,7 @@ describe('Shogi-manger test', () => {
       [0, 0, 0, 0, 0, 0, 0, 0, 0]
     ])
 
-    expect(testManager.getPutables()).toEqual([
+    expect(testManager.getPutables('KA')).toEqual([
       [0, 0, 0, 0, 0, 0, 0, 0, 0],
       [1, 0, 1, 1, 1, 1, 1, 0, 1],
       [0, 0, 0, 0, 0, 0, 1, 0, 0],
@@ -337,15 +335,27 @@ describe('Shogi-manger test', () => {
       [0, 0, 0, 0, 0, 0, 0, 0, 0]
     ])
 
-    expect(testManager.getPutables(true)).toEqual([
+    expect(testManager.getPutables('KE')).toEqual([
       [0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 1, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 1, 0, 0, 1, 0, 0, 1, 0],
-      [0, 1, 0, 0, 1, 0, 0, 1, 0],
-      [0, 1, 0, 0, 1, 0, 0, 1, 0],
+      [0, 0, 0, 0, 0, 0, 1, 0, 0],
+      [1, 1, 1, 1, 1, 1, 0, 1, 1],
+      [1, 1, 1, 1, 1, 1, 1, 1, 1],
+      [1, 1, 0, 1, 1, 1, 1, 1, 1],
+      [0, 0, 1, 0, 0, 0, 0, 0, 0],
+      [1, 0, 1, 1, 1, 1, 1, 0, 1],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0]
+    ])
+
+    expect(testManager.getPutables('FU')).toEqual([
       [0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 1, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0, 0]
     ])
 
@@ -464,5 +474,107 @@ describe('Shogi-manger test', () => {
     testManager.go(0)
     expect(testManager.comment).toEqual(null)
     testManager.go(4)
+  })
+
+  it('歩に関する配置判定', () => {
+    testManager = jkfLoadManager
+    testManager.currentNum--
+    testManager.switchFork(0)
+    testManager.go(testManager.moves.length - 1)
+    testManager.addBoardMove(7, 6, 7, 5)
+    testManager.currentNum++
+    testManager.addBoardMove(8, 2, 9, 2)
+    testManager.currentNum++
+    testManager.addBoardMove(7, 5, 7, 4)
+    testManager.currentNum++
+    testManager.addBoardMove(9, 2, 7, 2)
+    testManager.currentNum++
+    testManager.addBoardMove(7, 4, 7, 3, true)
+    testManager.currentNum++
+    console.log(testManager.dispKifuMoves())
+    console.log(testManager.dispCurrentInfo())
+    expect(testManager.getPutables('FU')).toEqual([
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 1, 0, 0, 0, 0, 0, 0],
+      [0, 0, 1, 0, 0, 0, 0, 0, 0],
+      [0, 0, 1, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 1, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0]
+    ])
+
+    expect(testManager.getPutables('FU', true)).toEqual([
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 1, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 1, 0, 0],
+      [0, 0, 0, 0, 0, 0, 1, 0, 0],
+      [0, 0, 0, 0, 0, 0, 1, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0]
+    ])
+  })
+
+  it('桂馬に関する配置判定', () => {
+    testManager = jkfLoadManager
+    testManager.addBoardMove(8, 1, 7, 3)
+    testManager.currentNum++
+    testManager.addHandMove('FU', 7, 4)
+    testManager.currentNum++
+    testManager.addBoardMove(5, 1, 4, 2)
+    testManager.currentNum++
+    testManager.addBoardMove(7, 4, 7, 3)
+    testManager.currentNum++
+    testManager.addBoardMove(9, 1, 9, 2)
+    testManager.currentNum++
+    expect(testManager.getPutables('KE')).toEqual([
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [1, 1, 1, 1, 1, 1, 0, 1, 1],
+      [1, 1, 1, 1, 1, 1, 1, 1, 1],
+      [1, 1, 1, 1, 1, 1, 1, 1, 1],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [1, 1, 1, 1, 1, 1, 1, 0, 1],
+      [0, 1, 0, 0, 0, 0, 0, 0, 0]
+    ])
+    testManager.addHandMove('KE', 8, 4)
+    testManager.currentNum++
+    expect(testManager.getKomaMoves(8, 4)).toEqual([
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [2, 0, 2, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0]
+    ])
+  })
+
+  it('香に関する配置判定', () => {
+    testManager = jkfLoadManager
+    testManager.addBoardMove(4, 2, 3, 2)
+    testManager.currentNum++
+    testManager.addBoardMove(8, 4, 9, 2)
+    testManager.currentNum++
+    testManager.addBoardMove(7, 2, 8, 2)
+    testManager.currentNum++
+    console.log(testManager.dispCurrentInfo())
+    expect(testManager.getPutables('KY')).toEqual([
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 1, 1, 1, 1, 0, 1, 1],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [1, 1, 1, 1, 1, 1, 0, 1, 1],
+      [1, 1, 1, 1, 1, 1, 1, 1, 1],
+      [1, 1, 1, 1, 1, 1, 1, 1, 1],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [1, 1, 1, 1, 1, 1, 1, 0, 1],
+      [0, 1, 0, 0, 0, 0, 0, 0, 0]
+    ])
   })
 })

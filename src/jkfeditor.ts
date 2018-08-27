@@ -69,6 +69,10 @@ export default class JkfEditor {
     return this.editor.dispNextMoves()
   }
 
+  public dispCurrentInfo(): string {
+    return this.editor.dispCurrentInfo()
+  }
+
   public haveFork(num: number) {
     return this.editor.haveFork(num)
   }
@@ -117,8 +121,8 @@ export default class JkfEditor {
     return this.editor.getMovables(reverse)
   }
 
-  public getPutables(putFU: boolean = false, reverse: boolean = false) {
-    return this.editor.getPutables(putFU, reverse)
+  public getPutables(komaString: string, reverse: boolean = false) {
+    return this.editor.getPutables(komaString, reverse)
   }
 
   public export(): IJSONKifuFormat {
@@ -142,4 +146,4 @@ module.exports = JkfEditor
 // TODO: disp〜()で提供されている情報相当のオブジェクトを返すAPIの作成
 // TODO: 各APIの入力をオブジェクトにする
 // TODO: headerの値を追加するメソッドを追加
-// TODO: 手持ち駒を配置可能な位置の情報を返すメソッドを作成
+// TODO: getKomaMovesに強制成りマスのマークをつける

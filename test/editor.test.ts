@@ -375,7 +375,6 @@ describe('Editor test', () => {
     testManager.go(0)
     expect(testManager.comment).toEqual(null)
     testManager.go(4)
-    console.log(testManager.dispCurrentInfo())
   })
 
   it('同のつく指し手の追加', () => {
@@ -450,7 +449,6 @@ describe('Editor test', () => {
       ]
     ])
     expect(testManager.lastMove.from).toEqual(null)
-    console.log(testManager.dispCurrentInfo())
   })
 
   it('駒の移動範囲の表示', () => {
@@ -471,10 +469,9 @@ describe('Editor test', () => {
     testManager.currentNum--
   })
 
-  it('持ち駒からにない駒による指し手追加', () => {
+  it('持ち駒にない駒による指し手追加', () => {
     testManager = newManager
     testManager.addHandMove('KE', 5, 8)
-    console.log(testManager.dispCurrentInfo())
     expect(console.error).toBeCalled()
     expect(spyLog.mock.calls[1][0]).toEqual('打つ駒が手持ち駒の中にありません。')
   })

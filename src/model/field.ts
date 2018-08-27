@@ -39,12 +39,7 @@ export default class Field {
     color: number = PLAYER.SENTE
   ) {
     this._board = board
-    this._reverseBoard = board
-      .slice()
-      .reverse()
-      .map(boardRow => {
-        return boardRow.slice().reverse()
-      })
+    this._reverseBoard = Util.reverseBoard(board)
     this._hands = hands
     this._color = color
 
@@ -58,12 +53,13 @@ export default class Field {
     if (move.isPut) {
       // 持ち駒から置く手の場合
       const to = move.to as Pos
+      if (!this.isExists(to.ax, to.ay) && this.canSet(to, move.komaNum)) {
+        // 駒を配置する
+        this.setBoardPiece(to, move.boardObj)
 
-      // 駒を配置する
-      this.setBoardPiece(to, move.boardObj)
-
-      // 配置した駒を手駒から減らす
-      this.deleteHand(move.color, move.komaNum)
+        // 配置した駒を手駒から減らす
+        this.deleteHand(move.color, move.komaNum)
+      }
     } else {
       // 盤面の駒を移動する手の場合
       if (move.from && move.to) {
@@ -227,15 +223,15 @@ export default class Field {
    * fromで与えられた駒が移動できる座標候補を返す
    * @param from
    */
-  public getKomaMoves(from: Pos): Pos[] {
-    const movables: Pos[] = []
+  public getKomaMoves(from: Pos): Array<Array<number>> {
+    const boardArray = Util.makeEmptyBoard()
     const komaNum = this._board[from.ay][from.ax].hasOwnProperty('kind')
       ? KomaInfo.komaAtoi(this._board[from.ay][from.ax].kind as string)
       : null
 
     if (!komaNum) {
       // from指定座標に駒がない場合は空配列を返す
-      return movables
+      return boardArray
     }
 
     const color = this._board[from.ay][from.ax].color as number
@@ -255,7 +251,7 @@ export default class Field {
       if (move.type === MOVETYPE.POS) {
         const tmpPos = this.isEnterable(from.x + mx, from.y + my, color)
         if (tmpPos) {
-          movables.push(tmpPos)
+          boardArray[tmpPos.ay][tmpPos.ax] = this.canSet(tmpPos, komaNum) ? 1 : 2
         }
       } else {
         // ベクトル移動の場合は移動不可能になるまでその方向への移動を行い、そのマスが移動先マスと一致する場合は終了する
@@ -273,7 +269,7 @@ export default class Field {
             if (this.isExists(nextPos.ax, nextPos.ay)) {
               stillMovable = false
             }
-            movables.push(nextPos)
+            boardArray[nextPos.ay][nextPos.ax] = this.canSet(nextPos, komaNum) ? 1 : 2
           } else {
             stillMovable = false
           }
@@ -282,30 +278,24 @@ export default class Field {
       }
     })
 
-    return movables
+    return boardArray
   }
 
   /**
    * 次の指し手として動かすことのできる駒の座標を返す
    */
-  public getMovables() {
-    const movables: Pos[] = []
+  public getMovables(): Array<Array<number>> {
+    const boardArray = Util.makeEmptyBoard()
     for (let ky = 1; ky < 10; ky++) {
       for (let kx = 1; kx < 10; kx++) {
         const pos = new Pos(kx, ky)
-        if (this._nomove) {
-          if (this.isMovable(pos) && this._board[pos.ay][pos.ax].color === this._color) {
-            movables.push(pos)
-          }
-        } else {
-          if (this.isMovable(pos) && this._board[pos.ay][pos.ax].color !== this._color) {
-            movables.push(pos)
-          }
+        if (this.isMovable(pos) && this._board[pos.ay][pos.ax].color === this.nextColor) {
+          boardArray[pos.ay][pos.ax] = 1
         }
       }
     }
 
-    return movables
+    return boardArray
   }
 
   /**
@@ -313,40 +303,19 @@ export default class Field {
    *
    * @param putFU
    */
-  public getPutables(putFU: boolean = false) {
-    const putables: Pos[] = []
-    const existCache: { [index: number]: boolean } = {}
-
-    const isFuExists = (ax: number): boolean => {
-      let exists = false
-
-      if (existCache.hasOwnProperty(ax)) {
-        return existCache[ax]
-      }
-
-      for (let ay = 0; ay < 9; ay++) {
-        if (this.isExists(ay, ax) && this._board[ay][ax].kind === KomaInfo.komaItoa(KOMA.FU)) {
-          exists = true
-          ay = 9
-        }
-      }
-      existCache[ax] = exists
-      return exists
-    }
+  public getPutables(komaString: string): Array<Array<number>> {
+    const boardArray = Util.makeEmptyBoard()
 
     for (let ay = 0; ay < 9; ay++) {
       for (let ax = 0; ax < 9; ax++) {
-        if (!this.isExists(ax, ay)) {
-          if (putFU) {
-            if (!isFuExists(ax)) putables.push(Pos.makePosFromIndex(ax, ay))
-          } else {
-            putables.push(Pos.makePosFromIndex(ax, ay))
-          }
+        const pos = Pos.makePosFromIndex(ax, ay)
+        if (!this.isExists(pos.ax, pos.ay) && this.canSet(pos, KomaInfo.komaAtoi(komaString))) {
+          boardArray[pos.ay][pos.ax] = 1
         }
       }
     }
 
-    return putables
+    return boardArray
   }
 
   /**
@@ -388,8 +357,19 @@ export default class Field {
   /**
    * 最後に指したプレイヤーを返す
    */
-  public get color() {
+  public get color(): number {
     return this._color
+  }
+
+  /**
+   * 次に指すプレイヤーを返す
+   */
+  public get nextColor(): number {
+    if (this._nomove) {
+      return this.color
+    } else {
+      return Util.oppoPlayer(this.color)
+    }
   }
 
   /**
@@ -455,11 +435,15 @@ export default class Field {
       const komaString = KomaInfo.getJKFString(komaNum)
       if (this._hands[player].hasOwnProperty(komaString)) {
         this._hands[player][komaString]--
+        if (!this._hands[player][komaString]) {
+          // 駒数が0になった場合はプロパティを削除
+          delete this._hands[player][komaString]
+        }
       } else {
-        throw new Error('指定された駒番号の駒が手駒にありません。')
+        console.error('指定された駒番号の駒が手駒にありません。')
       }
     } else {
-      throw new Error('指定されたプレイヤーの値が想定しない値です。')
+      console.error('指定されたプレイヤーの値が想定しない値です。')
     }
   }
 
@@ -497,5 +481,47 @@ export default class Field {
     } else {
       return false
     }
+  }
+
+  /**
+   * 指定位置にその指定種類の駒を配置したとき、移動可能なマスが存在するかどうかを返す
+   *
+   * @param pos
+   * @param komaNum
+   * @param color
+   */
+  private canSet(pos: Pos, komaNum: number): boolean {
+    // getKomaMovesとgetPutablesで利用する
+    const komaMoves = KomaInfo.getMoves(komaNum)
+
+    const settable = komaMoves.some(move => {
+      let mx = move.x
+      let my = move.y
+
+      if (this.nextColor === PLAYER.SENTE) {
+        my *= -1
+      } else {
+        mx *= -1
+      }
+
+      if (Pos.inRange(pos.x + mx, pos.y + my)) {
+        if (komaNum !== KOMA.FU) {
+          // 移動タイプにかかわらずx,yで判定すればよい
+          return true
+        } else {
+          // 歩の場合二歩判定
+          for (let ay = 0; ay < 9; ay++) {
+            if (ay != pos.ay && this._board[ay][pos.ax].kind === KomaInfo.komaItoa(KOMA.FU)) {
+              return false
+            }
+          }
+          return true
+        }
+      }
+
+      return false
+    })
+
+    return settable
   }
 }

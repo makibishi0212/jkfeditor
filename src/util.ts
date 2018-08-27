@@ -25,4 +25,13 @@ export default class Util {
 
     return boardArray
   }
+
+  public static reverseBoard(board: Array<Array<any>>) {
+    return board
+      .slice()
+      .reverse()
+      .map(boardRow => {
+        return boardRow.slice().reverse()
+      })
+  }
 }

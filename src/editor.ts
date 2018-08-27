@@ -465,48 +465,24 @@ export default class Editor {
     fromY: number,
     reverse: boolean = false
   ): Array<Array<number>> {
-    const boardArray = Util.makeEmptyBoard()
+    const boardArray = this._field.getKomaMoves(new Pos(fromX, fromY))
 
-    this._field.getKomaMoves(new Pos(fromX, fromY)).forEach(pos => {
-      boardArray[pos.ay][pos.ax] = 1
-    })
-
-    return reverse
-      ? boardArray.reverse().map(boardRow => {
-          return boardRow.reverse()
-        })
-      : boardArray
+    return reverse ? Util.reverseBoard(boardArray) : boardArray
   }
 
   /**
    * 移動可能な駒の座標を返す
    */
   public getMovables(reverse: boolean = false) {
-    const boardArray = Util.makeEmptyBoard()
+    const boardArray = this._field.getMovables()
 
-    this._field.getMovables().forEach(pos => {
-      boardArray[pos.ay][pos.ax] = 1
-    })
-
-    return reverse
-      ? boardArray.reverse().map(boardRow => {
-          return boardRow.reverse()
-        })
-      : boardArray
+    return reverse ? Util.reverseBoard(boardArray) : boardArray
   }
 
-  public getPutables(putFU: boolean = false, reverse: boolean = false) {
-    const boardArray = Util.makeEmptyBoard()
+  public getPutables(komaString: string, reverse: boolean = false) {
+    const boardArray = this._field.getPutables(komaString)
 
-    this._field.getPutables(putFU).forEach(pos => {
-      boardArray[pos.ay][pos.ax] = 1
-    })
-
-    return reverse
-      ? boardArray.reverse().map(boardRow => {
-          return boardRow.reverse()
-        })
-      : boardArray
+    return reverse ? Util.reverseBoard(boardArray) : boardArray
   }
 
   /**
