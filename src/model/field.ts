@@ -247,7 +247,7 @@ export default class Field {
       if (move.type === MOVETYPE.POS) {
         const tmpPos = this.isEnterable(from.x + mx, from.y + my, color)
         if (tmpPos) {
-          boardArray[tmpPos.ay][tmpPos.ax] = this.canSet(tmpPos, komaNum, color) ? 1 : 2
+          boardArray[tmpPos.ay][tmpPos.ax] = this.canSet(tmpPos, komaNum, color, false) ? 1 : 2
         }
       } else {
         // ベクトル移動の場合は移動不可能になるまでその方向への移動を行い、そのマスが移動先マスと一致する場合は終了する
@@ -265,7 +265,7 @@ export default class Field {
             if (this.isExists(nextPos.ax, nextPos.ay)) {
               stillMovable = false
             }
-            boardArray[nextPos.ay][nextPos.ax] = this.canSet(nextPos, komaNum, color) ? 1 : 2
+            boardArray[nextPos.ay][nextPos.ax] = this.canSet(nextPos, komaNum, color, false) ? 1 : 2
           } else {
             stillMovable = false
           }
@@ -498,8 +498,9 @@ export default class Field {
    *
    * @param pos
    * @param komaNum
+   * @param nifu 二歩判定を行うかどうか
    */
-  private canSet(pos: Pos, komaNum: number, color: number): boolean {
+  private canSet(pos: Pos, komaNum: number, color: number, nifu: boolean = true): boolean {
     // getKomaMovesとgetPutablesで利用する
     const komaMoves = KomaInfo.getMoves(komaNum)
 
@@ -519,9 +520,11 @@ export default class Field {
           return true
         } else {
           // 歩の場合二歩判定
-          for (let ay = 0; ay < 9; ay++) {
-            if (ay !== pos.ay && this._board[ay][pos.ax].kind === KomaInfo.komaItoa(KOMA.FU)) {
-              return false
+          if (nifu) {
+            for (let ay = 0; ay < 9; ay++) {
+              if (ay !== pos.ay && this._board[ay][pos.ax].kind === KomaInfo.komaItoa(KOMA.FU)) {
+                return false
+              }
             }
           }
           return true

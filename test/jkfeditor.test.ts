@@ -531,6 +531,17 @@ describe('Shogi-manger test', () => {
     testManager.currentNum++
     testManager.addBoardMove(5, 1, 4, 2)
     testManager.currentNum++
+    expect(testManager.getKomaMoves(7, 4)).toEqual([
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 1, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0]
+    ])
     testManager.addBoardMove(7, 4, 7, 3)
     testManager.currentNum++
     testManager.addBoardMove(9, 1, 9, 2)
@@ -569,7 +580,6 @@ describe('Shogi-manger test', () => {
     testManager.currentNum++
     testManager.addBoardMove(7, 2, 8, 2)
     testManager.currentNum++
-    console.log(testManager.dispCurrentInfo())
     expect(testManager.getBoardPiece(8, 2)).toEqual({ color: 1, kind: 'HI' })
     expect(testManager.getPutables('KY')).toEqual([
       [0, 0, 0, 0, 0, 0, 0, 0, 0],
