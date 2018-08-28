@@ -394,6 +394,17 @@ export default class Field {
   }
 
   /**
+   * 盤面の指定座標の盤面情報を返す
+   *
+   * @param kx
+   * @param ky
+   */
+  public getBoardPiece(kx: number, ky: number): IPiece {
+    const pos = new Pos(kx, ky)
+    return this._board[pos.ay][pos.ax]
+  }
+
+  /**
    * 盤面の指定座標に盤面情報で指定された駒を配置する
    *
    * @param pos

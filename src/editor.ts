@@ -125,6 +125,16 @@ export default class Editor {
   }
 
   /**
+   * 現在の盤面の駒を取得する
+   *
+   * @param kx 盤面のX座標 7六歩の7
+   * @param ky 盤面のY座標 7六歩の六
+   */
+  public getBoardPiece(x: number, y: number): IPiece {
+    return this._field.getBoardPiece(x, y)
+  }
+
+  /**
    * 現在の指し手にコメントを追加する
    * @param comment
    */
@@ -165,18 +175,6 @@ export default class Editor {
     jkfObj.moves = this.moveData.exportJkfMoves()
 
     return jkfObj
-  }
-
-  /**
-   * 現在の盤面の駒を取得する
-   *
-   * @param kx 盤面のX座標 7六歩の7
-   * @param ky 盤面のY座標 7六歩の六
-   */
-  public getBoardPiece(kx: number, ky: number): IPiece {
-    const pos = new Pos(kx, ky)
-
-    return this._field.board[pos.ay][pos.ax]
   }
 
   /**

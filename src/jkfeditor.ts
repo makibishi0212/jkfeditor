@@ -101,6 +101,10 @@ export default class JkfEditor {
     this.editor.addHandMove(komaString, toX, toY, comment)
   }
 
+  public getBoardPiece(x: number, y: number) {
+    return this.editor.getBoardPiece(x, y)
+  }
+
   public addComment(comment: string) {
     this.editor.addComment(comment)
   }
@@ -146,4 +150,4 @@ module.exports = JkfEditor
 // TODO: disp〜()で提供されている情報相当のオブジェクトを返すAPIの作成
 // TODO: 各APIの入力をオブジェクトにする
 // TODO: headerの値を追加するメソッドを追加
-// TODO: getKomaMovesに強制成りマスのマークをつける
+// TODO: getKomaMovesのinputは棋譜座標にする

@@ -565,6 +565,7 @@ describe('Shogi-manger test', () => {
     testManager.addBoardMove(7, 2, 8, 2)
     testManager.currentNum++
     console.log(testManager.dispCurrentInfo())
+    expect(testManager.getBoardPiece(8, 2)).toEqual({ color: 1, kind: 'HI' })
     expect(testManager.getPutables('KY')).toEqual([
       [0, 0, 0, 0, 0, 0, 0, 0, 0],
       [0, 0, 1, 1, 1, 1, 0, 1, 1],

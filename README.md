@@ -80,6 +80,15 @@ jkfeditor.go(2)
 jkfeditor.currentNum = 2
 ```
 
+**JkfEditor.getBoardPiece(kx, ky):Object**
+
+| Argument | Type | Required | Description |
+|:--:|:--:|:--:|:--:|
+| x | number | Yes | 対象駒のX座標。☗7六歩における「7」の部分。 |
+| y | number | Yes | 対象駒のY座標。☗7六歩における「六」の部分。 |
+
+指定座標の配置駒情報をjkfフォーマットで定められた形式で返す。
+
 **JkfEditor.getKomaMoves(fromX, fromY, reverse?):number[][]**
 
 | Argument | Type | Required | Description |

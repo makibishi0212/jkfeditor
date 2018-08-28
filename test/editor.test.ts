@@ -478,9 +478,9 @@ describe('Editor test', () => {
 
   it('指し手の削除', () => {
     testManager = newManager
-    console.log(testManager.dispCurrentInfo())
+    expect(testManager.moves.length).toBe(8)
     testManager.deleteMove()
-    console.log(testManager.dispCurrentInfo())
+    expect(testManager.moves.length).toBe(6)
   })
 
   it('分岐指し手の入れ替え', () => {
@@ -505,9 +505,7 @@ describe('Editor test', () => {
         }
       })
     ])
-    console.log(testManager.dispNextMoves())
     testManager.swapFork(0, 1)
-    console.log(testManager.dispNextMoves())
   })
 
   it('分岐指し手の削除', () => {
