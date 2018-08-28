@@ -1,6 +1,6 @@
 import JkfEditor from '../src/jkfeditor'
 import KomaInfo from '../src/const/komaInfo'
-import { BOARD } from '../src/const/const'
+import { BOARD, PLAYER } from '../src/const/const'
 import Move from '../src/model/move'
 import MoveData from '../src/moveData'
 import Util from '../src/util'
@@ -247,6 +247,7 @@ describe('Shogi-manger test', () => {
     testManager = newManager
     testManager.addBoardMove(7, 7, 7, 6)
     testManager.currentNum++
+    expect(testManager.lastMove.color).toEqual(PLAYER.SENTE)
     expect(testManager.lastMove).toEqual(
       new MoveData(
         new Move({
@@ -262,6 +263,7 @@ describe('Shogi-manger test', () => {
 
     testManager.addBoardMove(3, 3, 3, 4)
     testManager.currentNum++
+    expect(testManager.lastMove.color).toEqual(PLAYER.GOTE)
     expect(testManager.lastMove).toEqual(
       new MoveData(
         new Move({
@@ -361,6 +363,7 @@ describe('Shogi-manger test', () => {
 
     testManager.addBoardMove(7, 6, 7, 5)
     testManager.currentNum++
+    expect(testManager.lastMove.color).toEqual(PLAYER.SENTE)
 
     expect(testManager.lastMove.piece).toEqual('FU')
     expect(testManager.lastMove.color).toEqual(0)
@@ -373,6 +376,7 @@ describe('Shogi-manger test', () => {
 
     testManager.addBoardMove(2, 2, 8, 8, true)
     testManager.currentNum++
+    expect(testManager.lastMove.color).toEqual(PLAYER.GOTE)
     expect(testManager.lastMove).toEqual(
       new MoveData(
         new Move({
@@ -390,6 +394,7 @@ describe('Shogi-manger test', () => {
 
     testManager.addBoardMove(7, 9, 8, 8)
     testManager.currentNum++
+    expect(testManager.lastMove.color).toEqual(PLAYER.SENTE)
     expect(testManager.lastMove.piece).toEqual('GI')
     expect(testManager.lastMove.capture).toEqual('KA')
     expect(testManager.lastMove.pureCapture).toEqual('UM')

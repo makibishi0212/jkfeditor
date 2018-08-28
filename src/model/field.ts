@@ -53,7 +53,7 @@ export default class Field {
     if (move.isPut) {
       // 持ち駒から置く手の場合
       const to = move.to as Pos
-      if (!this.isExists(to.ax, to.ay) && this.canSet(to, move.komaNum)) {
+      if (!this.isExists(to.ax, to.ay) && this.canSet(to, move.komaNum, this.nextColor)) {
         // 駒を配置する
         this.setBoardPiece(to, move.boardObj)
 
@@ -90,9 +90,7 @@ export default class Field {
 
     this._nomove = move.noMove
 
-    if (move.color) {
-      this._color = move.color
-    }
+    this._color = move.color
   }
 
   // 現在の盤面に対して直前に適用されていた指し手情報を元に、適用前の状態に巻き戻す
@@ -126,7 +124,7 @@ export default class Field {
 
           // 取っていた駒を盤面に配置する
           this.setBoardPiece(to, {
-            color: move.color === PLAYER.SENTE ? PLAYER.GOTE : PLAYER.SENTE,
+            color: Util.oppoPlayer(move.color),
             kind: KomaInfo.getJKFString(capture)
           })
 
@@ -141,9 +139,7 @@ export default class Field {
 
     this._nomove = move.noMove
 
-    if (move.color) {
-      this._color = move.color
-    }
+    this._color = move.color
   }
 
   /**
@@ -251,7 +247,7 @@ export default class Field {
       if (move.type === MOVETYPE.POS) {
         const tmpPos = this.isEnterable(from.x + mx, from.y + my, color)
         if (tmpPos) {
-          boardArray[tmpPos.ay][tmpPos.ax] = this.canSet(tmpPos, komaNum) ? 1 : 2
+          boardArray[tmpPos.ay][tmpPos.ax] = this.canSet(tmpPos, komaNum, color) ? 1 : 2
         }
       } else {
         // ベクトル移動の場合は移動不可能になるまでその方向への移動を行い、そのマスが移動先マスと一致する場合は終了する
@@ -269,7 +265,7 @@ export default class Field {
             if (this.isExists(nextPos.ax, nextPos.ay)) {
               stillMovable = false
             }
-            boardArray[nextPos.ay][nextPos.ax] = this.canSet(nextPos, komaNum) ? 1 : 2
+            boardArray[nextPos.ay][nextPos.ax] = this.canSet(nextPos, komaNum, color) ? 1 : 2
           } else {
             stillMovable = false
           }
@@ -309,7 +305,10 @@ export default class Field {
     for (let ay = 0; ay < 9; ay++) {
       for (let ax = 0; ax < 9; ax++) {
         const pos = Pos.makePosFromIndex(ax, ay)
-        if (!this.isExists(pos.ax, pos.ay) && this.canSet(pos, KomaInfo.komaAtoi(komaString))) {
+        if (
+          !this.isExists(pos.ax, pos.ay) &&
+          this.canSet(pos, KomaInfo.komaAtoi(komaString), this.nextColor)
+        ) {
           boardArray[pos.ay][pos.ax] = 1
         }
       }
@@ -499,9 +498,8 @@ export default class Field {
    *
    * @param pos
    * @param komaNum
-   * @param color
    */
-  private canSet(pos: Pos, komaNum: number): boolean {
+  private canSet(pos: Pos, komaNum: number, color: number): boolean {
     // getKomaMovesとgetPutablesで利用する
     const komaMoves = KomaInfo.getMoves(komaNum)
 
@@ -509,7 +507,7 @@ export default class Field {
       let mx = move.x
       let my = move.y
 
-      if (this.nextColor === PLAYER.SENTE) {
+      if (color === PLAYER.SENTE) {
         my *= -1
       } else {
         mx *= -1

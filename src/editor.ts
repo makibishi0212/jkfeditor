@@ -667,11 +667,7 @@ export default class Editor {
     // 前の指し手(現在の盤面になる前に最後に適用した指し手)を取得
 
     // 手番のプレイヤーを取得(未定義の場合初期盤面)
-    const color = this.lastMove.noMove
-      ? this.lastMove.color
-      : this.lastMove.color === PLAYER.SENTE
-        ? PLAYER.GOTE
-        : PLAYER.SENTE
+    const color = this.lastMove.noMove ? this.lastMove.color : Util.oppoPlayer(this.lastMove.color)
 
     // komaStringの書式がただしいか判定
 
