@@ -139,7 +139,7 @@ export default class Field {
 
     this._nomove = move.noMove
 
-    this._color = move.color
+    this._color = Util.oppoPlayer(move.color)
   }
 
   /**

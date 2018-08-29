@@ -262,8 +262,6 @@ describe('Editor test', () => {
     testManager = newManager
     testManager.addBoardMove(7, 7, 7, 6)
     testManager.currentNum++
-    console.log(testManager.dispBoard())
-    console.log(testManager.dispKifuMoves())
     expect(testManager.lastMove).toEqual(
       new Move({
         move: {
@@ -277,8 +275,6 @@ describe('Editor test', () => {
 
     testManager.addBoardMove(3, 3, 3, 4)
     testManager.currentNum++
-    console.log(testManager.dispBoard())
-    console.log(testManager.dispKifuMoves())
     expect(testManager.lastMove).toEqual(
       new Move({
         move: {
@@ -302,7 +298,6 @@ describe('Editor test', () => {
         }
       })
     )
-    console.log(testManager.dispCurrentInfo())
 
     testManager.addBoardMove(2, 2, 8, 8)
     testManager.currentNum++
@@ -319,7 +314,6 @@ describe('Editor test', () => {
     )
 
     testManager.currentNum--
-    console.log(testManager.dispNextMoves())
   })
 
   it('moves配列の確認', () => {
@@ -334,11 +328,7 @@ describe('Editor test', () => {
   it('分岐指し手の追加', () => {
     testManager = jkfLoadManager
     testManager.currentNum++
-    console.log(testManager.dispNextMoves())
     testManager.addBoardMove(8, 3, 8, 4)
-    console.log(testManager.dispNextMoves())
-    console.log(testManager.dispCurrentInfo())
-    console.log(testManager.dispKifuMoves())
   })
 
   it('重複した指し手の追加', () => {
@@ -349,6 +339,7 @@ describe('Editor test', () => {
   it('指し手の分岐切り替え', () => {
     testManager = jkfLoadManager
     testManager.switchFork(1)
+    console.log(testManager.dispNextMoves())
     testManager.currentNum++
     expect(testManager.lastMove).toEqual(
       new Move({
@@ -360,7 +351,6 @@ describe('Editor test', () => {
         }
       })
     )
-    console.log(testManager.dispKifuMoves())
   })
 
   it('コメントの追加', () => {

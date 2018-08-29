@@ -57,6 +57,10 @@ export default class JkfEditor {
     })
   }
 
+  public get color(): number {
+    return this.editor.color
+  }
+
   public go(newNum: number) {
     this.editor.go(newNum)
   }

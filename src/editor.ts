@@ -21,9 +21,6 @@ export default class Editor {
   // 指し手番号
   private _currentNum: number = 0
 
-  // 現在盤面において最後に指したプレイヤー
-  private _player: number = PLAYER.SENTE
-
   /** 特定の指し手における盤面などの情報 */
 
   // 現在の盤面情報
@@ -86,8 +83,11 @@ export default class Editor {
     return this.moveData.getNextMoves(this._currentNum)
   }
 
-  public get player(): number {
-    return this._player
+  /**
+   * 最後に指したプレイヤー
+   */
+  public get color(): number {
+    return this._field.color
   }
 
   /**
@@ -217,9 +217,7 @@ export default class Editor {
         }
       }
 
-      if (newNum < this.moveData.currentMoves.length) {
-        this._currentNum = newNum
-      }
+      this._currentNum = newNum
     } else {
       console.error(
         '指定の指し手番号 ' +

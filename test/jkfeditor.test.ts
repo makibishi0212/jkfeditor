@@ -261,6 +261,7 @@ describe('Shogi-manger test', () => {
     testManager.addBoardMove(7, 7, 7, 6)
     testManager.currentNum++
     expect(testManager.lastMove.color).toEqual(PLAYER.SENTE)
+    expect(testManager.color).toEqual(PLAYER.SENTE)
     expect(testManager.lastMove).toEqual(
       new MoveData(
         new Move({
@@ -277,6 +278,7 @@ describe('Shogi-manger test', () => {
     testManager.addBoardMove(3, 3, 3, 4)
     testManager.currentNum++
     expect(testManager.lastMove.color).toEqual(PLAYER.GOTE)
+    expect(testManager.color).toEqual(PLAYER.GOTE)
     expect(testManager.lastMove).toEqual(
       new MoveData(
         new Move({
@@ -377,9 +379,9 @@ describe('Shogi-manger test', () => {
     testManager.addBoardMove(7, 6, 7, 5)
     testManager.currentNum++
     expect(testManager.lastMove.color).toEqual(PLAYER.SENTE)
+    expect(testManager.color).toEqual(PLAYER.SENTE)
 
     expect(testManager.lastMove.piece).toEqual('FU')
-    expect(testManager.lastMove.color).toEqual(0)
     expect(testManager.lastMove.from).toEqual({ x: 7, y: 6 })
     expect(testManager.lastMove.to).toEqual({ x: 7, y: 5 })
     expect(testManager.lastMove.name).toEqual('☗7五歩')
@@ -390,6 +392,7 @@ describe('Shogi-manger test', () => {
     testManager.addBoardMove(2, 2, 8, 8, true)
     testManager.currentNum++
     expect(testManager.lastMove.color).toEqual(PLAYER.GOTE)
+    expect(testManager.color).toEqual(PLAYER.GOTE)
     expect(testManager.lastMove).toEqual(
       new MoveData(
         new Move({
@@ -408,6 +411,7 @@ describe('Shogi-manger test', () => {
     testManager.addBoardMove(7, 9, 8, 8)
     testManager.currentNum++
     expect(testManager.lastMove.color).toEqual(PLAYER.SENTE)
+    expect(testManager.color).toEqual(PLAYER.SENTE)
     expect(testManager.lastMove.piece).toEqual('GI')
     expect(testManager.lastMove.capture).toEqual('KA')
     expect(testManager.lastMove.pureCapture).toEqual('UM')
@@ -489,6 +493,8 @@ describe('Shogi-manger test', () => {
     testManager.addComment('テストコメント2')
     expect(testManager.comment).toEqual(['テストコメント1', 'テストコメント2'])
     expect(testManager.lastMove.comments).toEqual(['テストコメント1', 'テストコメント2'])
+    testManager.resetComment()
+    expect(testManager.comment).toEqual(null)
     testManager.go(0)
     expect(testManager.comment).toEqual(null)
     testManager.go(4)
@@ -500,8 +506,10 @@ describe('Shogi-manger test', () => {
     testManager.switchFork(0)
     testManager.go(testManager.moves.length - 1)
     testManager.addBoardMove(7, 6, 7, 5)
+    expect(testManager.nextMoves[0].name).toEqual('☗7五歩')
     testManager.currentNum++
     testManager.addBoardMove(8, 2, 9, 2)
+    expect(testManager.nextMoves[0].name).toEqual('☖9二飛')
     testManager.currentNum++
     testManager.addBoardMove(7, 5, 7, 4)
     testManager.currentNum++
@@ -625,6 +633,8 @@ describe('Shogi-manger test', () => {
       [0, 0, 1, 0, 0, 0, 1, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0, 0]
     ])
+    console.log(testManager.dispCurrentInfo())
+    expect(testManager.hands).toEqual([{ KA: 1, KY: 1, FU: 1 }, { FU: 1 }])
 
     testManager.addHandMove('FU', 3, 4)
     testManager.currentNum++
@@ -644,5 +654,24 @@ describe('Shogi-manger test', () => {
       [0, 0, 0, 0, 0, 0, 1, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0, 0]
     ])
+  })
+
+  it('colorプロパティ', () => {
+    testManager = jkfLoadManager
+    expect(testManager.color).toBe(PLAYER.GOTE)
+    console.log(testManager.dispCurrentInfo())
+    testManager.currentNum--
+    expect(testManager.color).toBe(PLAYER.SENTE)
+    console.log(testManager.dispCurrentInfo())
+    testManager.currentNum--
+    expect(testManager.color).toBe(PLAYER.GOTE)
+    testManager.go(11)
+    expect(testManager.color).toBe(PLAYER.SENTE)
+    testManager.go(18)
+    expect(testManager.color).toBe(PLAYER.GOTE)
+    testManager.go(23)
+    expect(testManager.color).toBe(PLAYER.SENTE)
+    testManager.go(4)
+    expect(testManager.color).toBe(PLAYER.GOTE)
   })
 })
