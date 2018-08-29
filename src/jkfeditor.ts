@@ -105,6 +105,10 @@ export default class JkfEditor {
     this.editor.addHandMove(komaString, toX, toY, comment)
   }
 
+  public deleteMove(deleteNum: number) {
+    this.editor.deleteMove(deleteNum)
+  }
+
   public getBoardPiece(x: number, y: number) {
     return this.editor.getBoardPiece(x, y)
   }

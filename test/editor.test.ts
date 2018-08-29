@@ -469,7 +469,7 @@ describe('Editor test', () => {
   it('指し手の削除', () => {
     testManager = newManager
     expect(testManager.moves.length).toBe(8)
-    testManager.deleteMove()
+    testManager.deleteMove(testManager.currentNum)
     expect(testManager.moves.length).toBe(6)
   })
 
@@ -547,52 +547,52 @@ describe('Editor test', () => {
     testManager.currentNum++
     expect(testManager.lastMove.name).toBe('☗8八と左上')
 
-    relativeManager.deleteMove()
+    relativeManager.deleteMove(testManager.currentNum)
     relativeManager.addBoardMove(8, 9, 8, 8)
     testManager.currentNum++
     expect(testManager.lastMove.name).toBe('☗8八と直')
 
-    relativeManager.deleteMove()
+    relativeManager.deleteMove(testManager.currentNum)
     relativeManager.addBoardMove(7, 9, 8, 8)
     testManager.currentNum++
     expect(testManager.lastMove.name).toBe('☗8八と右')
 
-    relativeManager.deleteMove()
+    relativeManager.deleteMove(testManager.currentNum)
     relativeManager.addBoardMove(9, 8, 8, 8)
     testManager.currentNum++
     expect(testManager.lastMove.name).toBe('☗8八と寄')
 
-    relativeManager.deleteMove()
+    relativeManager.deleteMove(testManager.currentNum)
     relativeManager.addBoardMove(8, 7, 8, 8)
     testManager.currentNum++
     expect(testManager.lastMove.name).toBe('☗8八と引')
 
-    relativeManager.deleteMove()
+    relativeManager.deleteMove(testManager.currentNum)
     relativeManager.addBoardMove(2, 9, 2, 8)
     testManager.currentNum++
     expect(testManager.lastMove.name).toBe('☗2八銀直')
 
-    relativeManager.deleteMove()
+    relativeManager.deleteMove(testManager.currentNum)
     relativeManager.addBoardMove(1, 7, 2, 8)
     testManager.currentNum++
     expect(testManager.lastMove.name).toBe('☗2八銀右')
 
-    relativeManager.deleteMove()
+    relativeManager.deleteMove(testManager.currentNum)
     relativeManager.addBoardMove(3, 9, 2, 8)
     testManager.currentNum++
     expect(testManager.lastMove.name).toBe('☗2八銀左上')
 
-    relativeManager.deleteMove()
+    relativeManager.deleteMove(testManager.currentNum)
     relativeManager.addBoardMove(3, 7, 2, 8)
     testManager.currentNum++
     expect(testManager.lastMove.name).toBe('☗2八銀左引')
 
-    relativeManager.deleteMove()
+    relativeManager.deleteMove(testManager.currentNum)
     relativeManager.addBoardMove(9, 5, 8, 5)
     testManager.currentNum++
     expect(testManager.lastMove.name).toBe('☗8五馬寄')
 
-    relativeManager.deleteMove()
+    relativeManager.deleteMove(testManager.currentNum)
     relativeManager.addBoardMove(6, 3, 8, 5)
     testManager.currentNum++
     expect(testManager.lastMove.name).toBe('☗8五馬引')

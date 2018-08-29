@@ -325,10 +325,16 @@ export default class Editor {
   /**
    * 現在の指し手を削除する
    */
-  public deleteMove() {
+  public deleteMove(deleteNum: number) {
     if (this.isEditable) {
-      this.currentNum--
-      this.moveData.deleteMove(this.currentNum + 1)
+      if (deleteNum < 1) {
+        console.error('初期盤面は削除できません。')
+      } else {
+        if (this.currentNum <= deleteNum) {
+          this.go(deleteNum - 1)
+        }
+        this.moveData.deleteMove(deleteNum)
+      }
     }
   }
 

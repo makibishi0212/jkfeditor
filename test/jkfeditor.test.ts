@@ -674,4 +674,14 @@ describe('Shogi-manger test', () => {
     testManager.go(4)
     expect(testManager.color).toBe(PLAYER.GOTE)
   })
+
+  it('指し手の削除', () => {
+    testManager = jkfLoadManager
+    testManager.go(15)
+    testManager.deleteMove(15)
+    expect(testManager.currentNum).toBe(14)
+
+    testManager.deleteMove(testManager.currentNum)
+    expect(testManager.currentNum).toBe(13)
+  })
 })

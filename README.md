@@ -240,6 +240,14 @@ console.log(jkfeditor.dispNextMoves())
 | toY | number | Yes | 移動先のY座標。 |
 | comment | string or string[] | No | 指し手に対して付与するコメント。 |
 
+**JkfEditor.deleteMove(deleteNum)**
+
+指定した番号以降の指し手を全て削除する。
+
+| Argument | Type | Required | Description |
+|:--:|:--:|:--:|:--:|
+| deleteNUm | number | Yes | 削除する棋譜番号。 |
+
 **JkfEditor.addComment(comment)**
 
 現在の指し手にコメントを追加する。
