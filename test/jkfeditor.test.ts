@@ -1,6 +1,6 @@
 import JkfEditor from '../src/jkfeditor'
 import KomaInfo from '../src/const/komaInfo'
-import { BOARD, PLAYER } from '../src/const/const'
+import { BOARD, PLAYER, KOMA } from '../src/const/const'
 import Move from '../src/model/move'
 import MoveData from '../src/moveData'
 import Util from '../src/util'
@@ -230,16 +230,29 @@ describe('Shogi-manger test', () => {
     testManager = jkfLoadManager
     testManager.addInfo('dragon', 'ball')
     testManager.addInfo('style', 'USOYAGURA')
+    testManager.deleteInfo('place')
     expect(testManager.header).toEqual({
       proponent_name: '先手善治',
       opponent_name: '後手魔太郎',
       title: 'テスト棋譜',
-      place: '畳',
       start_time: '2003/05/03 10:30:00',
       end_time: '2003/05/03 10:30:00',
       limit_time: '00:25+00',
       style: 'USOYAGURA',
       dragon: 'ball'
+    })
+    testManager.addInfo('place', '石畳')
+    testManager.addInfo('dragon', 'ball Z')
+    expect(testManager.header).toEqual({
+      proponent_name: '先手善治',
+      opponent_name: '後手魔太郎',
+      title: 'テスト棋譜',
+      place: '石畳',
+      start_time: '2003/05/03 10:30:00',
+      end_time: '2003/05/03 10:30:00',
+      limit_time: '00:25+00',
+      style: 'USOYAGURA',
+      dragon: 'ball Z'
     })
   })
 
@@ -496,8 +509,6 @@ describe('Shogi-manger test', () => {
     testManager.currentNum++
     testManager.addBoardMove(7, 4, 7, 3, true)
     testManager.currentNum++
-    console.log(testManager.dispKifuMoves())
-    console.log(testManager.dispCurrentInfo())
     expect(testManager.getPutables('FU')).toEqual([
       [0, 0, 0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -591,6 +602,47 @@ describe('Shogi-manger test', () => {
       [0, 0, 0, 0, 0, 0, 0, 0, 0],
       [1, 1, 1, 1, 1, 1, 1, 0, 1],
       [0, 1, 0, 0, 0, 0, 0, 0, 0]
+    ])
+  })
+
+  it('二歩判定', () => {
+    testManager = jkfLoadManager
+    testManager.addBoardMove(3, 7, 3, 6)
+    testManager.currentNum++
+    testManager.addBoardMove(3, 4, 3, 5)
+    testManager.currentNum++
+    testManager.addBoardMove(3, 6, 3, 5)
+    testManager.currentNum++
+
+    expect(testManager.getPutables('FU')).toEqual([
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 1, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 1, 0, 0, 0, 1, 0, 0],
+      [0, 0, 1, 0, 0, 0, 0, 0, 0],
+      [0, 0, 1, 0, 0, 0, 1, 0, 0],
+      [0, 0, 0, 0, 0, 0, 1, 0, 0],
+      [0, 0, 1, 0, 0, 0, 1, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0]
+    ])
+
+    testManager.addHandMove('FU', 3, 4)
+    testManager.currentNum++
+    testManager.addBoardMove(5, 9, 6, 8)
+    testManager.currentNum++
+    testManager.addBoardMove(3, 4, 3, 5)
+    testManager.currentNum++
+
+    expect(testManager.getPutables('FU')).toEqual([
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 1, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 1, 0, 0],
+      [0, 0, 0, 0, 0, 0, 1, 0, 0],
+      [0, 0, 0, 0, 0, 0, 1, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0]
     ])
   })
 })

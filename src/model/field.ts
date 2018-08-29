@@ -498,6 +498,7 @@ export default class Field {
    *
    * @param pos
    * @param komaNum
+   * @param color
    * @param nifu 二歩判定を行うかどうか
    */
   private canSet(pos: Pos, komaNum: number, color: number, nifu: boolean = true): boolean {
@@ -522,7 +523,11 @@ export default class Field {
           // 歩の場合二歩判定
           if (nifu) {
             for (let ay = 0; ay < 9; ay++) {
-              if (ay !== pos.ay && this._board[ay][pos.ax].kind === KomaInfo.komaItoa(KOMA.FU)) {
+              if (
+                ay !== pos.ay &&
+                this._board[ay][pos.ax].kind === KomaInfo.komaItoa(KOMA.FU) &&
+                this._board[ay][pos.ax].color === color
+              ) {
                 return false
               }
             }

@@ -140,14 +140,14 @@ export default class JkfEditor {
   public addInfo(key: string, value: string) {
     this.editor.addInfo(key, value)
   }
+
+  public deleteInfo(key: string) {
+    this.editor.deleteInfo(key)
+  }
 }
 
 module.exports = JkfEditor
 
 // 次の実装
-// TODO: 削除・リセットのAPIを追加する
-// TODO: 型定義ファイルに含まれるprivate変数を除去する
 // TODO: disp〜()で提供されている情報相当のオブジェクトを返すAPIの作成
-// TODO: 各APIの入力をオブジェクトにする
 // TODO: headerの値を追加するメソッドを追加
-// TODO: getKomaMovesのinputは棋譜座標にする

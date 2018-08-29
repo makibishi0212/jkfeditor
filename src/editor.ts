@@ -328,11 +328,9 @@ export default class Editor {
    * 現在の指し手を削除する
    */
   public deleteMove() {
-    if (!this.readonly) {
+    if (this.isEditable) {
       this.currentNum--
       this.moveData.deleteMove(this.currentNum + 1)
-    } else {
-      console.error('この棋譜は読み取り専用です。')
     }
   }
 
@@ -347,7 +345,7 @@ export default class Editor {
     moveInfoObj: IMoveMoveFormat,
     comment: Array<string> | string | null = null
   ) {
-    if (!this.readonly) {
+    if (this.isEditable) {
       let moveObj: IMoveFormat
       if (typeof comment === 'string') {
         moveObj = { move: moveInfoObj, comments: [comment] }
@@ -394,8 +392,6 @@ export default class Editor {
 
       // 指し手を追加する
       this.moveData.addMove(this._currentNum, moveObj)
-    } else {
-      console.error('この棋譜は読み取り専用です。')
     }
   }
 
@@ -521,14 +517,12 @@ export default class Editor {
    * @param forkIndex
    */
   public deleteFork(forkIndex: number) {
-    if (!this.readonly) {
+    if (this.isEditable) {
       if (this.isFork) {
         this.moveData.deleteFork(this.currentNum, forkIndex)
       } else {
         console.log('現在の指し手は分岐を持っていません。')
       }
-    } else {
-      console.error('この棋譜は読み取り専用です。')
     }
   }
 
@@ -539,14 +533,12 @@ export default class Editor {
    * @param forkIndex2
    */
   public swapFork(forkIndex1: number, forkIndex2: number) {
-    if (!this.readonly) {
+    if (this.isEditable) {
       if (this.isFork) {
         this.moveData.swapFork(this.currentNum, forkIndex1, forkIndex2)
       } else {
         console.log('現在の指し手は分岐を持っていません。')
       }
-    } else {
-      console.error('この棋譜は読み取り専用です。')
     }
   }
 
@@ -557,10 +549,18 @@ export default class Editor {
    * @param value
    */
   public addInfo(key: string, value: string) {
-    if (!this.readonly) {
+    if (this.isEditable) {
       this._header[key] = value
-    } else {
-      console.error('この棋譜は読み取り専用です。')
+    }
+  }
+
+  /**
+   * jkfヘッダーの指定パラメータを削除する
+   * @param key
+   */
+  public deleteInfo(key: string) {
+    if (this.isEditable) {
+      delete this._header[key]
     }
   }
 
@@ -643,6 +643,15 @@ export default class Editor {
 
     if (jkf.hasOwnProperty('header')) {
       this._header = jkf['header']
+    }
+  }
+
+  private isEditable() {
+    if (this.readonly) {
+      console.error('この棋譜は読み取り専用です。')
+      return false
+    } else {
+      return true
     }
   }
 

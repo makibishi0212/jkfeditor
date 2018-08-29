@@ -254,12 +254,20 @@ console.log(jkfeditor.dispNextMoves())
 
 **JkfEditor.addInfo(key, value)**
 
-現在編集中の棋譜にヘッダー情報を追加する。
+編集中の棋譜にヘッダー情報を追加する。
 
 | Argument | Type | Required | Description |
 |:--:|:--:|:--:|:--:|
 | key | string | Yes | キーの文字列。 |
 | value | string | Yes | 値の文字列。 |
+
+**JkfEditor.deleteInfo(key)**
+
+編集中の棋譜の指定したキーのヘッダー情報を削除する。
+
+| Argument | Type | Required | Description |
+|:--:|:--:|:--:|:--:|
+| key | string | Yes | キーの文字列。 |
 
 ***
 
