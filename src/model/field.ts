@@ -430,7 +430,7 @@ export default class Field {
         this._hands[player][komaString] = 1
       }
     } else {
-      throw new Error('指定されたプレイヤーの値が想定しない値です。')
+      console.error('指定されたプレイヤーの値が想定しない値です。')
     }
   }
 

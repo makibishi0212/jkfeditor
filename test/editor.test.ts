@@ -367,6 +367,12 @@ describe('Editor test', () => {
     testManager.go(4)
   })
 
+  it('分岐不可の指し手のエラー表記', () => {
+    testManager = newManager
+    testManager.switchFork(100)
+    expect(spyLog.mock.calls[1][0]).toEqual('現在の指し手は分岐を持っていません。')
+  })
+
   it('同のつく指し手の追加', () => {
     testManager = newManager
     testManager.addBoardMove(7, 9, 8, 8)
@@ -463,7 +469,7 @@ describe('Editor test', () => {
     testManager = newManager
     testManager.addHandMove('KE', 5, 8)
     expect(console.error).toBeCalled()
-    expect(spyLog.mock.calls[1][0]).toEqual('打つ駒が手持ち駒の中にありません。')
+    expect(spyLog.mock.calls[2][0]).toEqual('打つ駒が手持ち駒の中にありません。')
   })
 
   it('指し手の削除', () => {
@@ -504,6 +510,8 @@ describe('Editor test', () => {
     expect(testManager.nextMoves).toEqual([
       new Move({ move: { color: 1, from: { x: 8, y: 2 }, piece: 'HI', to: { x: 2, y: 2 } } })
     ])
+    testManager.deleteFork(0)
+    expect(spyLog.mock.calls[3][0]).toEqual('現在の指し手は分岐を持っていません。')
   })
 
   it('反転盤面', () => {

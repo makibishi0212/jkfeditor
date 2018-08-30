@@ -484,5 +484,8 @@ describe('Field class test', () => {
         { color: 0, kind: 'KY' }
       ]
     ])
+
+    hirateField.rewindMove(new Move(normalMoveObj2))
+    expect(hirateField.board).toEqual(hirateBoard)
   })
 })

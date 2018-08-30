@@ -511,7 +511,7 @@ export default class Editor {
     if (this.isFork) {
       this.moveData.switchFork(this.currentNum, forkIndex)
     } else {
-      console.log('現在の指し手は分岐をもっていません。')
+      console.error('現在の指し手は分岐を持っていません。')
     }
   }
 
@@ -525,7 +525,7 @@ export default class Editor {
       if (this.isFork) {
         this.moveData.deleteFork(this.currentNum, forkIndex)
       } else {
-        console.log('現在の指し手は分岐を持っていません。')
+        console.error('現在の指し手は分岐を持っていません。')
       }
     }
   }
@@ -785,12 +785,6 @@ export default class Editor {
         // 一番右ならtrue
         let isRight = true
 
-        // 一番上ならtrue
-        let isUp = true
-
-        // 一番下ならtrue
-        let isDown = true
-
         const fromPos = new Pos(fromX, fromY)
 
         rivals.forEach((pos: Pos) => {
@@ -803,11 +797,7 @@ export default class Editor {
               onlyX = false
             }
 
-            if (pos.y < fromPos.y) {
-              isDown = false
-            } else if (pos.y > fromPos.y) {
-              isUp = false
-            } else {
+            if (pos.y === fromPos.y) {
               onlyY = false
             }
           } else {
@@ -820,21 +810,11 @@ export default class Editor {
               onlyX = false
             }
 
-            if (pos.y < fromPos.y) {
-              isUp = false
-            } else if (pos.y > fromPos.y) {
-              isDown = false
-            } else {
+            if (pos.y === fromPos.y) {
               onlyY = false
             }
           }
         })
-
-        // 全てが横並びならtrue
-        let sideBySide = isUp && isDown ? true : false
-
-        // 全てが縦並びならtrue
-        let tandem = isLeft && isRight ? true : false
 
         // 右、左、直
         let XrelStr: string = ''
@@ -857,7 +837,6 @@ export default class Editor {
           }
         }
 
-        // ここの条件が違う
         if (fromY > toY) {
           YrelStr = 'U'
 
@@ -870,24 +849,14 @@ export default class Editor {
           YrelStr = 'M'
         }
 
-        if (sideBySide && tandem) {
-          throw new Error('相対情報の判定エラー')
-        } else if (sideBySide && !tandem) {
+        if (onlyX && onlyY) {
+          moveInfoObj.relative = YrelStr
+        } else if (onlyX && !onlyY) {
           moveInfoObj.relative = XrelStr
-        } else if (!sideBySide && tandem) {
+        } else if (!onlyX && onlyY) {
           moveInfoObj.relative = YrelStr
         } else {
-          // !sideBySide && !tandemの場合
-
-          if (onlyX && onlyY) {
-            moveInfoObj.relative = YrelStr
-          } else if (onlyX && !onlyY) {
-            moveInfoObj.relative = XrelStr
-          } else if (!onlyX && onlyY) {
-            moveInfoObj.relative = YrelStr
-          } else {
-            moveInfoObj.relative = XrelStr + YrelStr
-          }
+          moveInfoObj.relative = XrelStr + YrelStr
         }
       } else {
         // 持ち駒から置く場合は「打」のみで終了

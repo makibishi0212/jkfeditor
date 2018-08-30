@@ -90,12 +90,12 @@ export default class MoveList {
       if (typeof deleteIndex === 'number') {
         this._moveNodes[this._currentMoveNodes[moveNum].index].deleteNext(deleteIndex)
       } else {
-        throw new Error('削除対象の分岐が存在しません。')
+        console.error('削除対象の分岐が存在しません。')
       }
 
       this.makeCurrentMoveArray()
     } else {
-      throw new Error('指し手が見つかりません。')
+      console.error('指し手が見つかりません。')
     }
   }
 
@@ -163,24 +163,6 @@ export default class MoveList {
     }
 
     return moves
-  }
-
-  private makeTreeString(node: MoveNode, hierarchy: number, kifuNum: number) {
-    let kifuTreeString = ''
-    let tmpNode: MoveNode = node
-
-    kifuTreeString += ' '.repeat(hierarchy)
-    kifuTreeString += kifuNum + ': ' + tmpNode.info.name + '\n'
-
-    tmpNode.next.reverse().forEach((nextNum, index) => {
-      kifuTreeString += this.makeTreeString(
-        this._moveNodes[nextNum],
-        hierarchy + index,
-        kifuNum + 1
-      )
-    })
-
-    return kifuTreeString
   }
 
   // json棋譜フォーマットの指し手情報配列から指し手セル配列を作成する

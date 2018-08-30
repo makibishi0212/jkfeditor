@@ -182,6 +182,9 @@ describe('Shogi-manger test', () => {
       [0, 0, 0, 0, 0, 0, 0, 1, 0],
       [1, 0, 1, 1, 1, 1, 1, 0, 1]
     ])
+
+    expect(testManager.lastMove.name).toBe('初期局面')
+    expect(testManager.lastMove.to).toBeNull()
   })
 
   it('jkfLoadManagerが正常に初期化されている', () => {

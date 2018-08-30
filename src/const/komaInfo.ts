@@ -1058,9 +1058,6 @@ export default class KomaInfo {
     let komaType: number = 0
 
     switch (komaString) {
-      case '*':
-        komaType = KOMA.NONE
-        break
       case 'FU':
         komaType = KOMA.FU
         break
