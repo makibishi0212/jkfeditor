@@ -83,6 +83,10 @@ export default class Editor {
     return this.moveData.getNextMoves(this._currentNum)
   }
 
+  public get nextSelect(): number {
+    return this.moveData.getNextSelect(this._currentNum)
+  }
+
   /**
    * 最後に指したプレイヤー
    */

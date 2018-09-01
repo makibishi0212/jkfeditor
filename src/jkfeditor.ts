@@ -57,6 +57,10 @@ export default class JkfEditor {
     })
   }
 
+  public get nextSelect(): number {
+    return this.editor.nextSelect
+  }
+
   public get color(): number {
     return this.editor.color
   }

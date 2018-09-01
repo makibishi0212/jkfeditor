@@ -463,7 +463,9 @@ describe('Shogi-manger test', () => {
 
   it('指し手の分岐切り替え', () => {
     testManager = jkfLoadManager
+    expect(testManager.nextSelect).toBe(0)
     testManager.switchFork(1)
+    expect(testManager.nextSelect).toBe(1)
     testManager.currentNum++
     expect(testManager.lastMove).toEqual(
       new MoveData(

@@ -82,14 +82,17 @@ jkfeditor.currentNum = 2
 
 **JkfEditor.getBoardPiece(kx, ky):Object**
 
+指定座標の配置駒情報をjkfフォーマットで定められた形式で返す。
+
 | Argument | Type | Required | Description |
 |:--:|:--:|:--:|:--:|
 | x | number | Yes | 対象駒のX座標。☗7六歩における「7」の部分。 |
 | y | number | Yes | 対象駒のY座標。☗7六歩における「六」の部分。 |
 
-指定座標の配置駒情報をjkfフォーマットで定められた形式で返す。
-
 **JkfEditor.getKomaMoves(fromX, fromY, reverse?):number[][]**
+
+fromX,fromYで指定した位置の駒の移動可能座標の情報を返す。
+座標情報は下記のように、移動可能座標を1、移動可能だが成る必要がある座標を2、他を0とした2次元配列で返される。
 
 | Argument | Type | Required | Description |
 |:--:|:--:|:--:|:--:|
@@ -97,8 +100,6 @@ jkfeditor.currentNum = 2
 | fromY | number | Yes | 対象駒のY座標。☗7六歩における「六」の部分。 |
 | reverse | boolean | No | trueの場合、盤面を反転した状態で情報を返す。 |
 
-fromX,fromYで指定した位置の駒の移動可能座標の情報を返す。
-座標情報は以下のように、移動可能座標を1、移動可能だが成る必要がある座標を2、他を0とした2次元配列で返されます。
 ```
 [0, 0, 0, 0, 0, 0, 0, 0, 0],
 [0, 0, 0, 0, 0, 0, 0, 1, 0],
@@ -123,19 +124,20 @@ fromX,fromYで指定した位置の駒の移動可能座標の情報を返す。
 
 **JkfEditor.getMovables(reverse?):number[][]**
 
+移動させることができる駒の座標を、移動可能座標を1、他を0とした2次元配列で返す。
+
 | Argument | Type | Required | Description |
 |:--:|:--:|:--:|:--:|
 | reverse | boolean | No | trueの場合、盤面を反転した状態で情報を返す。 |
 
 **JkfEditor.getPutables(komaString,reverse?):number[][]**
 
+現在の盤面に指定の駒を持ち駒から配置することが可能な座標の情報を返す。
+
 | Argument | Type | Required | Description |
 |:--:|:--:|:--:|:--:|
 | komaString | boolean | Yes | json棋譜フォーマットで定義された配置する駒名。 |
 | reverse | boolean | No | trueの場合、盤面を反転した状態で情報を返す。 |
-
-
-現在の盤面に指定の駒を持ち駒から配置することが可能な座標の情報を返す。
 
 **JkfEditor.haveFork(num):boolean**
 
@@ -145,6 +147,7 @@ fromX,fromYで指定した位置の駒の移動可能座標の情報を返す。
 
 その指し手番号が次の指し手候補を複数もつ場合はtrue, そうでない場合はfalseを返す。
 
+***
 
 現在の盤面情報は以下のプロパティで取得できます。
 
@@ -156,8 +159,11 @@ fromX,fromYで指定した位置の駒の移動可能座標の情報を返す。
 | JkfEditor.hands | Object[] | 現在の各プレイヤーの持ち駒。jkfフォーマットで定められた表現で返します。 |
 | JkfEditor.comment | string[] | 現在の指し手におけるコメント。 |
 | JkfEditor.isFork | boolean | 現在の盤面が指し手分岐をもつかどうか。 |
+| JkfEditor.nextSelect | number | 現在選択中の次の指し手のインデックス。後述のswitchForkメソッドで変更することができます。 |
 | JkfEditor.color | number | 現在の盤面において最後に指したプレイヤーの番号。 |
 | JkfEditor.header | Object | 棋譜のヘッダー情報。 |
+
+***
 
 指し手情報は以下のプロパティで取得できます。
 
@@ -166,6 +172,8 @@ fromX,fromYで指定した位置の駒の移動可能座標の情報を返す。
 | JkfEditor.lastMove | Move | 現在の盤面で最後に指された指し手の情報。MoveのAPIは後述します。 |
 | JkfEditor.moves | Move[] | 現在の最初から最後までの全ての指し手の配列。 |
 | JkfEditor.nextMoves | Move[] | 現在の盤面における次の指し手候補の配列。|
+
+***
 
 また、下記のメソッドで情報を文字列として出力できます。
 
@@ -200,6 +208,8 @@ console.log(jkfeditor.dispNextMoves())
 >1: ☖2二飛
 */
 ```
+
+***
 
 次の指し手を変更する場合は以下のメソッドを利用します。
 
@@ -298,6 +308,8 @@ JSON棋譜フォーマットによる棋譜を再ロードする。
 **JkfEditor.export():Object**
 
 現在の状態をjkfフォーマットとして出力する。
+
+***
 
 ## API(Move)
 Moveは指し手情報のクラスで、以下のプロパティを持ちます。
