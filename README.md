@@ -258,6 +258,14 @@ console.log(jkfeditor.dispNextMoves())
 |:--:|:--:|:--:|:--:|
 | deleteNUm | number | Yes | 削除する棋譜番号。 |
 
+**JkfEditor.deleteFork(forkIndex)**
+
+現在の盤面の次の指し手候補のうち、指定したインデックスの分岐候補を削除する。
+
+| Argument | Type | Required | Description |
+|:--:|:--:|:--:|:--:|
+| forkIndex | number | Yes | 分岐候補のインデックスを指定します。インデックスの値はJkfEditor.nextMovesの配列のインデックスを使うか、JkfEditor.dispNextMoves()で調べることができます。 |
+
 **JkfEditor.addComment(comment)**
 
 現在の指し手にコメントを追加する。

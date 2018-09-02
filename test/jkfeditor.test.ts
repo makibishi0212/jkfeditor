@@ -490,6 +490,23 @@ describe('Shogi-manger test', () => {
     ).toEqual(['初期局面', '☗7六歩', '☖8四歩'])
   })
 
+  it('分岐指し手の削除', () => {
+    testManager = jkfLoadManager
+    testManager.currentNum--
+    testManager.switchFork(0)
+    expect(
+      testManager.nextMoves.map(move => {
+        return move.name
+      })
+    ).toEqual(['☖3四歩', '☖8四歩', '☖9四歩'])
+    testManager.deleteFork(1)
+    expect(
+      testManager.nextMoves.map(move => {
+        return move.name
+      })
+    ).toEqual(['☖3四歩', '☖9四歩'])
+  })
+
   it('コメントの追加', () => {
     testManager = newManager
     expect(testManager.comment).toEqual(null)

@@ -89,6 +89,10 @@ export default class JkfEditor {
     this.editor.switchFork(forkIndex)
   }
 
+  public deleteFork(forkIndex: number) {
+    this.editor.deleteFork(forkIndex)
+  }
+
   public addBoardMove(
     fromX: number,
     fromY: number,
