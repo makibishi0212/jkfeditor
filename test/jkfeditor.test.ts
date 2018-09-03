@@ -1,6 +1,6 @@
 import JkfEditor from '../src/jkfeditor'
 import KomaInfo from '../src/const/komaInfo'
-import { BOARD, PLAYER, KOMA } from '../src/const/const'
+import { BOARD, PLAYER } from '../src/const/const'
 import Move from '../src/model/move'
 import MoveData from '../src/moveData'
 import Util from '../src/util'
@@ -676,6 +676,18 @@ describe('Shogi-manger test', () => {
       [0, 0, 0, 0, 0, 0, 1, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0, 0]
     ])
+  })
+
+  it('reverseBoardプロパティ', () => {
+    testManager = jkfLoadManager
+    expect(testManager.reverseBoard).toEqual(
+      testManager.board
+        .slice()
+        .reverse()
+        .map(boardRow => {
+          return boardRow.slice().reverse()
+        })
+    )
   })
 
   it('colorプロパティ', () => {

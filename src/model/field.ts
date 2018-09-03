@@ -412,6 +412,9 @@ export default class Field {
   private setBoardPiece(pos: Pos, info: IPiece) {
     if (pos) {
       this._board[pos.ay][pos.ax] = Util.deepCopy(info)
+
+      const reversePos = pos.reverse()
+      this._reverseBoard[reversePos.ay][reversePos.ax] = Util.deepCopy(info)
     }
   }
 

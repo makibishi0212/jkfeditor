@@ -96,7 +96,6 @@ export default class MoveNode {
       console.error('このノードには次の指し手候補が登録されていません。')
       return false
     }
-    // TODO: 現在の次指し手より小さい値が指定された場合はインデックスをずらす
     this._next.forEach((nextNum, index) => {
       if (nextNum === deleteNum) {
         this._next.splice(index, 1)
