@@ -115,4 +115,23 @@ describe('Move class test', () => {
     expect(testMove.isPut).toBe(false)
     expect(testMove.comments).toBe(null)
   })
+
+  it('コメントが正常に追加される', () => {
+    testMove = normalMove
+
+    testMove.addComment('コメント')
+    expect(testMove.comments).toEqual(['コメント'])
+    expect(testMove.moveObj.comments).toEqual(['コメント'])
+
+    testMove.addComment('コメント2')
+    expect(testMove.comments).toEqual(['コメント', 'コメント2'])
+    expect(testMove.moveObj.comments).toEqual(['コメント', 'コメント2'])
+
+    testMove.removeComment()
+    expect(testMove.moveObj.comments).toEqual(undefined)
+
+    testMove.addComment('新規コメント')
+    expect(testMove.comments).toEqual(['新規コメント'])
+    expect(testMove.moveObj.comments).toEqual(['新規コメント'])
+  })
 })

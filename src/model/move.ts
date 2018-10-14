@@ -113,6 +113,11 @@ export default class Move {
   }
 
   public get moveObj(): IMoveFormat {
+    if (this.comments) {
+      this._moveObj.comments = this.comments
+    } else {
+      delete this._moveObj.comments
+    }
     return this._moveObj
   }
 
