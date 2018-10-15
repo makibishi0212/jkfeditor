@@ -515,6 +515,10 @@ describe('Shogi-manger test', () => {
     testManager.addComment('テストコメント2')
     expect(testManager.comment).toEqual(['テストコメント1', 'テストコメント2'])
     expect(testManager.lastMove.comments).toEqual(['テストコメント1', 'テストコメント2'])
+    expect(testManager.export().moves[testManager.currentNum].comments).toEqual([
+      'テストコメント1',
+      'テストコメント2'
+    ])
     testManager.resetComment()
     expect(testManager.comment).toEqual(null)
     testManager.go(0)

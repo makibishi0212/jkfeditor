@@ -56,7 +56,7 @@ export default class MoveNode {
   }
 
   public get moveObj(): IMoveFormat {
-    return this._moveObj
+    return this.info.moveObj
   }
 
   public get index(): number {
